@@ -45,7 +45,7 @@ $tca = [
                 'renderType' => 'selectSingle',
                 'items' => [['', 0]],
                 'foreign_table' => 'tx_realtymanager_domain_model_districts',
-                'foreign_table_where' => 'AND tx_realty_districts.pid=###CURRENT_PID### AND tx_realtymanager_domain_model_districts.sys_language_uid IN (-1, 0)',
+                'foreign_table_where' => 'AND tx_realtymanager_domain_model_districts.pid=###CURRENT_PID### AND tx_realtymanager_domain_model_districts.sys_language_uid IN (-1, 0)',
                 'default' => 0,
             ],
         ],
