@@ -12,7 +12,7 @@ class RealtyManagerController extends ActionController
     /**
      * Inject the content repository
      *
-     * @param ChrisGruen\RealtyManager\Domain\Repository\ObjectRepository $objectRepository
+     * @param ChrisGruen\RealtyManager\Domain\Repository\ObjectimmosRepository $objectRepository
      */
     public function injectObjectRepository(ObjectimmosRepository $objectimmosRepository)
     {
