@@ -9,8 +9,9 @@ $tca = [
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'languageField' => 'sys_language_uid',
-        'transOrigPointerField' => 'l18n_parent',
-        'transOrigDiffSourceField' => 'l18n_diffsource',
+        'transOrigPointerField' => 'l10n_parent',
+        'transOrigDiffSourceField' => 'l10n_diffsource',
+        'translationSource' => 'l10n_source',
         'default_sortby' => 'ORDER BY title',
         'delete' => 'deleted',
         'hideTable' => true,
@@ -18,7 +19,7 @@ $tca = [
         'searchFields' => 'uid, title',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, title',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, title',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -40,7 +41,7 @@ $tca = [
         ],
         'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l10n_parent',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -50,6 +51,11 @@ $tca = [
                 'minitems' => 0,
                 'default' => 0,
             ],
+        ],
+        'l10n_source' => [
+            'config' => [
+                'type' => 'passthrough'
+            ]
         ],
         'l10n_diffsource' => [
             'config' => [

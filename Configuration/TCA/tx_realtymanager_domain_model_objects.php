@@ -12,8 +12,9 @@ $tca = [
         'versioningWS' => true,
         'origUid' => 't3_origuid',
         'languageField' => 'sys_language_uid',
-        'transOrigPointerField' => 'l18n_parent',
-        'transOrigDiffSourceField' => 'l18n_diffsource',
+        'transOrigPointerField' => 'l10n_parent',
+        'transOrigDiffSourceField' => 'l10n_diffsource',
+        'translationSource' => 'l10n_source',
         'default_sortby' => 'ORDER BY crdate',
         'delete' => 'deleted',
         'enablecolumns' => [
@@ -26,7 +27,7 @@ $tca = [
             'street, zip',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid,l18n_parent,l18n_diffsource,' .
+        'showRecordFieldList' => 'sys_language_uid,l10n_parent,l10n_diffsource,' .
             'hidden,starttime,endtime,object_number,object_type,title,sorting,' .
             'emphasized,distance_to_the_sea,sea_view' .
             'number_of_rooms,living_area,total_area,shop_area,sales_area,' .
@@ -77,7 +78,7 @@ $tca = [
         ],
         'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l10n_parent',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -87,6 +88,11 @@ $tca = [
                 'minitems' => 0,
                 'default' => 0,
             ],
+        ],
+        'l10n_source' => [
+            'config' => [
+                'type' => 'passthrough'
+            ]
         ],
         'l10n_diffsource' => [
             'config' => [
@@ -1488,7 +1494,7 @@ $tca = [
         '1' => [
             // for sale
             'showitem' => 'sys_language_uid, ' .
-                'l18n_parent, l18n_diffsource, ' .
+                'l10n_parent, l10n_diffsource, ' .
                 'object_number, openimmo_anid, openimmo_obid, object_type, ' .
                 'title, emphasized, sorting, ' .
                 'distance_to_the_sea, sea_view, number_of_rooms, '
