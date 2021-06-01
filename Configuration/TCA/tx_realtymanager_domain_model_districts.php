@@ -13,7 +13,7 @@ $tca = [
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY title',
         'delete' => 'deleted',
-        //'hideTable' => true,
+        'hideTable' => true,
         'iconfile' => 'EXT:realty_manager/Resources/Public/Icons/District.gif',
         'searchFields' => 'uid, title',
     ],
@@ -22,37 +22,40 @@ $tca = [
     ],
     'columns' => [
         'sys_language_uid' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
+            'exclude' => true,
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'foreign_table' => 'sys_language',
-                'foreign_table_where' => 'ORDER BY sys_language.title',
+                'special' => 'languages',
                 'items' => [
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0],
+                    [
+                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
+                        -1,
+                        'flags-multiple'
+                    ],
                 ],
                 'default' => 0,
-            ],
+            ]
         ],
-        'l18n_parent' => [
+        'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'items' => [['', 0]],
-                'foreign_table' => 'tx_realtymanager_domain_model_districts',
-                'foreign_table_where' => 'AND tx_realtymanager_domain_model_districts.pid=###CURRENT_PID### AND tx_realtymanager_domain_model_districts.sys_language_uid IN (-1, 0)',
+                'type' => 'group',
+                'internal_type' => 'db',
+                'allowed' => 'tx_realtymanager_domain_model_cities',
+                'size' => 1,
+                'maxitems' => 1,
+                'minitems' => 0,
                 'default' => 0,
             ],
         ],
-        'l18n_diffsource' => [
+        'l10n_diffsource' => [
             'config' => [
                 'type' => 'passthrough',
-            ],
+                'default' => ''
+            ]
         ],
         'title' => [
             'exclude' => 0,
@@ -70,7 +73,9 @@ $tca = [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => 'sys_language_uid, l18n_parent, l18n_diffsource, title'],
+        '0' => ['showitem' => 'sys_language_uid; LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel, l10n_parent, l10n_diffsource,
+                title'
+        ],
     ],
 ];
 

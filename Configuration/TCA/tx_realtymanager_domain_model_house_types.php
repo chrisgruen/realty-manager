@@ -3,7 +3,7 @@ defined('TYPO3_MODE') or die('Access denied.');
 
 return [
     'ctrl' => [
-        'title' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_pets',
+        'title' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_house_types',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -13,7 +13,7 @@ return [
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY title',
         'delete' => 'deleted',
-        'iconfile' => 'EXT:realty_manager/Resources/Public/Icons/Pet.gif',
+        'iconfile' => 'EXT:realty_manager/Resources/Public/Icons/HouseType.gif',
         'searchFields' => 'uid,title',
     ],
     'interface' => [
@@ -21,7 +21,7 @@ return [
     ],
     'columns' => [
         'sys_language_uid' => [
-            'exclude' => true,
+            'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
@@ -43,7 +43,7 @@ return [
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
-                'allowed' => 'tx_realtymanager_domain_model_pets',
+                'allowed' => 'tx_realtymanager_domain_model_house_types',
                 'size' => 1,
                 'maxitems' => 1,
                 'minitems' => 0,
@@ -58,7 +58,7 @@ return [
         ],
         'title' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_pets.title',
+            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_house_types.title',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -67,7 +67,8 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => 'sys_language_uid, l18n_parent, l18n_diffsource, title'],
+        '0' => ['showitem' => 'sys_language_uid; LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel, l10n_parent, l10n_diffsource,
+                title'
+               ],
     ],
 ];
-
