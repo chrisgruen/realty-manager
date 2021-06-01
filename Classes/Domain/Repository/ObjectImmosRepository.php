@@ -4,7 +4,7 @@ namespace ChrisGruen\RealtyManager\Domain\Repository;
 
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-class ObjectImmosRepository extends Repository
+class ObjectimmosRepository extends Repository
 {
        
 }

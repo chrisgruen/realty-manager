@@ -4,7 +4,7 @@ namespace ChrisGruen\RealtyManager\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-class ObjectImmosRepository extends AbstractEntity
+class Objectimmos extends AbstractEntity
 {      
     /**
      * @var \DateTime

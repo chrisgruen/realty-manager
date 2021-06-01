@@ -1,5 +1,5 @@
 #
-# Table structure for table 'tx_realtymanager_domain_model_objects'
+# Table structure for table 'tx_realtymanager_domain_model_objectimmos'
 #
 
 CREATE TABLE tx_realtymanager_domain_model_objectimmos (

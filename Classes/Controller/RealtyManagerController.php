@@ -2,7 +2,7 @@
 
 namespace ChrisGruen\RealtyManager\Controller;
 
-use ChrisGruen\RealtyManager\Domain\Repository\ObjectRepository;
+use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmosRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class RealtyManagerController extends ActionController
@@ -14,15 +14,13 @@ class RealtyManagerController extends ActionController
      *
      * @param ChrisGruen\RealtyManager\Domain\Repository\ObjectRepository $objectRepository
      */
-    public function injectObjectRepository(ObjectImmosRepository $objectimmosRepository)
+    public function injectObjectRepository(ObjectimmosRepository $objectimmosRepository)
     {
         $this->objectimmosRepository = $objectimmosRepository;
     }
     
     public function listAction()
     {
-        dump('end');
-        exit();
         $objects = $this->objectimmosRepository->findAll();
         $this->view->assign('objects', $objects);
     } 
