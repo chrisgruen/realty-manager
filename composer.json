@@ -25,7 +25,7 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"ChrisGruen\\SimpleNews\\" : "Classes/"
+			"ChrisGruen\\RealtyManager\\" : "Classes/"
 		}
 	},
 	"config": {

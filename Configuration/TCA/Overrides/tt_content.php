@@ -4,7 +4,7 @@
     'RealtyManager',
     'Immobilienmanager',
     'Realty Manager',
-    'EXT:simple_news/Resources/Public/Icons/Real.svg'
+    'EXT:realty_manager/Resources/Public/Icons/Extension.svg'
 );
 
 /*

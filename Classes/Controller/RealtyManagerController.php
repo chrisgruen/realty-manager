@@ -7,21 +7,23 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class RealtyManagerController extends ActionController
 {
-    private $objectRepository;
+    private $objectimmosRepository;
     
     /**
      * Inject the content repository
      *
      * @param ChrisGruen\RealtyManager\Domain\Repository\ObjectRepository $objectRepository
      */
-    public function injectObjectRepository(ObjectRepository $objectRepository)
+    public function injectObjectRepository(ObjectImmosRepository $objectimmosRepository)
     {
-        $this->objectRepository = $objectRepository;
+        $this->objectimmosRepository = $objectimmosRepository;
     }
     
     public function listAction()
     {
-        $objects = $this->productRepository->findAll();
+        dump('end');
+        exit();
+        $objects = $this->objectimmosRepository->findAll();
         $this->view->assign('objects', $objects);
     } 
     
