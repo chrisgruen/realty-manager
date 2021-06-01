@@ -271,7 +271,7 @@ class ResultPlayer extends AbstractEntity
      *
      * @param string $district district
      */
-    public function setCity($district)
+    public function setDistrict($district)
     {
         $this->district = $district;
     }

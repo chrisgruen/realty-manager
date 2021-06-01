@@ -19,4 +19,10 @@ class RealtyManagerController extends ActionController
         $this->objectRepository = $objectRepository;
     }
     
+    public function listAction()
+    {
+        $objects = $this->productRepository->findAll();
+        $this->view->assign('objects', $objects);
+    } 
+    
 }
