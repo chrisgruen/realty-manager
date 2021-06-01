@@ -225,14 +225,9 @@ $tca = [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_realtymanager_domain_model_cities',
                 'foreign_table_where' => 'ORDER BY tx_realtymanager_domain_model_cities.title',
-                'items' => [['', 0]],
-                'default' => 0,
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
             ],
         ],
-		/*
+        /*
         'district' => [
             'displayCond' => 'FIELD:city:>:0',
             'exclude' => 0,
@@ -241,15 +236,8 @@ $tca = [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'itemsProcFunc' => 'OliverKlee\\Realty\\BackEnd\\Tca->getDistrictsForCity',
-                'items' => [['', 0]],
-                'default' => 0,
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
             ],
         ],
-		*/
-		/*
         'country' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.country',
@@ -258,14 +246,9 @@ $tca = [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'static_countries',
                 'foreign_table_where' => 'ORDER BY static_countries.cn_short_en',
-                'items' => [['', 0]],
-                'default' => 0,
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
             ],
         ],
-		*/
+        */
         'distance_to_the_sea' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.distance_to_the_sea',
@@ -571,11 +554,6 @@ $tca = [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_realtymanager_domain_model_apartment_types',
                 'foreign_table_where' => 'ORDER BY tx_realtymanager_domain_model_apartment_types.title',
-                'items' => [['', 0]],
-                'default' => 0,
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
             ],
         ],
         'house_type' => [
@@ -586,11 +564,6 @@ $tca = [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_realtymanager_domain_model_house_types',
                 'foreign_table_where' => 'ORDER BY tx_realtymanager_domain_model_house_types.title',
-                'items' => [['', 0]],
-                'default' => 0,
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
             ],
         ],
         'floor' => [
@@ -726,11 +699,6 @@ $tca = [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_realtymanager_domain_model_car_places',
                 'foreign_table_where' => 'ORDER BY tx_realtymanager_domain_model_car_places.title',
-                'items' => [['', 0]],
-                'default' => 0,
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
             ],
         ],
         'parking_spaces' => [
@@ -769,11 +737,6 @@ $tca = [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_realtymanager_domain_model_pets',
                 'foreign_table_where' => 'ORDER BY tx_realtymanager_domain_model_pets.title',
-                'items' => [['', 0]],
-                'default' => 0,
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
             ],
         ],
         'flooring' => [
