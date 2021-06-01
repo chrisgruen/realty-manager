@@ -1,8 +1,8 @@
 #
-# Table structure for table 'tx_realtymanager_domain_model_objectimmos'
+# Table structure for table 'tx_realtymanager_domain_model_objectimmo'
 #
 
-CREATE TABLE tx_realtymanager_domain_model_objectimmos (
+CREATE TABLE tx_realtymanager_domain_model_objectimmo (
     uid int(11) unsigned NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
