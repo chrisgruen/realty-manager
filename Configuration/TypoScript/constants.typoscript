@@ -9,20 +9,20 @@
 ############
 page {
     logo {
-        file = EXT:simple_news/Resources/Public/Images/Realty.svg
-        fileInverted = EXT:chess_manager/Resources/Public/Images/Realty.svg
+        file = EXT:realty_manager/Resources/Public/Images/Realty.svg
+        fileInverted = EXT:realty_manager/Resources/Public/Images/Realty.svg
         height = 52
         width = 192
-        alt = Chess Manager
-        linktitle = Chess Manager
+        alt = Realty Manager
+        linktitle = Realty Manager
     }
     favicon {
-        file = EXT:chess_manager/Resources/Public/Icons/favicon.ico
+        file = EXT:realty_manager/Resources/Public/Icons/favicon.ico
     }
     fluidtemplate {
-        layoutRootPath = EXT:chess_manager/Resources/Private/Layouts/Page/
-        partialRootPath = EXT:chess_manager/Resources/Private/Partials/Page/
-        templateRootPath = EXT:chess_manager/Resources/Private/Templates/Page/
+        layoutRootPath = EXT:realty_manager/Resources/Private/Layouts/Page/
+        partialRootPath = EXT:realty_manager/Resources/Private/Partials/Page/
+        templateRootPath = EXT:realty_manager/Resources/Private/Templates/Page/
     }
 }
 

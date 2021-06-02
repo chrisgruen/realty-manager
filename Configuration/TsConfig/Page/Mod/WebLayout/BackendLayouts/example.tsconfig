@@ -22,7 +22,7 @@ mod {
                         }
                     }
                 }
-                icon = EXT:simple_news/Resources/Public/Icons/BackendLayouts/Realty.svg
+                icon = EXT:realty_manager/Resources/Public/Icons/BackendLayouts/Realty.svg
             }
         }
     }

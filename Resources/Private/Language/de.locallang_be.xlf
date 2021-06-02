@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2020-11-22UTC05:13:340">
+        <header>
+            <authorName>Christian Grünwald</authorName>
+            <authorEmail>cg@romonta-schach.de</authorEmail>
+        </header>
+        <body>
+            <trans-unit id="flexforms_general.mode" xml:space="preserve">
+				<source>Bitte Auswählen</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.mode.list" xml:space="preserve">
+				<source>Ergebnisliste</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.mode.form" xml:space="preserve">
+				<source>Suchformular</source>
+			</trans-unit>
+        </body>
+    </file>
+</xliff>

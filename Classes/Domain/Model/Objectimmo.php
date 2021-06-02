@@ -199,7 +199,7 @@ class Objectimmo extends AbstractEntity
     /**
      * Set object_type
      *
-     * @param int $objectNumber object_number
+     * @param int $objectType object_type
      */
     public function setObjectType($objectType)
     {
@@ -284,5 +284,225 @@ class Objectimmo extends AbstractEntity
     public function getDistrict()
     {
         return $this->district;
+    }
+    
+    /**
+     * Set country
+     *
+     * @param string $country country
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+    
+    /**
+     * Get country
+     *
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+    
+    /**
+     * Set show_address
+     *
+     * @param int $showAddress show_address
+     */
+    public function setShowAddress($showAddress)
+    {
+        $this->showAddress = $showAddress;
+    }
+    
+    /**
+     * Get show_address
+     *
+     * @return int
+     */
+    public function getShowAddress()
+    {
+        return $this->showAddress;
+    }
+    
+    /**
+     * Set has_coordinates
+     *
+     * @param int $hasCoordinates has_coordinates
+     */
+    public function setHasCoordinates($hasCoordinates)
+    {
+        $this->hasCoordinates = $hasCoordinates;
+    }
+    
+    /**
+     * Get has_coordinates
+     *
+     * @return int
+     */
+    public function getHasCoordinates()
+    {
+        return $this->hasCoordinates;
+    }
+    
+    /**
+     * Set longitude
+     *
+     * @param float $longitude longitude
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+    }
+    
+    /**
+     * Get longitude
+     *
+     * @return float
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+    
+    /**
+     * Set latitude
+     *
+     * @param float $latitude latitude
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+    }
+    
+    /**
+     * Get latitude
+     *
+     * @return float
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+    
+    /**
+     * Get distance_to_the_sea
+     *
+     * @return int
+     */
+    public function getDistanceToTheSea()
+    {
+        return $this->distanceToTheSea;
+    }
+    
+    /**
+     * Set distance_to_the_sea
+     *
+     * @param int $distanceToTheSea distance_to_the_sea
+     */
+    public function setDistanceToTheSea($distanceToTheSea)
+    {
+        $this->distanceToTheSea = $distanceToTheSea;
+    }
+    
+    /**
+     * Set sea_view
+     *
+     * @param int $seaView sea_view
+     */
+    public function setSeaView($seaView)
+    {
+        $this->seaView = $seaView;
+    }
+    
+    /**
+     * Get sea_view
+     *
+     * @return int
+     */
+    public function getSeaView()
+    {
+        return $this->seaView;
+    }
+    
+    /**
+     * Set number_of_rooms
+     *
+     * @param float $numberOfRooms number_of_rooms
+     */
+    public function setNumberOfRooms($numberOfRooms)
+    {
+        $this->numberOfRooms = $numberOfRooms;
+    }
+    
+    /**
+     * Get number_of_rooms
+     *
+     * @return float
+     */
+    public function getNumberOfRooms()
+    {
+        return $this->numberOfRooms;
+    }
+    
+    /**
+     * Set living_area
+     *
+     * @param string $livingArea living_area
+     */
+    public function setLivingArea($livingArea)
+    {
+        $this->livingArea = $livingArea;
+    }
+    
+    /**
+     * Get living_area
+     *
+     * @return string
+     */
+    public function getLivingArea()
+    {
+        return $this->livingArea;
+    }
+    
+    /**
+     * Set total_area
+     *
+     * @param string $totalArea total_area
+     */
+    public function setTotalArea($totalArea)
+    {
+        $this->totalArea = $totalArea;
+    }
+    
+    /**
+     * Get total_area
+     *
+     * @return string
+     */
+    public function getTotalArea()
+    {
+        return $this->totalArea;
+    }
+    
+    /**
+     * Set estate_size
+     *
+     * @param string $estateSize estate_size
+     */
+    public function setEstateSize($estateSize)
+    {
+        $this->estateSize = $estateSizea;
+    }
+    
+    /**
+     * Get estate_size
+     *
+     * @return string
+     */
+    public function getEstateSize()
+    {
+        return $this->estateSize;
     }
 }

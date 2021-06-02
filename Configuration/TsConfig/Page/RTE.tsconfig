@@ -3,6 +3,6 @@
 #############
 RTE {
     default {
-        preset = simple_news
+        preset = realty_manager
     }
 }

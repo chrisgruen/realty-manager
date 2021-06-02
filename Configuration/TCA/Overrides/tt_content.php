@@ -7,10 +7,8 @@
     'EXT:realty_manager/Resources/Public/Icons/Extension.svg'
 );
 
-/*
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['realtymanager_Immobilienmanager'] = 'pi_flexform';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['realtymanager_immobilienmanager'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'realtymanager_Immobilienmanager',
-    'FILE:EXT:simple_news/Configuration/FlexForms/flexform_realty.xml'
+    'realtymanager_immobilienmanager',
+    'FILE:EXT:realty_manager/Configuration/FlexForms/flexform_realty.xml'
     );
-*/

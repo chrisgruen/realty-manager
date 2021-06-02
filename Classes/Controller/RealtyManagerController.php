@@ -19,6 +19,11 @@ class RealtyManagerController extends ActionController
         $this->objectimmoRepository = $objectimmoRepository;
     }
     
+    public function formAction()
+    {
+        $this->view->assign('form', ['data']);
+    } 
+    
     public function listAction()
     {
         $objects = $this->objectimmoRepository->findAll();

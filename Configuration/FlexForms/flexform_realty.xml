@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<T3DataStructure>
+	<sheets>
+		<!--
+			################################
+			  SHEET General Settings
+			################################
+		-->
+		<sDEF>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>Auswahl</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<!-- View -->
+					<switchableControllerActions>
+						<TCEforms>
+							<label>LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode</label>
+							<onChange>reload</onChange>
+							<config>
+								<type>select</type>
+								<renderType>selectSingle</renderType>
+								<items>
+									<numIndex index="1">
+										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.list</numIndex>
+										<numIndex index="1">RealtyManager->list</numIndex>
+									</numIndex>
+									<numIndex index="2">
+										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.form</numIndex>
+										<numIndex index="1">RealtyManager->form</numIndex>
+									</numIndex>
+								</items>
+							</config>
+                        </TCEforms>
+                    </switchableControllerActions>
+                </el>
+            </ROOT>
+        </sDEF>
+    </sheets>
+</T3DataStructure>

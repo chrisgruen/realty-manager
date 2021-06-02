@@ -9,7 +9,7 @@ defined('TYPO3_MODE') || die('Access denied.');
 /***************
  * PageTS
  */
-//\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:simple_news/Configuration/TsConfig/Page/All.tsconfig">');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:realty_manager/Configuration/TsConfig/Page/All.tsconfig">');
 
 /***************
  * Config Extension
