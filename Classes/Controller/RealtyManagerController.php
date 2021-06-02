@@ -21,7 +21,8 @@ class RealtyManagerController extends ActionController
     
     public function formAction()
     {
-        $this->view->assign('form', ['data']);
+        $this->view->assign('cities', ['Halle', 'Leipzig']);
+        //$this->view->assign('form', ['data']);
     } 
     
     public function listAction()
