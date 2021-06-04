@@ -1,10 +1,21 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<h2>LIST OBJECTS</h2><br />
+<h2>Wir bieten Dir folgende Objekte an:</h2><br />
 
 <f:for each="{objects}" as="object">
-	{object.title}
+<div class="row list-immo-row">
+	<div class="col-lg-9">
+		<span class="font-weight-bold">{object.title}</span><br />
+		Wohnungstyp 
+		<div class="list-teaser">
+		   <f:format.html>{object.teaser}</f:format.html>
+		</div>
+	</div>
+	<div class="col-lg-3">
+		Bilder
+	</div>
+</div>
 </f:for>
 	
 </html>

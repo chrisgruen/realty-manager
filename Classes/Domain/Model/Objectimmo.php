@@ -61,6 +61,16 @@ class Objectimmo extends AbstractEntity
      */
     protected $district;
     
+    /**
+     * @var string
+     */
+    protected $teaser;
+    
+    /**
+     * @var string
+     */
+    protected $discription;
+    
     public function __construct()
     {
         
@@ -504,5 +514,45 @@ class Objectimmo extends AbstractEntity
     public function getEstateSize()
     {
         return $this->estateSize;
+    }
+    
+    /**
+     * Set $teaser
+     *
+     * @param string $teaser teaser
+     */
+    public function setTeaser($teaser)
+    {
+        $this->teaser = $teaser;
+    }
+    
+    /**
+     * Get teaser
+     *
+     * @return string
+     */
+    public function getTeaser()
+    {
+        return $this->teaser;
+    }
+    
+    /**
+     * Set $discription
+     *
+     * @param string $discription discription
+     */
+    public function setDiscription($discription)
+    {
+        $this->discription = $discription;
+    }
+    
+    /**
+     * Get discription
+     *
+     * @return string
+     */
+    public function getDiscription()
+    {
+        return $this->Discription;
     }
 }

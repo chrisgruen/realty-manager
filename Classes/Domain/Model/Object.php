@@ -61,6 +61,16 @@ class ResultPlayer extends AbstractEntity
      */
     protected $district;
     
+    /**
+     * @var string
+     */
+    protected $teaser;
+    
+    /**
+     * @var string
+     */
+    protected $discription;
+    
     public function __construct()
     {
         
