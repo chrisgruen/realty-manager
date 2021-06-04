@@ -4,6 +4,8 @@ namespace ChrisGruen\RealtyManager\Controller;
 
 use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 
 class RealtyManagerController extends ActionController
 {
@@ -20,13 +22,13 @@ class RealtyManagerController extends ActionController
     }
     
     public function formAction()
-    {
+    {   
         /* get opt-select cities */
         $dataCities = $this->objectimmoRepository->getCities();
         $cities = $this->selectCities($dataCities);
         
         /* get opt-select districts */
-        $dataDistricts = $this->objectimmoRepository->getDistricts();
+        $dataDistricts = $this->objectimmoRepository->getDistricts(1);
         $districts = $this->selectDistricts($dataDistricts);
         
         /* get opt-select pricerange */
@@ -36,7 +38,7 @@ class RealtyManagerController extends ActionController
         /* get opt-select arearange */
         $dataAreas = $this->objectimmoRepository->getAreaRange();
         $areas = $this->selectAreas($dataAreas);
-        
+
         $this->view->assign('cities', $cities);
         $this->view->assign('districts', $districts);
         $this->view->assign('rentprices', $rentprices);
@@ -111,5 +113,17 @@ class RealtyManagerController extends ActionController
             $areas[] = $area;
         }
         return $areas;
+    }
+    
+    /**
+     * action ajaxCall District options
+     * 
+     */
+    public function ajaxselectdistrictAction()
+    {
+        $cityId = isset($_GET['cityId']) ? $_GET['cityId'] : 0;
+        $dataDistricts = $this->objectimmoRepository->getDistricts($cityId);
+        $districts = $this->selectDistricts($dataDistricts);
+        $ajaxcontent = $this->view->assign('districts', $districts);
     }
 }

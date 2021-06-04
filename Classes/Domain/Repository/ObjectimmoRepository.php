@@ -16,7 +16,7 @@ class ObjectimmoRepository extends Repository
     public function getCities() {
         
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_objectimmo');
-        $sql = "SELECT uid, title from tx_realtymanager_domain_model_cities order by title";
+        $sql = "SELECT uid, title from tx_realtymanager_domain_model_cities order by uid";
         
         $cities = $connection->executeQuery($sql)->fetchAll();
         return $cities;
@@ -27,10 +27,10 @@ class ObjectimmoRepository extends Repository
      * Data from Table "tx_realtymanager_domain_model_districts"
      * @return array
      */
-    public function getDistricts() {
+    public function getDistricts($city_id) {
         
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_objectimmo');
-        $sql = "SELECT uid, title from tx_realtymanager_domain_model_districts order by title";
+        $sql = "SELECT uid, title from tx_realtymanager_domain_model_districts WHERE city = '".$city_id."' order by title";
         
         $districts = $connection->executeQuery($sql)->fetchAll();
         return $districts;

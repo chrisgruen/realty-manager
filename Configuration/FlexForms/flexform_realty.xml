@@ -28,7 +28,7 @@
 									</numIndex>
 									<numIndex index="2">
 										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.form</numIndex>
-										<numIndex index="1">RealtyManager->form; RealtyManager->list</numIndex>
+										<numIndex index="1">RealtyManager->form; RealtyManager->list; RealtyManager->ajaxselectdistrict</numIndex>
 									</numIndex>
 								</items>
 							</config>

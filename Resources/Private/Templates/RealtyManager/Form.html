@@ -6,11 +6,13 @@
 <f:form action="list" id="searchform" controller="RealtyManager">
 	<div class="form-group">
 		<label for="city">Stadt</label>
-	    <f:form.select name="city" class="form-control form-control-sm select-city" options="{cities}" optionValueField="key" optionLabelField="value" value="{city}" />
+	    <f:form.select name="city"  class="form-control form-control-sm select-city" options="{cities}" optionValueField="key" optionLabelField="value" value="{city}" />
 	</div>
-	<div class="form-group">
-		<label for="district">Stadtteil</label>
-	    <f:form.select name="district" class="form-control form-control-sm" options="{districts}" optionValueField="key" optionLabelField="value" value="{district}" />
+	<div id="ajaxSelectDistrictResult">	
+		<div class="form-group">
+			<label for="district">Stadtteil</label>
+		    <f:form.select name="district" class="form-control form-control-sm" options="{districts}" optionValueField="key" optionLabelField="value" value="{district}" />
+		</div>
 	</div>
 	<div class="form-group">
 		<label class="label-radio" for="furnished">Möbliert</label>
