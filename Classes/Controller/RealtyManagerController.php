@@ -5,7 +5,7 @@ namespace ChrisGruen\RealtyManager\Controller;
 use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Page\AssetCollector;
 
 class RealtyManagerController extends ActionController
 {
@@ -23,6 +23,7 @@ class RealtyManagerController extends ActionController
     
     public function formAction()
     {   
+        
         /* get opt-select cities */
         $dataCities = $this->objectimmoRepository->getCities();
         $cities = $this->selectCities($dataCities);
@@ -43,6 +44,7 @@ class RealtyManagerController extends ActionController
         $this->view->assign('districts', $districts);
         $this->view->assign('rentprices', $rentprices);
         $this->view->assign('areas', $areas);
+                
     } 
     
     public function listAction()
