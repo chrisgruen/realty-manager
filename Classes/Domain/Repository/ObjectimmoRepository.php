@@ -8,6 +8,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ObjectimmoRepository extends Repository
 {
+    
+    public function getAllObjects()
+    {
+        $query = $this->createQuery();
+        $query->groupBy('object_number')
+              ->setOrderings(array("uid" => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING));
+            return $query->execute();
+    }
+    
     /**
      * get Cities
      * Data from Table "tx_realtymanager_domain_model_cities"

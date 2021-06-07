@@ -24,11 +24,11 @@
 								<items>
 									<numIndex index="1">
 										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.list</numIndex>
-										<numIndex index="1">RealtyManager->list; RealtyManager->form</numIndex>
+										<numIndex index="1">RealtyManager->list; RealtyManager->form; RealtyManager->detail</numIndex>
 									</numIndex>
 									<numIndex index="2">
 										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.form</numIndex>
-										<numIndex index="1">RealtyManager->form; RealtyManager->list; RealtyManager->ajaxselectdistrict</numIndex>
+										<numIndex index="1">RealtyManager->form; RealtyManager->list; RealtyManager->ajaxselectdistrict; RealtyManager->detail</numIndex>
 									</numIndex>
 								</items>
 							</config>

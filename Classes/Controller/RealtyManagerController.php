@@ -21,6 +21,7 @@ class RealtyManagerController extends ActionController
         $this->objectimmoRepository = $objectimmoRepository;
     }
     
+    
     public function formAction()
     {   
         
@@ -52,6 +53,13 @@ class RealtyManagerController extends ActionController
         $objects = $this->objectimmoRepository->findAll();
         $this->view->assign('objects', $objects);
     } 
+    
+    public function detailAction(\ChrisGruen\RealtyManager\Domain\Model\Objectimmo $objUid)
+    {
+        $uid = $objUid->getUid();
+        $object =  $this->objectimmoRepository->findByUid($uid);
+        $this->view->assign('object', $object);
+    }
     
     /**
      * prepare cities for select box

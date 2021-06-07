@@ -140,6 +140,11 @@ CREATE TABLE tx_realtymanager_domain_model_objectimmo (
     heat_energy_requirement_class varchar(32) DEFAULT '' NOT NULL,
     total_energy_efficiency_value varchar(32) DEFAULT '' NOT NULL,
     total_energy_efficiency_class varchar(32) DEFAULT '' NOT NULL,
+    furnished tinyint(1) unsigned DEFAULT '0' NOT NULL,
+    cleaning tinyint(1) unsigned DEFAULT '0' NOT NULL,
+    tv_enabled tinyint(1) unsigned DEFAULT '0' NOT NULL,
+    bicycleroom tinyint(1) unsigned DEFAULT '0' NOT NULL,
+    washingroom tinyint(1) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
     KEY parent (pid),
