@@ -13,7 +13,7 @@ class ObjectimmoRepository extends Repository
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
         $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
-                WHERE (hidden = 0)
+                WHERE (hidden = 0 AND deleted = 0)
                 GROUP BY object_number
                 ORDER BY crdate desc";
         
