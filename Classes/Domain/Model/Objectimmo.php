@@ -29,7 +29,7 @@ class Objectimmo extends AbstractEntity
     /**
      * @var string
      */
-    protected $object_number;
+    protected $objectNumber;
     
     /**
      * @var string

@@ -1,4 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:n="http://typo3.org/ns/ChrisGruen/RealtyManager/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <h2>Wir bieten Dir folgende Objekte an:</h2><br />
@@ -10,9 +11,9 @@
 		   <span class="font-weight-bold">{object.title}</span>
 		</f:link.action>
 		<br />
-		Wohnungstyp 
+		<n:feature object='{object.uid}' />
 		<div class="list-teaser">
-		   <f:format.html>{object.teaser}</f:format.html>
+		   <f:format.html><f:format.crop maxCharacters="200">{object.teaser}</f:format.crop></f:format.html>
 		</div>
 	</div>
 	<div class="col-lg-3">

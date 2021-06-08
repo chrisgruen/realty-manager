@@ -50,7 +50,8 @@ class RealtyManagerController extends ActionController
     
     public function listAction()
     {
-        $objects = $this->objectimmoRepository->findAll();
+        //$objects = $this->objectimmoRepository->findAll()
+        $objects = $this->objectimmoRepository->getAllObjects();
         $this->view->assign('objects', $objects);
     } 
     

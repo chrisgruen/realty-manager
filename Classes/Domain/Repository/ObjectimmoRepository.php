@@ -11,10 +11,14 @@ class ObjectimmoRepository extends Repository
     
     public function getAllObjects()
     {
-        $query = $this->createQuery();
-        $query->groupBy('object_number')
-              ->setOrderings(array("uid" => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING));
-            return $query->execute();
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
+        $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
+                WHERE (hidden = 0)
+                GROUP BY object_number
+                ORDER BY crdate desc";
+        
+        $objects = $connection->executeQuery($sql)->fetchAll();
+        return $objects;
     }
     
     /**
