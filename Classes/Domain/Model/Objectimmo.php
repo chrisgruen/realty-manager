@@ -39,7 +39,7 @@ class Objectimmo extends AbstractEntity
     /**
      * @var int
      */
-    protected $object_type;
+    protected $objectType;
     
     /**
      * @var string
@@ -60,6 +60,11 @@ class Objectimmo extends AbstractEntity
      * @var int
      */
     protected $district;
+
+    /**
+     * @var float
+     */
+    protected $livingArea;
     
     /**
      * @var string
@@ -457,9 +462,9 @@ class Objectimmo extends AbstractEntity
     }
     
     /**
-     * Set living_area
+     * Set livingArea
      *
-     * @param string $livingArea living_area
+     * @param float $livingArea livingArea
      */
     public function setLivingArea($livingArea)
     {
@@ -467,9 +472,9 @@ class Objectimmo extends AbstractEntity
     }
     
     /**
-     * Get living_area
+     * Get livingArea
      *
-     * @return string
+     * @return float
      */
     public function getLivingArea()
     {

@@ -15,6 +15,23 @@
 		<div class="list-teaser">
 		   <f:format.html><f:format.crop maxCharacters="200">{object.teaser}</f:format.crop></f:format.html>
 		</div>
+		<div class="row list-details">
+			<div class="col w-25">{object.living_area} m²</div>
+			<div class="col">Kaltmiete: {object.rent_excluding_bills} EUR</div>
+			<div class="col">Nebenkosten: {object.extra_charges} EUR</div>
+		</div>
+		<div class="row mt-3 mb-3">
+			<div class="col row_feature_icons">
+				<div class="feature_icons"><img src="{f:uri.image(src: 'EXT:realty_manager/Resources/Public/Icons/barrierefrei-inaktiv.png')}" /></div>
+				<div class="feature_icons"><img src="{f:uri.image(src: 'EXT:realty_manager/Resources/Public/Icons/tv-inaktiv.png')}" /></div>
+				<div class="feature_icons"><img src="{f:uri.image(src: 'EXT:realty_manager/Resources/Public/Icons/moeblierung-inaktiv.png')}" /></div>
+				<div class="feature_icons"><img src="{f:uri.image(src: 'EXT:realty_manager/Resources/Public/Icons/reinigung-inaktiv.png')}" /></div>
+				<div class="feature_icons"><img src="{f:uri.image(src: 'EXT:realty_manager/Resources/Public/Icons/bike-inaktiv.png')}" /></div>
+				<div class="feature_icons"><img src="{f:uri.image(src: 'EXT:realty_manager/Resources/Public/Icons/waschmaschine-inaktiv.png')}" /></div>
+				<div class="feature_icons"><img src="{f:uri.image(src: 'EXT:realty_manager/Resources/Public/Icons/kueche-inaktiv.png')}" /></div>
+				<div class="feature_icons"><img src="{f:uri.image(src: 'EXT:realty_manager/Resources/Public/Icons/zusatzkosten-inaktiv.png')}" /></div>
+			</div>
+		</div>
 	</div>
 	<div class="col-lg-3">
 		Bilder
