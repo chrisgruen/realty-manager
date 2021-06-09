@@ -74,7 +74,40 @@ class Objectimmo extends AbstractEntity
     /**
      * @var string
      */
-    protected $discription;
+    protected $description;
+    
+    /**
+     * @var string
+     */
+    protected $extraCharges;
+    
+    /**
+     * @var string
+     */
+    protected $rentExcludingBills;
+    
+    /**
+     * @var int
+     */
+    protected $houseType;
+    
+    /**
+     * @var int
+     */
+    protected $apartmentType;
+    
+    /**
+     * @var int
+     */
+    protected $floor;
+    
+    /**
+     * @var int
+     */
+    protected $floors;
+    
+
+    
     
     public function __construct()
     {
@@ -542,22 +575,143 @@ class Objectimmo extends AbstractEntity
     }
     
     /**
-     * Set $discription
+     * Set $description
      *
-     * @param string $discription discription
+     * @param string $description description
      */
-    public function setDiscription($discription)
+    public function setDescription($description)
     {
-        $this->discription = $discription;
+        $this->description = $description;
     }
     
     /**
-     * Get discription
+     * Get description
      *
      * @return string
      */
-    public function getDiscription()
+    public function getDescription()
     {
-        return $this->Discription;
+        return $this->description;
     }
+        
+    /**
+     * Set $rentExcludingBills
+     *
+     * @param string $rentExcludingBills rentExcludingBills
+     */
+    public function setRentExcludingBills($rentExcludingBills)
+    {
+        $this->rentExcludingBills = $rentExcludingBills;
+    }
+    
+    /**
+     * Get  rentExcludingBills
+     *
+     * @return string
+     */
+    public function getRentExcludingBills()
+    {
+        return $this->rentExcludingBills;
+    }
+    
+    /**
+     * Set $extraCharges
+     *
+     * @param string $extraCharges extraCharges
+     */
+    public function setExtraCharges($extraCharges)
+    {
+        $this->extraCharges = $extraCharges;
+    }
+    
+    /**
+     * Get extraCharges
+     *
+     * @return string
+     */
+    public function getExtraCharges()
+    {
+        return $this->extraCharges;
+    }
+    
+    /**
+     * Set $houseType
+     *
+     * @param int $houseType houseType
+     */
+    public function setHouseType($houseType)
+    {
+        $this->houseType = $houseType;
+    }
+    
+    /**
+     * Get houseType
+     *
+     * @return int
+     */
+    public function getHouseType()
+    {
+        return $this->houseType;
+    }
+    
+    /** 
+     * Set $apartmentType
+     *
+     * @param int $apartmentType apartmentType
+     */
+    public function setApartmentType($apartmentType)
+    {
+        $this->apartmentType = $apartmentType;
+    }
+    
+    /**
+     * Get apartmentType
+     *
+     * @return int
+     */
+    public function getApartmentType()
+    {
+        return $this->apartmentType;
+    }
+        
+    /**
+     * Set $floor
+     *
+     * @param int $floor floor
+     */
+    public function setFloor($floor)
+    {
+        $this->floor = $floor;
+    }
+    
+    /**
+     * Get floor
+     *
+     * @return int
+     */
+    public function getFloor()
+    {
+        return $this->floor;
+    }
+    
+    /**
+     * Set $floors
+     *
+     * @param int $floors floors
+     */
+    public function setFloors($floors)
+    {
+        $this->floors = $floors;
+    }
+    
+    /**
+     * Get floors
+     *
+     * @return int
+     */
+    public function getFloors()
+    {
+        return $this->floors;
+    }
+    
 }

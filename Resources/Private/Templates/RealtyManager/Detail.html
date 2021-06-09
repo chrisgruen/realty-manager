@@ -1,9 +1,56 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:n="http://typo3.org/ns/ChrisGruen/RealtyManager/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<h2>Detailansicht Objektnummer: {object.objectNumber}</h2><br />
-<h4>{object.title}</h4>
-<p><f:format.html>{object.teaser}</f:format.html></p>
+<div class="row detail-immo-row">
+	<div class="col-sm-8">
+		<h3>{object.title}</h3>
+		<div class="row bg-light mt-3 mb-4" style="height: 100px;">
+			<div class="col">
+				<h2>Slider</h2>
+			</div>
+		</div>
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th colspan="2">Überblick</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="w-50">Mietfläche ca.</td>
+					<td class="w-50">{object.livingArea} m²</td>
+				</tr>
+				<tr>
+					<td class="w-50">Etage</td>
+					<td class="w-50">{object.floor}</td>
+				</tr>
+				<tr>
+					<td class="w-50">Kaltmiete</td>
+					<td class="w-50">{object.rentExcludingBills} EUR</td>
+				</tr>
+				<tr>
+					<td class="w-50">Nebenkosten</td>
+					<td class="w-50">{object.extraCharges} EUR</td>
+				</tr>
+				<tr>
+					<td class="w-50">Wohnform</td>
+					<td class="w-50"><n:housetype houseuid='{object.houseType}' /></td>
+				</tr>
+				<tr>
+					<td class="w-50">Untertypwohnform</td>
+					<td class="w-50"><n:apartmenttype apartmentuid='{object.apartmentType}' /></td>
+				</tr>
+			</tbody> 	
+		</table>
+		<p><b>Beschreibung</b> <br />
+		 	<f:format.html>{object.description}</f:format.html>
+	 	</p>
+	</div>
+	<div class="col-sm-4">	
+		<h3>Anbieter</h3>
+	</div>
+</div>
 <hr />
 <f:link.action class="btn btn-default btn-sm" action="list"><< zurück</f:link.action></p>
 </html>
