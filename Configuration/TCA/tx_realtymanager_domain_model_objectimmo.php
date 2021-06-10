@@ -699,6 +699,7 @@ $tca = [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'items' => [['', 0]],
                 'foreign_table' => 'tx_realtymanager_domain_model_car_places',
                 'foreign_table_where' => 'ORDER BY tx_realtymanager_domain_model_car_places.title',
             ],
