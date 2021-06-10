@@ -226,18 +226,20 @@ $tca = [
                 'foreign_table' => 'tx_realtymanager_domain_model_cities',
                 'foreign_table_where' => 'ORDER BY tx_realtymanager_domain_model_cities.title',
             ],
-        ],
-        /*
+        ],       
         'district' => [
             'displayCond' => 'FIELD:city:>:0',
             'exclude' => 0,
             'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.district',
             'config' => [
                 'type' => 'select',
+                'items' => [['', 0]],
                 'renderType' => 'selectSingle',
-                'itemsProcFunc' => 'OliverKlee\\Realty\\BackEnd\\Tca->getDistrictsForCity',
+                'foreign_table' => 'tx_realtymanager_domain_model_districts',
+                'foreign_table_where' => 'ORDER BY tx_realtymanager_domain_model_districts.title',
             ],
         ],
+        /*
         'country' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.country',

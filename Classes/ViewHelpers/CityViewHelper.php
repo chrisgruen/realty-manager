@@ -28,7 +28,6 @@ class CityViewHelper extends AbstractViewHelper
             
             $city_uid = $arguments['cityuid'];
             
-            //Apartment-Type;
             if ($city_uid > 0) {
                 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_house_types');

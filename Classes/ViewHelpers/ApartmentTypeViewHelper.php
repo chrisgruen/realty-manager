@@ -28,7 +28,6 @@ class ApartmentTypeViewHelper extends AbstractViewHelper
             
             $appartment_uid = $arguments['apartmentuid'];
                        
-            //Apartment-Type;
             if ($appartment_uid > 0) {
                       
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_apartment_type');

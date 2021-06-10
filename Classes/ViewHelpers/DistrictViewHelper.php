@@ -9,7 +9,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * Class FeatureViewHelper
  */
-class HouseTypeViewHelper extends AbstractViewHelper
+class DistrictViewHelper extends AbstractViewHelper
 {
     
     /**
@@ -17,7 +17,7 @@ class HouseTypeViewHelper extends AbstractViewHelper
      */
     public function initializeArguments()
     {
-        $this->registerArgument('houseuid', 'int', true);
+        $this->registerArgument('districtuid', 'int', true);
     }
     
     public static function renderStatic(
@@ -26,21 +26,22 @@ class HouseTypeViewHelper extends AbstractViewHelper
         RenderingContextInterface $renderingContext
         ) {
             
-            $house_uid = $arguments['houseuid'];
+            $district_uid = $arguments['districtuid'];
             
-            if ($house_uid > 0) {
+            if ($district_uid > 0) {
                 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_house_types');
                 
-                $house_type = $queryBuilder
+                $district = $queryBuilder
                     ->select('title')
-                    ->from('tx_realtymanager_domain_model_house_types')
-                    ->where($queryBuilder->expr()->eq('uid', $house_uid, \PDO::PARAM_INT))
+                    ->from('tx_realtymanager_domain_model_districts')
+                    ->where($queryBuilder->expr()->eq('uid', $district_uid, \PDO::PARAM_INT))
                     ->execute()
                     ->fetchColumn(0);
                 
-                return $house_type;
+                return $district;
             }
     }
 }
+
 

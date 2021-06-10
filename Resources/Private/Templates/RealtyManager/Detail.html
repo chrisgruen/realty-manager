@@ -4,7 +4,7 @@
 
 <div class="row detail-immo-row">
 	<div class="col-sm-8">
-		<h3>{object.title}</h3>
+		<h3>{object.title} <span style="font-size: 12px">(uid: {object.uid})</span></h3>
 		<div class="row bg-light mt-3 mb-4" style="height: 100px;">
 			<div class="col">
 				<h2>Slider</h2>
@@ -48,8 +48,13 @@
 	 	</p>
 	 	<p><b>Addresse</b> <br />
 		 	{object.street} <br />
-		 	{object.zip}
-		 	<n:city cityuid='{object.city}' />
+		 	{object.zip} 
+		 	<n:city cityuid='{object.city}' /> 
+		 	<f:if condition="{object.district} > '0'">
+				<f:then>
+					(<n:district districtuid='{object.district}' />)
+				</f:then>
+			</f:if>
 	 	</p>
 	</div>
 	<div class="col-sm-4">	
