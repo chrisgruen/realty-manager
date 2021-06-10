@@ -297,7 +297,7 @@ class Objectimmo extends AbstractEntity
     /**
      * Set city
      *
-     * @param string $city city
+     * @param int $city city
      */
     public function setCity($city)
     {
@@ -307,7 +307,7 @@ class Objectimmo extends AbstractEntity
     /**
      * Get city
      *
-     * @return string
+     * @return int
      */
     public function getCity()
     {

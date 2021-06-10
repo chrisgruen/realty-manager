@@ -46,6 +46,11 @@
 		<p><b>Beschreibung</b> <br />
 		 	<f:format.html>{object.description}</f:format.html>
 	 	</p>
+	 	<p><b>Addresse</b> <br />
+		 	{object.street} <br />
+		 	{object.zip}
+		 	<n:city cityuid='{object.city}' />
+	 	</p>
 	</div>
 	<div class="col-sm-4">	
 		<h3>Anbieter</h3>
