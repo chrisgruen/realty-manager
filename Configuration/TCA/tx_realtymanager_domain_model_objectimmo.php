@@ -15,7 +15,7 @@ $tca = [
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
         'translationSource' => 'l10n_source',
-        'default_sortby' => 'ORDER BY crdate DESC',
+        'default_sortby' => 'ORDER BY uid DESC',
         'delete' => 'deleted',
         'enablecolumns' => [
             'disabled' => 'hidden',
@@ -39,7 +39,7 @@ $tca = [
             'bathrooms,heating_type,has_air_conditioning,garage_type,parking_spaces,garage_rent,' .
             'garage_price,pets,flooring,construction_year,old_or_new_building,' .
             'state,furnishing_category,balcony,garden,' .
-            'fitted_kitchen, has_pool,has_community_pool,teaser,' .
+            'fitted_kitchen, furnished, tv_enabled, cleaning, bicycleroom, washingroom, has_pool,has_community_pool,teaser,' .
             'description,equipment,layout,location,misc,details_page, ' .
             'employer,openimmo_anid,openimmo_obid,utilization,contact_data_source,' .
             'contact_person,contact_person_first_name,contact_person_salutation,contact_email,phone_switchboard,' .
@@ -936,6 +936,41 @@ $tca = [
                 'type' => 'check',
             ],
         ],
+        'furnished' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.furnished',
+            'config' => [
+                'type' => 'check',
+            ],
+        ],
+        'tv_enabled' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.tv_enabled',
+            'config' => [
+                'type' => 'check',
+            ],
+        ],
+        'cleaning' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.cleaning',
+            'config' => [
+                'type' => 'check',
+            ],
+        ],
+        'bicycleroom' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.bicycleroom',
+            'config' => [
+                'type' => 'check',
+            ],
+        ],
+        'washingroom' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.washingroom',
+            'config' => [
+                'type' => 'check',
+            ],
+        ],
         'has_pool' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects.has_pool',
@@ -1428,7 +1463,7 @@ $tca = [
                 'apartment_type, house_type, bedrooms, ' .
                 'bathrooms, heating_type, has_air_conditioning, garage_type, parking_spaces, ' .
                 'garage_rent, pets, flooring, construction_year, old_or_new_building, ' .
-                'state, furnishing_category, balcony, garden, fitted_kitchen, has_pool, has_community_pool,' .
+                'state, furnishing_category, balcony, garden, fitted_kitchen, furnished, tv_enabled, cleaning, bicycleroom, washingroom, has_pool, has_community_pool,' .
                 'teaser, ' .
                 'description, ' .
                 'equipment, ' .
@@ -1474,7 +1509,7 @@ $tca = [
                 'apartment_type, house_type, bedrooms, bathrooms, ' .
                 'heating_type, has_air_conditioning, garage_type, parking_spaces, garage_price, ' .
                 'flooring, construction_year, old_or_new_building, state, ' .
-                'furnishing_category, balcony, garden, fitted_kitchen, has_pool, has_community_pool, ' .
+                'furnishing_category, balcony, garden, fitted_kitchen, furnished, tv_enabled, cleaning, bicycleroom, washingroom, has_pool, has_community_pool, ' .
                 'teaser, ' .
                 'description, ' .
                 'equipment, ' .

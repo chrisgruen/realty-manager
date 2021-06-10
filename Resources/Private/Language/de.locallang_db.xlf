@@ -532,6 +532,30 @@
                 <source>Fitted kitchen</source>
                 <target>Einbauküche</target>
             </trans-unit>
+            <trans-unit id="tx_realty_objects.furnished" xml:space="preserve" approved="yes">
+                <source>Furnished</source>
+                <target>Möbiliert</target>
+            </trans-unit>
+            <trans-unit id="tx_realty_objects.tv_enabled" xml:space="preserve" approved="yes">
+                <source>TV connection</source>
+                <target>TV-Anschluss</target>
+            </trans-unit>
+            <trans-unit id="tx_realty_objects.tv_enabled" xml:space="preserve" approved="yes">
+                <source>TV connection</source>
+                <target>TV-Anschluss</target>
+            </trans-unit>
+            <trans-unit id="tx_realty_objects.cleaning" xml:space="preserve" approved="yes">
+                <source>Cleaning</source>
+                <target>Hausreinigung</target>
+            </trans-unit>
+            <trans-unit id="tx_realty_objects.bicycleroom" xml:space="preserve" approved="yes">
+                <source>Bicycleroom</source>
+                <target>Fahrradraum</target>
+            </trans-unit>
+            <trans-unit id="tx_realty_objects.washingroom" xml:space="preserve" approved="yes">
+                <source>Washingroom</source>
+                <target>Waschmaschinenraum</target>
+            </trans-unit>
             <trans-unit id="tx_realty_objects.has_pool" xml:space="preserve" approved="yes">
                 <source>Pool</source>
                 <target>Pool</target>
