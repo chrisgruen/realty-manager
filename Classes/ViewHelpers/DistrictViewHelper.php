@@ -30,7 +30,7 @@ class DistrictViewHelper extends AbstractViewHelper
             
             if ($district_uid > 0) {
                 
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_house_types');
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_districts');
                 
                 $district = $queryBuilder
                     ->select('title')

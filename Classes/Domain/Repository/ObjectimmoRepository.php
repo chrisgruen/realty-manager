@@ -14,7 +14,8 @@ class ObjectimmoRepository extends Repository
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
         $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
                 WHERE (hidden = 0 AND deleted = 0)
-                ORDER BY uid DESC";
+                ORDER BY uid DESC
+                LIMIT 10";
         
         $objects = $connection->executeQuery($sql)->fetchAll();
         return $objects;
