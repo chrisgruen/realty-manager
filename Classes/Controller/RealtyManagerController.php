@@ -59,7 +59,10 @@ class RealtyManagerController extends ActionController
     {
         $uid = $objUid->getUid();
         $object =  $this->objectimmoRepository->findByUid($uid);
+        $images = $this->objectimmoRepository->getImages($uid);
+        
         $this->view->assign('object', $object);
+        $this->view->assign('images', $images);
     }
     
     /**

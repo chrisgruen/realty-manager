@@ -21,6 +21,18 @@ class ObjectimmoRepository extends Repository
         return $objects;
     }
     
+    public function getImages($uid)
+    {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
+        $sql = "SELECT * from sys_file_reference fs
+                INNER JOIN sys_file f on fs.uid_local = f.uid
+                WHERE uid_foreign = '".$uid."'
+                ORDER BY sorting_foreign";
+        
+        $images = $connection->executeQuery($sql)->fetchAll();
+        return $images;
+    }
+    
     /**
      * get Cities
      * Data from Table "tx_realtymanager_domain_model_cities"
