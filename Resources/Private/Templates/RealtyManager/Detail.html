@@ -4,7 +4,7 @@
 
 <div class="row detail-immo-row">
 	<div class="col-sm-8">
-		<h3>{object.title} <span style="font-size: 12px">(uid: {object.uid})</span></h3>
+		<h3><span class="font-weight-bolder">{object.title} </span><span style="font-size: 12px">(uid: {object.uid})</span></h3>
 		<div class="row bg-light mt-3 mb-4" style="min-height: 100px;">
 			<div class="col detail-img">
 				<f:for each="{images}" as="image" iteration="iterator">
@@ -59,8 +59,26 @@
 			</f:if>
 	 	</p>
 	</div>
-	<div class="col-sm-4">	
-		<h3>Anbieter</h3>
+	<div class="col-sm-4 employer-address">	
+		<h3><span class="font-weight-bolder">Anbieter</span></h3>
+		<p>{employer.company} </p>
+		<p>
+			{employer.address} <br />
+			{employer.zip} <br />
+			{employer.city}
+		</p>
+		<p>
+			Telefon:  {employer.telephone}<br />
+			Fax:  {employer.fax}<br />
+			Email: {employer.email}<br /> 
+			Web: <f:link.external uri="{employer.www}" target="_blank">{employer.www}</f:link.external>
+		</p>
+		<h3><span class="font-weight-bolder">Kontaktperson</span></h3>
+		<p>
+			{object.contactPerson} <br />
+			Telefon:  {object.phoneSwitchboard}<br />
+			Email: {object.contactEmail}
+		</p>
 	</div>
 </div>
 <hr />

@@ -58,11 +58,14 @@ class RealtyManagerController extends ActionController
     public function detailAction(\ChrisGruen\RealtyManager\Domain\Model\Objectimmo $objUid)
     {
         $uid = $objUid->getUid();
+        $pid = $objUid->getPid();
         $object =  $this->objectimmoRepository->findByUid($uid);
         $images = $this->objectimmoRepository->getImages($uid);
+        $employer = $this->objectimmoRepository->getEmployer($pid);
         
         $this->view->assign('object', $object);
         $this->view->assign('images', $images);
+        $this->view->assign('employer', $employer);
     }
     
     /**

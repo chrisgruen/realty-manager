@@ -20,6 +20,16 @@ class ObjectimmoRepository extends Repository
         return $objects;
     }
     
+    public function getEmployer($pid)
+    {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
+        $sql = "SELECT * from tx_realtymanager_domain_model_employer
+                WHERE pid_be_user = '".$pid."'";
+        
+        $employer = $connection->executeQuery($sql)->fetch();
+        return $employer;
+    }
+    
     public function getImages($uid)
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');

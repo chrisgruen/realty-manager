@@ -106,9 +106,22 @@ class Objectimmo extends AbstractEntity
      */
     protected $floors;
     
-
+    /**
+     * @var string
+     */
+    protected $contactPerson;
     
+    /**
+     * @var string
+     */
+    protected $contactEmail;
     
+    /**
+     * @var string
+     */
+    protected $phoneSwitchboard;
+    
+  
     public function __construct()
     {
         
@@ -714,4 +727,63 @@ class Objectimmo extends AbstractEntity
         return $this->floors;
     }
     
+    /**
+     * Set $contactPerson
+     *
+     * @param string $contactPerson contactPerson
+     */
+    public function setContactPerson($contactPerson)
+    {
+        $this->contactPerson = $contactPerson;
+    }
+    
+    /**
+     * Get contactPerson
+     *
+     * @return string
+     */
+    public function getContactPerson()
+    {
+        return $this->contactPerson;
+    }
+    
+    /**
+     * Set $contactEmail
+     *
+     * @param string $contactEmail contactEmail
+     */
+    public function setContactEmail($contactEmail)
+    {
+        $this->contactEmail = $contactEmail;
+    }
+    
+    /**
+     * Get contactEmail
+     *
+     * @return string
+     */
+    public function getContactEmail()
+    {
+        return $this->contactEmail;
+    }
+    
+    /**
+     * Set $phoneSwitchboard
+     *
+     * @param string $phoneSwitchboard phoneSwitchboard
+     */
+    public function setPhoneSwitchboard($phoneSwitchboard)
+    {
+        $this->phoneSwitchboard = $phoneSwitchboard;
+    }
+    
+    /**
+     * Get phoneSwitchboard
+     *
+     * @return string
+     */
+    public function getPhoneSwitchboard()
+    {
+        return $this->phoneSwitchboard;
+    }
 }
