@@ -7,7 +7,7 @@
 <f:for each="{objects}" as="object">
 <div class="row list-immo-row">
 	<div class="col-lg-9">
-		<f:link.action action="detail" arguments="{objUid : object.uid}">
+		<f:link.action pageUid="25" action="detail" arguments="{objUid : object.uid}">
 		   <span class="font-weight-bold">{object.title}</span>
 		</f:link.action>
 		<br />
@@ -106,7 +106,7 @@
 		</div>
 	</div>
 	<div class="col-lg-3">
-		<f:link.action action="detail" arguments="{objUid : object.uid}">
+		<f:link.action pageUid="25" action="detail" arguments="{objUid : object.uid}">
 			<div class="preview-img">
 				<f:format.html><n:imageList object='{object.uid}' /></f:format.html>
 			</div>

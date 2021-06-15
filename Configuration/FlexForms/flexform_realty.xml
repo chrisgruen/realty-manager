@@ -30,6 +30,10 @@
 										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.form</numIndex>
 										<numIndex index="1">RealtyManager->form</numIndex>
 									</numIndex>
+									<numIndex index="3">
+										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.detail</numIndex>
+										<numIndex index="1">RealtyManager->detail</numIndex>
+									</numIndex>
 								</items>
 							</config>
                         </TCEforms>

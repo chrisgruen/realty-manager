@@ -15,6 +15,9 @@
 			<trans-unit id="flexforms_general.mode.form" xml:space="preserve">
 				<source>Search form</source>
 			</trans-unit>
+			<trans-unit id="flexforms_general.mode.detail" xml:space="preserve">
+				<source>Detail</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>

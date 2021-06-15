@@ -7,13 +7,20 @@
         </header>
         <body>
             <trans-unit id="flexforms_general.mode" xml:space="preserve">
-				<source>Bitte Auswählen</source>
+				<source>What to display ?</source>
+				<target>Bitte Auswählen!</target>
 			</trans-unit>
 			<trans-unit id="flexforms_general.mode.list" xml:space="preserve">
-				<source>Ergebnisliste</source>
+				<source>List</source>
+				<target>Ergebnisliste</target>
 			</trans-unit>
 			<trans-unit id="flexforms_general.mode.form" xml:space="preserve">
-				<source>Suchformular</source>
+				<source>Form</source>
+				<target>Suchformular</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.mode.detail" xml:space="preserve">
+				<source>Detail</source>
+				<target>Detailansicht</target>
 			</trans-unit>
         </body>
     </file>
