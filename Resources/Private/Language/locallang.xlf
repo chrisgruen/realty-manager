@@ -604,6 +604,9 @@
             <trans-unit id="label_house_type" xml:space="preserve">
                 <source>House type</source>
             </trans-unit>
+            <trans-unit id="label_pid_be_user" xml:space="preserve">
+                <source>PID Employer</source>
+            </trans-unit>
             <trans-unit id="label_floor" xml:space="preserve">
                 <source>Floor</source>
             </trans-unit>

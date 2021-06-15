@@ -864,6 +864,18 @@
                 <source>Realty Manager</source>
                 <target>Immobilienmanager</target>
             </trans-unit>
+            <trans-unit id="tx_realty_employer" xml:space="preserve" approved="yes">
+                <source>Employer</source>
+                <target>Anbieter</target>
+            </trans-unit>
+            <trans-unit id="tx_realty_employer.title" xml:space="preserve" approved="yes">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="tx_realty_employer.pid_be_user" xml:space="preserve" approved="yes">
+                <source>PID Employer</source>
+                <target>PID Anbieter</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

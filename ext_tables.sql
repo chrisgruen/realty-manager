@@ -289,6 +289,32 @@ CREATE TABLE tx_realtymanager_domain_model_districts (
     KEY city (city)
 );
 
+CREATE TABLE tx_realtymanager_domain_model_employer (
+	uid int(11) unsigned NOT NULL auto_increment,
+    pid int(11) DEFAULT '0' NOT NULL,
+    tstamp int(11) DEFAULT '0' NOT NULL,
+    crdate int(11) DEFAULT '0' NOT NULL,
+    cruser_id int(11) DEFAULT '0' NOT NULL,
+	deleted tinyint(4) DEFAULT '0' NOT NULL,
+	disable tinyint(4) DEFAULT '0' NOT NULL,
+	company varchar(80) DEFAULT '' NOT NULL,	
+	first_name varchar(50) DEFAULT '' NOT NULL,
+	last_name varchar(50) DEFAULT '' NOT NULL,
+	address varchar(255) DEFAULT '' NOT NULL,
+	zip varchar(10) DEFAULT '' NOT NULL,
+	city varchar(50) DEFAULT '' NOT NULL,
+	country varchar(50) DEFAULT '' NOT NULL,
+	telephone varchar(20) DEFAULT '' NOT NULL,
+	fax varchar(20) DEFAULT '' NOT NULL,
+	email varchar(250) DEFAULT '' NOT NULL,
+	www varchar(250) DEFAULT '' NOT NULL,
+	image tinytext DEFAULT '' NOT NULL,
+	TSconfig text DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	PRIMARY KEY (`uid`),
+	KEY parent (pid)
+);
+
 #
 # Table structure for table 'fe_users'
 #
