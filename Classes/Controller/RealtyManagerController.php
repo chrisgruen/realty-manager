@@ -24,6 +24,10 @@ class RealtyManagerController extends ActionController
     
     public function formAction()
     {   
+ 
+        /* get opt-select cities */
+        $dataEmployers = $this->objectimmoRepository->getEmployers();
+        $employers = $this->selectEmployers($dataEmployers);
         
         /* get opt-select cities */
         $dataCities = $this->objectimmoRepository->getCities();
@@ -41,6 +45,7 @@ class RealtyManagerController extends ActionController
         $dataAreas = $this->objectimmoRepository->getAreaRange();
         $areas = $this->selectAreas($dataAreas);
 
+        $this->view->assign('employers', $employers);
         $this->view->assign('cities', $cities);
         $this->view->assign('districts', $districts);
         $this->view->assign('rentprices', $rentprices);
@@ -67,6 +72,23 @@ class RealtyManagerController extends ActionController
         $this->view->assign('images', $images);
         $this->view->assign('employer', $employer);
     }
+    
+    /**
+     * prepare employers for select box
+     *
+     * @return array
+     */
+    public function selectEmployers($dataEmployers) {
+        $employers = [];
+        foreach($dataEmployers as $dataEmployer) {
+            $employer = new \stdClass();
+            $employer->key = $dataEmployer['pid_be_user'];
+            $employer->value = $dataEmployer['company'];
+            $employers[] = $employer;
+        }
+        return $employers;
+    }
+    
     
     /**
      * prepare cities for select box

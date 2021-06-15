@@ -43,6 +43,21 @@ class ObjectimmoRepository extends Repository
     }
     
     /**
+     * get Employers
+     * Data from Table "tx_realtymanager_domain_model_employer"
+     * @return array
+     */
+    public function getEmployers() {
+        
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
+        $sql = "SELECT uid, pid_be_user, company from tx_realtymanager_domain_model_employer order by uid";
+        
+        $employers = $connection->executeQuery($sql)->fetchAll();
+        
+        return $employers;
+    }
+    
+    /**
      * get Cities
      * Data from Table "tx_realtymanager_domain_model_cities"
      * @return array
