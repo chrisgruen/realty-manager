@@ -4,10 +4,9 @@ defined('TYPO3_MODE') or die('Access denied.');
 $tca = [
     'ctrl' => [
         'title' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_objects',
-        'label' => 'title',
-        'tstamp' => 'tstamp',
-        'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
+        'label' => 'object_number',
+        'label_alt' => 'title',
+        'label_alt_force' => 1,
         'type' => 'object_type',
         'versioningWS' => true,
         'origUid' => 't3_origuid',
