@@ -105,6 +105,10 @@ class RealtyManagerController extends ActionController
      */
     public function selectEmployers($dataEmployers) {
         $employers = [];
+        $employer = new \stdClass();
+        $employer->key = 0;
+        $employer->value = "Alle";
+        $employers[] = $employer;
         foreach($dataEmployers as $dataEmployer) {
             $employer = new \stdClass();
             $employer->key = $dataEmployer['pid_be_user'];
@@ -122,8 +126,12 @@ class RealtyManagerController extends ActionController
      */
     public function selectCities($dataCities) {
         $cities = [];
-        foreach($dataCities as $dataCity) {
-            $city = new \stdClass();            
+        $city = new \stdClass();
+        $city->key = 0;
+        $city->value = "Alle";
+        $cities[] = $city;
+        foreach($dataCities as $dataCity) {  
+            $city = new \stdClass();
             $city->key = $dataCity['uid'];
             $city->value = $dataCity['title'];
             $cities[] = $city;
@@ -138,6 +146,10 @@ class RealtyManagerController extends ActionController
      */
     public function selectDistricts($dataDistricts) {
         $districts = [];
+        $district = new \stdClass();
+        $district->key = 0;
+        $district->value = "Alle";
+        $districts[] = $district;
         foreach($dataDistricts as $dataDistrict) {
             $district = new \stdClass();           
             $district->key = $dataDistrict['uid'];

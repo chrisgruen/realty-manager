@@ -27,16 +27,10 @@ class ObjectimmoRepository extends Repository
         $district = isset($form_data['district']) ? $form_data['district'] : 0;
         
         $add_where = '';
-        if($employer_page > 0) {
-            $add_where .= 'AND pid = '.$employer_page.'';
-        } else if ($city > 0) {
-            $add_where .= ' AND city = '.$city.'';
-        } else if ($district > 0) {
-            $add_where .= ' AND district = '.$district.'';
-        } else {
-            
-        }
-                       
+        if($employer_page > 0) {$add_where .= ' AND pid = '.$employer_page.'';}
+        if ($city > 0) {$add_where .= ' AND city = '.$city.'';} 
+        if ($district > 0) { $add_where .= ' AND district = '.$district.'';} 
+        
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
         $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
                 WHERE hidden = 0 AND deleted = 0
