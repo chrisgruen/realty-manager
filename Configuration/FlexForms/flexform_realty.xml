@@ -23,7 +23,7 @@
 								<renderType>selectSingle</renderType>
 								<items>
 									<numIndex index="1">
-										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.list</numIndex>
+										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.random_list</numIndex>
 										<numIndex index="1">RealtyManager->list; RealtyManager->form; RealtyManager->detail</numIndex>
 									</numIndex>
 									<numIndex index="2">
@@ -31,6 +31,10 @@
 										<numIndex index="1">RealtyManager->form</numIndex>
 									</numIndex>
 									<numIndex index="3">
+										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.search_list</numIndex>
+										<numIndex index="1">RealtyManager->search</numIndex>
+									</numIndex>
+									<numIndex index="4">
 										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.detail</numIndex>
 										<numIndex index="1">RealtyManager->detail</numIndex>
 									</numIndex>

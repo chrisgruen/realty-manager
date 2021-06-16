@@ -13,10 +13,38 @@ class ObjectimmoRepository extends Repository
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
         $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
-                WHERE (hidden = 0 AND deleted = 0)
+                WHERE hidden = 0 AND deleted = 0
                 ORDER BY uid DESC";
         
         $objects = $connection->executeQuery($sql)->fetchAll();
+        return $objects;
+    }
+    
+    public function getAllObjectsBySearch($form_data)
+    {        
+        $employer_page = isset($form_data['employer']) ? $form_data['employer'] : 0;
+        $city = isset($form_data['city']) ? $form_data['city'] : 0;
+        $district = isset($form_data['district']) ? $form_data['district'] : 0;
+        
+        $add_where = '';
+        if($employer_page > 0) {
+            $add_where .= 'AND pid = '.$employer_page.'';
+        } else if ($city > 0) {
+            $add_where .= ' AND city = '.$city.'';
+        } else if ($district > 0) {
+            $add_where .= ' AND district = '.$district.'';
+        } else {
+            
+        }
+                       
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
+        $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
+                WHERE hidden = 0 AND deleted = 0
+                $add_where
+                ORDER BY uid DESC";
+
+        $objects = $connection->executeQuery($sql)->fetchAll();
+        
         return $objects;
     }
     

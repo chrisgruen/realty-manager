@@ -10,13 +10,21 @@
 				<source>What to display ?</source>
 				<target>Bitte Auswählen!</target>
 			</trans-unit>
-			<trans-unit id="flexforms_general.mode.list" xml:space="preserve">
-				<source>List</source>
-				<target>Ergebnisliste</target>
-			</trans-unit>
 			<trans-unit id="flexforms_general.mode.form" xml:space="preserve">
 				<source>Form</source>
 				<target>Suchformular</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.mode.list" xml:space="preserve">
+				<source>List</source>
+				<target>Liste</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.mode.random_list" xml:space="preserve">
+				<source>Random list</source>
+				<target>Zufällige Liste</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.mode.search_list" xml:space="preserve">
+				<source>Search list</source>
+				<target>Suchergebnisse Liste</target>
 			</trans-unit>
 			<trans-unit id="flexforms_general.mode.detail" xml:space="preserve">
 				<source>Detail</source>

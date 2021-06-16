@@ -21,10 +21,12 @@ class RealtyManagerController extends ActionController
         $this->objectimmoRepository = $objectimmoRepository;
     }
     
-    
+    /**
+     *
+     * return view for formAction (show Searchform)
+     */
     public function formAction()
-    {   
- 
+    {    
         /* get opt-select cities */
         $dataEmployers = $this->objectimmoRepository->getEmployers();
         $employers = $this->selectEmployers($dataEmployers);
@@ -52,7 +54,11 @@ class RealtyManagerController extends ActionController
         $this->view->assign('areas', $areas);
                 
     } 
-    
+ 
+    /**
+     *
+     * return view for listAction (Random List)
+     */ 
     public function listAction()
     {
         //$objects = $this->objectimmoRepository->findAll()
@@ -60,9 +66,27 @@ class RealtyManagerController extends ActionController
         $this->view->assign('objects', $objects);
     } 
     
-    public function detailAction(\ChrisGruen\RealtyManager\Domain\Model\Objectimmo $objUid)
+    /**
+     *
+     * return view for searchAction
+     */ 
+    public function searchAction()
     {
-        
+        $form_data = $this->request->getArguments();
+
+        if($form_data) {
+            $objects = $this->objectimmoRepository->getAllObjectsBySearch($form_data);
+        }
+               
+        $this->view->assign('objects', $objects);
+    }
+    
+    /**
+     *
+     * return view for deailAction
+     */   
+    public function detailAction(\ChrisGruen\RealtyManager\Domain\Model\Objectimmo $objUid)
+    {        
         $uid = $objUid->getUid();
         $pid = $objUid->getPid();
         $object =  $this->objectimmoRepository->findByUid($uid);

@@ -9,11 +9,17 @@
             <trans-unit id="flexforms_general.mode" xml:space="preserve">
 				<source>What to display ?</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.mode.list" xml:space="preserve">
-				<source>Liste</source>
-			</trans-unit>
 			<trans-unit id="flexforms_general.mode.form" xml:space="preserve">
 				<source>Search form</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.mode.list" xml:space="preserve">
+				<source>List</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.mode.search_list" xml:space="preserve">
+				<source>Search list</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.mode.random_list" xml:space="preserve">
+				<source>Random list</source>
 			</trans-unit>
 			<trans-unit id="flexforms_general.mode.detail" xml:space="preserve">
 				<source>Detail</source>
