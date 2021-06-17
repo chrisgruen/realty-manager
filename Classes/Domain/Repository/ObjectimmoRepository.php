@@ -31,8 +31,12 @@ class ObjectimmoRepository extends Repository
         $cleaning = isset($form_data['cleaning']) ? $form_data['cleaning'] : 0;
         $bicycleroom = isset($form_data['bicycleroom']) ? $form_data['bicycleroom'] : 0;
         $washingroom = isset($form_data['washingroom']) ? $form_data['washingroom'] : 0;
+        $rent_from = isset($form_data['rent_from']) && is_numeric($form_data['rent_from']) ? $form_data['rent_from'] : 0;
+        $rent_to = isset($form_data['rent_to']) && is_numeric($form_data['rent_to']) ? $form_data['rent_to'] : 99999;
+        $living_area_from = isset($form_data['living_area_from']) && is_numeric($form_data['living_area_from']) ? $form_data['living_area_from'] : 0;
+        $living_area_to = isset($form_data['living_area_to']) && is_numeric($form_data['living_area_to']) ? $form_data['living_area_to'] : 99999;
         
-        
+         
         $add_where = '';
         if($employer_page > 0) {$add_where .= ' AND pid = '.$employer_page.'';}
         if ($city > 0) {$add_where .= ' AND city = '.$city.'';} 
@@ -43,8 +47,17 @@ class ObjectimmoRepository extends Repository
         if ($cleaning > 0) { $add_where .= ' AND cleaning = 1';}
         if ($bicycleroom > 0) { $add_where .= ' AND bicycleroom = 1';}
         if ($washingroom > 0) { $add_where .= ' AND washingroom = 1';}
-        
-        
+        if ($rent_to < 99999) {
+            $add_where .= ' AND rent_excluding_bills BETWEEN '.$rent_from.' AND '.$rent_to.'';
+        } else {
+            $add_where .= ' AND rent_excluding_bills > '.$rent_from.'';
+        }
+        if ($living_area_to < 99999) {
+            $add_where .= ' AND living_area BETWEEN '.$living_area_from.' AND '.$living_area_to.'';
+        } else {
+            $add_where .= ' AND living_area > '.$living_area_from.'';
+        }
+                
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
         $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
                 WHERE hidden = 0 AND deleted = 0
@@ -128,7 +141,6 @@ class ObjectimmoRepository extends Repository
      */
     public function getPriceRange() {        
         $prices = [];
-        $prices[0] = '0 €';
         $prices[25] = '25 €';
         $prices[50] = '50 €';
         $prices[75] = '75 €';
