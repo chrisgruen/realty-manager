@@ -90,6 +90,36 @@ class ObjectimmoRepository extends Repository
         $images = $connection->executeQuery($sql)->fetchAll();
         return $images;
     }
+
+    /**
+     * get HouseTypes
+     * Data from Table "tx_realtymanager_domain_model_house_types"
+     * @return array
+     */
+    public function getHouseTypes() {
+        
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_house_types');
+        $sql = "SELECT uid, title from tx_realtymanager_domain_model_house_types order by uid";
+        
+        $housetypes = $connection->executeQuery($sql)->fetchAll();
+        
+        return $housetypes;
+    }
+    
+    /**
+     * get ApartmentTypes
+     * Data from Table "tx_realtymanager_domain_model_apartment_types"
+     * @return array
+     */
+    public function getApartmentTypes() {
+        
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_apartment_types');
+        $sql = "SELECT uid, title from tx_realtymanager_domain_model_apartment_types order by uid";
+        
+        $apartmenttypes = $connection->executeQuery($sql)->fetchAll();
+        
+        return $apartmenttypes;
+    }
     
     /**
      * get Employers

@@ -26,8 +26,16 @@ class RealtyManagerController extends ActionController
      * return view for formAction (show Searchform)
      */
     public function formAction()
-    {    
-        /* get opt-select cities */
+    {  
+        /* get opt-select housetypes */
+        $dataHouseTypes = $this->objectimmoRepository->getHouseTypes();
+        $housetypes = $this->selectHousetypes($dataHouseTypes);
+        
+        /* get opt-select apartmenttypes */
+        $dataApartmentTypes = $this->objectimmoRepository->getApartmentTypes();
+        $apartmenttypes = $this->selectApartmenttypes($dataApartmentTypes);
+        
+        /* get opt-select employers */
         $dataEmployers = $this->objectimmoRepository->getEmployers();
         $employers = $this->selectEmployers($dataEmployers);
         
@@ -53,6 +61,8 @@ class RealtyManagerController extends ActionController
         $area_last = $areas[$area_key_last];
         $area_last = $area_last->key;
 
+        $this->view->assign('housetypes', $housetypes);
+        $this->view->assign('apartmenttypes', $apartmenttypes);
         $this->view->assign('employers', $employers);
         $this->view->assign('cities', $cities);
         $this->view->assign('districts', $districts);
@@ -103,6 +113,47 @@ class RealtyManagerController extends ActionController
         $this->view->assign('object', $object);
         $this->view->assign('images', $images);
         $this->view->assign('employer', $employer);
+    }
+  
+    /**
+     * prepare housetypes for select box
+     *
+     * @return array
+     */
+    public function selectHousetypes($dataHouseTypes) {
+        $housetypes = [];
+        $housetype = new \stdClass();
+        $housetype->key = 0;
+        $housetype->value = "Alle";
+        $housetypes[] = $housetype;
+        foreach($dataHouseTypes as $dataHouseType) {
+            $housetype = new \stdClass();
+            $housetype->key = $dataHouseType['uid'];
+            $housetype->value = $dataHouseType['title'];
+            $housetypes[] = $housetype;
+        }
+        return $housetypes;
+    }
+    
+    /**
+     * prepare housetypes for select box
+     *
+     * @return array
+     */
+    public function selectApartmenttypes($dataApartmentTypes) {
+        $apartmenttypes = [];
+        $apartmenttype = new \stdClass();
+        $apartmenttype->key = 0;
+        $apartmenttype->value = "Alle";
+        $apartmenttypes[] = $apartmenttype;
+        foreach($dataApartmentTypes as $dataApartmentType) {
+            $apartmenttype = new \stdClass();
+            $apartmenttype->key = $dataApartmentType['uid'];
+            $apartmenttype->value = $dataApartmentType['title'];
+            $apartmenttypes[] = $apartmenttype;
+        }
+        
+        return $apartmenttypes;
     }
     
     /**
