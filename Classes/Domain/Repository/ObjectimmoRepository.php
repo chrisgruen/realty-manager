@@ -8,7 +8,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ObjectimmoRepository extends Repository
 {
-    
     public function getAllObjects()
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
@@ -21,7 +20,9 @@ class ObjectimmoRepository extends Repository
     }
     
     public function getAllObjectsBySearch($form_data)
-    {        
+    {   
+        $house_type = isset($form_data['house_type']) ? $form_data['house_type'] : 0;
+        $apartment_type = isset($form_data['apartment_type']) ? $form_data['apartment_type'] : 0;
         $employer_page = isset($form_data['employer']) ? $form_data['employer'] : 0;
         $city = isset($form_data['city']) ? $form_data['city'] : 0;
         $district = isset($form_data['district']) ? $form_data['district'] : 0;
@@ -38,6 +39,8 @@ class ObjectimmoRepository extends Repository
         
          
         $add_where = '';
+        if($house_type > 0) {$add_where .= ' AND house_type = '.$house_type.'';}
+        if($apartment_type > 0) {$add_where .= ' AND apartment_type = '.$apartment_type.'';}
         if($employer_page > 0) {$add_where .= ' AND pid = '.$employer_page.'';}
         if ($city > 0) {$add_where .= ' AND city = '.$city.'';} 
         if ($district > 0) { $add_where .= ' AND district = '.$district.'';} 
