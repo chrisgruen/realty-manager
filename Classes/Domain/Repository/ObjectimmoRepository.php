@@ -42,7 +42,7 @@ class ObjectimmoRepository extends Repository
         $add_where = '';
         if($house_type > 0) {$add_where .= ' AND house_type = '.$house_type.'';}
         if($apartment_type > 0) {$add_where .= ' AND apartment_type = '.$apartment_type.'';}
-        if($employer_page > 0) {$add_where .= ' AND pid = '.$employer_page.'';}
+        if($employer_page > 0) {$add_where .= ' AND obj.pid = '.$employer_page.'';}
         if ($city > 0) {$add_where .= ' AND city = '.$city.'';} 
         if ($district > 0) { $add_where .= ' AND district = '.$district.'';} 
         if ($furnished > 0) { $add_where .= ' AND furnished = 1';}
