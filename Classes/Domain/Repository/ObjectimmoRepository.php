@@ -11,9 +11,10 @@ class ObjectimmoRepository extends Repository
     public function getAllObjects()
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
-        $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
-                WHERE hidden = 0 AND deleted = 0
-                ORDER BY uid DESC";
+        $sql = "SELECT *, obj.uid as uid, obj.title as title FROM tx_realtymanager_domain_model_objectimmo obj
+                LEFT JOIN pages p on obj.pid = p.uid
+                WHERE obj.hidden = 0 AND obj.deleted = 0 AND p.hidden = 0 AND p.deleted = 0
+                ORDER BY obj.uid DESC";
         
         $objects = $connection->executeQuery($sql)->fetchAll();
         return $objects;
@@ -62,10 +63,11 @@ class ObjectimmoRepository extends Repository
         }
                 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
-        $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
-                WHERE hidden = 0 AND deleted = 0
+        $sql = "SELECT *, obj.uid as uid, obj.title as title FROM tx_realtymanager_domain_model_objectimmo obj
+                LEFT JOIN pages p on obj.pid = p.uid
+                WHERE obj.hidden = 0 AND obj.deleted = 0 AND p.hidden = 0 AND p.deleted = 0
                 $add_where
-                ORDER BY uid DESC";
+                ORDER BY obj.uid DESC";
 
         $objects = $connection->executeQuery($sql)->fetchAll();
         
