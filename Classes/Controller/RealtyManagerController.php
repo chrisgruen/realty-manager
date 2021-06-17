@@ -42,17 +42,24 @@ class RealtyManagerController extends ActionController
         /* get opt-select pricerange */
         $dataPrices = $this->objectimmoRepository->getPriceRange();
         $rentprices = $this->selectPrices($dataPrices);
-        
+        $price_key_last = array_key_last($rentprices);
+        $price_last = $rentprices[$price_key_last];
+        $price_last = $price_last->key;
+
         /* get opt-select arearange */
         $dataAreas = $this->objectimmoRepository->getAreaRange();
         $areas = $this->selectAreas($dataAreas);
+        $area_key_last = array_key_last($areas);
+        $area_last = $areas[$area_key_last];
+        $area_last = $area_last->key;
 
         $this->view->assign('employers', $employers);
         $this->view->assign('cities', $cities);
         $this->view->assign('districts', $districts);
         $this->view->assign('rentprices', $rentprices);
         $this->view->assign('areas', $areas);
-                
+        $this->view->assign('price_last', $price_last);    
+        $this->view->assign('area_last', $area_last); 
     } 
  
     /**

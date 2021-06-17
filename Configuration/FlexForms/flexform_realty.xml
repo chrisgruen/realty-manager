@@ -32,7 +32,7 @@
 									</numIndex>
 									<numIndex index="3">
 										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.search_list</numIndex>
-										<numIndex index="1">RealtyManager->search</numIndex>
+										<numIndex index="1">RealtyManager->search;RealtyManager->list</numIndex>
 									</numIndex>
 									<numIndex index="4">
 										<numIndex index="0">LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:flexforms_general.mode.detail</numIndex>

@@ -25,11 +25,25 @@ class ObjectimmoRepository extends Repository
         $employer_page = isset($form_data['employer']) ? $form_data['employer'] : 0;
         $city = isset($form_data['city']) ? $form_data['city'] : 0;
         $district = isset($form_data['district']) ? $form_data['district'] : 0;
+        $furnished = isset($form_data['furnished']) ? $form_data['furnished'] : 0;
+        $fitted_kitchen = isset($form_data['fitted_kitchen']) ? $form_data['fitted_kitchen'] : 0;
+        $barrier_free = isset($form_data['barrier_free']) ? $form_data['barrier_free'] : 0;
+        $cleaning = isset($form_data['cleaning']) ? $form_data['cleaning'] : 0;
+        $bicycleroom = isset($form_data['bicycleroom']) ? $form_data['bicycleroom'] : 0;
+        $washingroom = isset($form_data['washingroom']) ? $form_data['washingroom'] : 0;
+        
         
         $add_where = '';
         if($employer_page > 0) {$add_where .= ' AND pid = '.$employer_page.'';}
         if ($city > 0) {$add_where .= ' AND city = '.$city.'';} 
         if ($district > 0) { $add_where .= ' AND district = '.$district.'';} 
+        if ($furnished > 0) { $add_where .= ' AND furnished = 1';}
+        if ($fitted_kitchen > 0) { $add_where .= ' AND fitted_kitchen = 1';}
+        if ($barrier_free > 0) { $add_where .= ' AND barrier_free = 1';}
+        if ($cleaning > 0) { $add_where .= ' AND cleaning = 1';}
+        if ($bicycleroom > 0) { $add_where .= ' AND bicycleroom = 1';}
+        if ($washingroom > 0) { $add_where .= ' AND washingroom = 1';}
+        
         
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
         $sql = "SELECT * from tx_realtymanager_domain_model_objectimmo
@@ -143,6 +157,7 @@ class ObjectimmoRepository extends Repository
         $prices[1000] = '1000 €';
         $prices[1100] = '1100 €';
         $prices[1200] = '1200 €';
+        $prices['egal'] = 'egal';
         return $prices;
     }
     
@@ -165,6 +180,7 @@ class ObjectimmoRepository extends Repository
         $areas[110] = '110 m²';
         $areas[120] = '120 m²';
         $areas[130] = '130 m²';
+        $areas['egal'] = 'egal';
         return $areas;
     }
 }
