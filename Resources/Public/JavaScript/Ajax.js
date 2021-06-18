@@ -1,4 +1,7 @@
 $(document).ready(function () {	
+	
+	$('.ajax-loading').hide();
+
 	$('.select-city').on('change', function() {	
 		var id_city = this.value;
 		var url= "/suche?tx_realtymanager_immobilienmanager%5Baction%5D=ajaxselectdistrict&tx_realtymanager_immobilienmanager%5Bcontroller%5D=RealtyManager&type=999999&cityId="+id_city;
@@ -22,6 +25,9 @@ $(document).ready(function () {
 	$('#searchform').submit(function (event) {
 		
 		event.preventDefault();
+		$('.ajax-loading').show();
+		$('#ajaxSearchResult').hide();
+		
 		
 		var url= "/suche?tx_realtymanager_immobilienmanager%5Baction%5D=ajaxsearch&tx_realtymanager_immobilienmanager%5Bcontroller%5D=RealtyManager&type=999999";
 		var formData = $('#searchform').serialize();
@@ -38,7 +44,9 @@ $(document).ready(function () {
 		      dataType: 'html',
 		      data: formData,
 		      success: function (content) {
+		    	$('#ajaxSearchResult').show();
 		      	resultContainer.html(content).fadeIn('fast');
+		      	$('.ajax-loading').hide();
 		      }
 	   });
 	});
