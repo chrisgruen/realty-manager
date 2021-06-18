@@ -100,6 +100,36 @@ class RealtyManagerController extends ActionController
     
     /**
      *
+     * return view (ajax) for searchAction
+     */
+    public function ajaxsearchAction()
+    {
+        $form_data = $this->request->getArguments();
+        
+        if($form_data) {
+            $objects = $this->objectimmoRepository->getAllObjectsBySearch($form_data);
+        }
+        
+        $this->view->setTemplatePathAndFilename('typo3conf/ext/' .$this->request->getControllerExtensionKey() .'/Resources/Private/Templates/Ajaxsearch.html');
+        $ajaxcontent = $this->view->assign('objects', $objects);
+    }
+    
+    /**
+     * action ajaxCall District options
+     *
+     */
+    public function ajaxselectdistrictAction()
+    {
+        $cityId = isset($_GET['cityId']) ? $_GET['cityId'] : 0;
+        $dataDistricts = $this->objectimmoRepository->getDistricts($cityId);
+        $districts = $this->selectDistricts($dataDistricts);
+        
+        $this->view->setTemplatePathAndFilename('typo3conf/ext/' .$this->request->getControllerExtensionKey() .'/Resources/Private/Templates/Ajaxselectdistrict.html');
+        $ajaxcontent = $this->view->assign('districts', $districts);
+    }
+    
+    /**
+     *
      * return view for deailAction
      */   
     public function detailAction(\ChrisGruen\RealtyManager\Domain\Model\Objectimmo $objUid)
@@ -247,17 +277,5 @@ class RealtyManagerController extends ActionController
             $areas[] = $area;
         }
         return $areas;
-    }
-    
-    /**
-     * action ajaxCall District options
-     * 
-     */
-    public function ajaxselectdistrictAction()
-    {
-        $cityId = isset($_GET['cityId']) ? $_GET['cityId'] : 0;
-        $dataDistricts = $this->objectimmoRepository->getDistricts($cityId);
-        $districts = $this->selectDistricts($dataDistricts);
-        $ajaxcontent = $this->view->assign('districts', $districts);
     }
 }

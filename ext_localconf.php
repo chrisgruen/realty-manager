@@ -17,7 +17,7 @@ defined('TYPO3_MODE') || die('Access denied.');
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'RealtyManager',
     'Immobilienmanager',
-    [\ChrisGruen\RealtyManager\Controller\RealtyManagerController::class => 'list, form, search, detail, ajaxselectdistrict'],
+    [\ChrisGruen\RealtyManager\Controller\RealtyManagerController::class => 'list, form, search, detail, ajaxselectdistrict, ajaxsearch'],
     // non-cacheable actions
     [\ChrisGruen\RealtyManager\Controller\RealtyManagerController::class => 'search']
 );
