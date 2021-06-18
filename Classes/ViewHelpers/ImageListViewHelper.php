@@ -41,6 +41,12 @@ class ImageListViewHelper extends AbstractViewHelper
                         'fr',
                         $queryBuilder->expr()->eq('fr.uid_local', $queryBuilder->quoteIdentifier('sys_file.uid'))
                     )
+                    ->join(
+                        'sys_file',
+                        'sys_file_metadata',
+                        'fm',
+                        $queryBuilder->expr()->eq('fm.file', $queryBuilder->quoteIdentifier('sys_file.uid'))
+                        )
                     ->where($queryBuilder->expr()->eq('uid_foreign', $uid_obj, \PDO::PARAM_INT))
                     ->orderby('sorting_foreign')
                     ->setMaxResults(2)
@@ -48,7 +54,7 @@ class ImageListViewHelper extends AbstractViewHelper
                     ->fetchAll();
                 
                     $html_output = '';
-                    foreach($images as $key => $image) {   
+                    foreach($images as $key => $image) { 
                         $img_path = '/fileadmin/'.$image['identifier'];
                         $img_alt = $image['alternative'];
                         $img_title = $image['title'];

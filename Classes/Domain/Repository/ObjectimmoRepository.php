@@ -89,6 +89,7 @@ class ObjectimmoRepository extends Repository
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
         $sql = "SELECT * from sys_file_reference fs
                 INNER JOIN sys_file f on fs.uid_local = f.uid
+                INNER JOIN sys_file_metadata fm on fm.file = f.uid
                 WHERE uid_foreign = '".$uid."'
                 ORDER BY sorting_foreign";
         

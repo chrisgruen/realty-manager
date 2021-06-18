@@ -1,7 +1,7 @@
 <div class="row bg-light mt-3 mb-4" style="min-height: 100px;">
 	<div class="col detail-img">
 		<f:for each="{images}" as="image" iteration="iterator">
-		 	<a href="fileadmin/{image.identifier}" data-lightbox="images_obj"><img src="fileadmin/{image.identifier}" width="128"/></a>
+		 	<a href="fileadmin/{image.identifier}" data-lightbox="images_obj" data-title="{image.title}" ><img src="fileadmin/{image.identifier}" alt="{image.alternative}" title="{image.title}" width="128"/></a>
 		</f:for>
 	</div>
 </div>
