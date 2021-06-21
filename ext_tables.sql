@@ -312,6 +312,8 @@ CREATE TABLE tx_realtymanager_domain_model_employer (
 	image tinytext DEFAULT '' NOT NULL,
 	TSconfig text DEFAULT '' NOT NULL,
 	description text DEFAULT '' NOT NULL,
+	openimmo_anid varchar(255) DEFAULT '' NOT NULL,
+	maximum_objects tinyint(4) DEFAULT '0' NOT NULL,
 	PRIMARY KEY (`uid`),
 	KEY parent (pid)
 );

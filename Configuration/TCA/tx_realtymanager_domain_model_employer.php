@@ -179,6 +179,30 @@ return [
                 'enableTabulator' => true,
                 'fixedFont' => true,
             ],
+        ],
+        'openimmo_anid' => [
+            'exclude' => 0,
+            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:fe_users.tx_realty_openimmo_anid',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'eval' => 'trim',
+            ],
+        ],
+        'tx_realty_maximum_objects' => [
+            'exclude' => 0,
+            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:fe_users.tx_realty_maximum_objects',
+            'config' => [
+                'type' => 'input',
+                'size' => 4,
+                'max' => 4,
+                'eval' => 'int',
+                'range' => [
+                    'lower' => 0,
+                    'upper' => 9999,
+                ],
+                'default' => 0,
+            ],
         ]
     ],
     'types' => [
@@ -186,8 +210,10 @@ return [
             'showitem' => '
                 --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:fe_users.tabs.personelData,
                     company, --palette--;;2, address, zip, city, country, telephone, fax, email, www, image,
+                --div--;LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:fe_users.tx_realty_tab,
+			        openimmo_anid, maximum_objects, pid_be_user,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
-                    pid_be_user, description, TSconfig,
+                    description, TSconfig,
             ',
         ],
     ],
