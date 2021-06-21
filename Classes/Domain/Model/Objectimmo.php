@@ -121,6 +121,41 @@ class Objectimmo extends AbstractEntity
      */
     protected $phoneSwitchboard;
     
+    /**
+     * @var int
+     */
+    protected $barrierFree;
+    
+    /**
+     * @var int
+     */
+    protected $tvEnabled;
+    
+    /**
+     * @var int
+     */
+    protected $furnished;
+    
+    /**
+     * @var int
+     */
+    protected $cleaning;
+    
+    /**
+     * @var int
+     */
+    protected $washingroom;
+    
+    /**
+     * @var int
+     */
+    protected $fittedKitchen;
+    
+    /**
+     * @var string
+     */
+    protected $provision;
+    
   
     public function __construct()
     {
@@ -785,5 +820,145 @@ class Objectimmo extends AbstractEntity
     public function getPhoneSwitchboard()
     {
         return $this->phoneSwitchboard;
+    }
+    
+    /**
+     * Set barrierFree
+     *
+     * @param int $barrierFree barrierFree
+     */
+    public function setbarrierFree($barrierFree)
+    {
+        $this->barrierFree = $barrierFree;
+    }
+    
+    /**
+     * Get barrierFree
+     *
+     * @return int
+     */
+    public function getBarrierFree()
+    {
+        return $this->barrierFree;
+    }
+    
+    /**
+     * Set tvEnabled
+     *
+     * @param int $tvEnabled tvEnabled
+     */
+    public function setTvEnabled($tvEnabled)
+    {
+        $this->tvEnabled = $tvEnabled;
+    }
+    
+    /**
+     * Get tvEnabled
+     *
+     * @return int
+     */
+    public function getTvEnabled()
+    {
+        return $this->tvEnabled;
+    }
+    
+    /**
+     * Set furnished
+     *
+     * @param int $furnished furnished
+     */
+    public function setFurnished($furnished)
+    {
+        $this->furnished = $furnished;
+    }
+    
+    /**
+     * Get furnished
+     *
+     * @return int
+     */
+    public function getFurnished()
+    {
+        return $this->furnished;
+    }
+    
+    /**
+     * Set cleaning
+     *
+     * @param int $cleaning cleaning
+     */
+    public function setCleaning($cleaning)
+    {
+        $this->cleaning = $cleaning;
+    }
+    
+    /**
+     * Get cleaning
+     *
+     * @return int
+     */
+    public function getCleaning()
+    {
+        return $this->cleaning;
+    }
+    
+    /**
+     * Set washingroom
+     *
+     * @param int $washingroom washingroom
+     */
+    public function setWashingroom($washingroom)
+    {
+        $this->washingroom = $washingroom;
+    }
+    
+    /**
+     * Get washingroom
+     *
+     * @return int
+     */
+    public function getWashingroom()
+    {
+        return $this->washingroom;
+    }
+    
+    /**
+     * Set fittedKitchen
+     *
+     * @param int $fittedKitchen fittedKitchen
+     */
+    public function setFittedKitchen($fittedKitchen)
+    {
+        $this->fittedKitchen = $fittedKitchen;
+    }
+    
+    /**
+     * Get fittedKitchen
+     *
+     * @return int
+     */
+    public function getFittedKitchen()
+    {
+        return $this->fittedKitchen;
+    }
+    
+    /**
+     * Set provision
+     *
+     * @param int $provision provision
+     */
+    public function setProvision($provision)
+    {
+        $this->provision = $provision;
+    }
+    
+    /**
+     * Get provision
+     *
+     * @return int
+     */
+    public function getProvision()
+    {
+        return $this->provision;
     }
 }

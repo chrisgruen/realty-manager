@@ -37,6 +37,62 @@
 					<td class="w-50">Untertypwohnform</td>
 					<td class="w-50"><n:apartmentType apartmentuid='{object.apartmentType}' /></td>
 				</tr>
+				<f:if condition="{object.barrierFree} > '0'">
+					<f:then>
+						<tr>
+							<td class="w-50">rollstuhlgerecht</td>
+							<td class="w-50">ja</td>
+						</tr>
+					</f:then>
+				</f:if>
+				<f:if condition="{object.tvEnabled} > '0'">
+					<f:then>
+						<tr>
+							<td class="w-50">TV-Anschluss</td>
+							<td class="w-50">ja</td>
+						</tr>
+					</f:then>
+				</f:if>
+				<f:if condition="{object.furnished} > '0'">
+					<f:then>
+						<tr>
+							<td class="w-50">Möbiliert</td>
+							<td class="w-50">ja</td>
+						</tr>
+					</f:then>
+				</f:if>
+				<f:if condition="{object.cleaning} > '0'">
+					<f:then>
+						<tr>
+							<td class="w-50">Fahrradraum</td>
+							<td class="w-50">ja</td>
+						</tr>
+					</f:then>
+				</f:if>
+				<f:if condition="{object.washingroom} > '0'">
+					<f:then>
+						<tr>
+							<td class="w-50">Waschmaschinenraum</td>
+							<td class="w-50">ja</td>
+						</tr>
+					</f:then>
+				</f:if>
+				<f:if condition="{object.fittedKitchen} > '0'">
+					<f:then>
+						<tr>
+							<td class="w-50">Einbauküche</td>
+							<td class="w-50">ja</td>
+						</tr>
+					</f:then>
+				</f:if>
+				<f:if condition="{object.provision}">
+					<f:then>
+						<tr>
+							<td class="w-50">keine Zusatzkosten</td>
+							<td class="w-50">ja</td>
+						</tr>
+					</f:then>
+				</f:if>
 			</tbody> 	
 		</table>
 		<p><b>Beschreibung</b> <br />
