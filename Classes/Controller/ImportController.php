@@ -25,6 +25,8 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
+use  ChrisGruen\RealtyManager\Import\OpenImmoImport;
+
 class ImportController extends ActionController
 {
     
@@ -40,6 +42,22 @@ class ImportController extends ActionController
      * @var
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
+    
+    
+    /**
+     * @var OpenImmoImport
+     */
+    protected $importService = null;
+    
+     /**
+     * Inject the objectimmo import
+     *
+     * @param ChrisGruen\RealtyManager\Import\OpenImmoImport $importService
+     */
+    public function injectImportService(OpenImmoImport $importService)
+    {
+        $this->importService = $importService;
+    }
 
 
     /**
@@ -64,6 +82,8 @@ class ImportController extends ActionController
     {
         $importResults = '';
         $success = false;
+        $importResults = $this->importService->importFromZip();
+        
         /*
         try {
             $importResults = $this->importService->importFromZip();
