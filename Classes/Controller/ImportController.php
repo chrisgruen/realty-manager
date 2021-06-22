@@ -57,7 +57,13 @@ class ImportController extends ActionController
     public function indexAction()
     {
 
-        $this->view->assign($assignedValues, ['flat1', 'flat']);
+    }
+    
+    
+    public function importAction()
+    {
+        echo "Import start";
+        exit();
     }
 }
 
