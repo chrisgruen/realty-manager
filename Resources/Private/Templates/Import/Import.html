@@ -1,13 +1,11 @@
-<!DOCTYPE html>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
-<f:layout name="Default"/>
 
-<f:section name="Content">
+<f:layout name="Backend/Default"/>
+
+<f:section name="content">
     <f:render partial="OpenImmo/StartImportForm"/>
 
-    <f:be.infobox state="{importStatus}"
-                  title="{f:translate(key: 'LLL:EXT:realty/Resources/Private/Language/locallang_mod.xlf:importWasExecuted')}"
-    >
+    <f:be.infobox state="{importStatus}"title="{f:translate(key: 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_mod.xlf:importWasExecuted')}">
         {importResults -> f:format.nl2br()}
     </f:be.infobox>
 </f:section>
