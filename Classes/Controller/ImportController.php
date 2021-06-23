@@ -76,7 +76,9 @@ class ImportController extends ActionController
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
         $sql = "SELECT uid, company, openimmo_anid, import_folder from tx_realtymanager_domain_model_employer order by uid";
-        $employers = $connection->executeQuery($sql)->fetchAll();
+        $dataEmployers = $connection->executeQuery($sql)->fetchAll();
+        
+        $employers = $this->selectEmployers($dataEmployers); 
         
         $this->view->assign('employers', $employers);
         $this->view->assign('error', $this->checkCorrectConfiguration());
@@ -122,6 +124,7 @@ class ImportController extends ActionController
         try {
             $storageId = (int)$settings->getStorageUidImporter();
             $path = $settings->getResourceFolderImporter();
+
             if ($storageId === 0) {
                 throw new UnexpectedValueException('import.error.configuration.storageUidImporter');
             }
@@ -150,17 +153,22 @@ class ImportController extends ActionController
     }
     
 
-    public function getEmployer()
-    {
-        /*
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
-        $sql = "SELECT * from tx_realtymanager_domain_model_employer order by uid";
-        
-        echo $sql;
-        $employers = $connection->executeQuery($sql)->fetchAll();
-        */
-        
-        return '$employers function';
+    /**
+     * prepare employers for select box
+     *
+     * @return array
+     */
+    public function selectEmployers($dataEmployers) {
+        $employers = [];
+        $city = new \stdClass();
+
+        foreach($dataEmployers as $dataEmployer) {
+            $employer = new \stdClass();
+            $employer->key = $dataEmployer['uid'];
+            $employer->value = $dataEmployer['company'];
+            $employers[] = $employer;
+        }
+        return $employers;
     }
 }
 

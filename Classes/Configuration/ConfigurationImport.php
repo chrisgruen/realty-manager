@@ -34,7 +34,7 @@ class ConfigurationImport
     protected $storageUidImporter = 1;
     
     /** @var string */
-    protected $resourceFolderImporter = '/openimmo_import';
+    protected $resourceFolderImporter = '/import';
     
     
     public function getStorageUidImporter(): int

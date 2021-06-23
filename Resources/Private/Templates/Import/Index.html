@@ -9,13 +9,13 @@
 	
 	<p class="lead">
 	    <f:translate key="LLL:EXT:realty_manager/Resources/Private/Language/locallang_mod.xlf:mlang_labels_tabdescr"/>
+
+	    <div class="form-group">
+			<label for="employer">Wohnungsanbieter wählen</label>
+	    	<f:form.select name="employer"  class="form-control form-control-sm select-employer" options="{employers}" optionValueField="key" optionLabelField="value" value="{employer}" />
+		</div>
 	</p>
-	
-	<p>
-	    <f:for each="{employers}" as="employer">
-	    	{employer.company} <br />
-	    </f:for>
-	</p>
+
 	<f:if condition="{error}">
 		<f:then>
 		    <div class="alert alert-danger">
