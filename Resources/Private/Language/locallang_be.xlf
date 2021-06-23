@@ -24,6 +24,15 @@
 			<trans-unit id="flexforms_general.mode.detail" xml:space="preserve">
 				<source>Detail</source>
 			</trans-unit>
+			<trans-unit id="import.error.configuration.title" xml:space="preserve">
+				<source>The configuration for the import is incomplete!</source>
+			</trans-unit>
+			<trans-unit id="import.error.configuration.resourceFolderImporter.notExist" xml:space="preserve">
+				<source>The directory defined in the setting "resourceFolderImporter" does not exist!</source>
+			</trans-unit>
+			<trans-unit id="import.error.configuration.storageUidImporter" xml:space="preserve">
+				<source>Please define the setting "storageUidImporter" in the configuration of the extension manager! The given id is the used file storage.</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>

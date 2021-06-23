@@ -30,6 +30,18 @@
 				<source>Detail</source>
 				<target>Detailansicht</target>
 			</trans-unit>
+			<trans-unit id="import.error.configuration.title" xml:space="preserve">
+				<source>The configuration for the import is incomplete!</source>
+				<target>Import kann nicht ausgeführt werden. Bitte Configurations-Datei für Import überprüfen!</target>
+			</trans-unit>
+			<trans-unit id="import.error.configuration.resourceFolderImporter.notExist" xml:space="preserve">
+				<source>The directory defined in the setting "resourceFolderImporter" does not exist!</source>
+				<target>Angegebenes Verzeichnis für Import existiert nicht.</target>
+			</trans-unit>
+			<trans-unit id="import.error.configuration.storageUidImporter" xml:space="preserve">
+				<source>Please define the setting "storageUidImporter" in the configuration of the extension manager! The given id is the used file storage.</source>
+				<target>storageUidImporter wurde nicht angegeben.</target>
+			</trans-unit>
         </body>
     </file>
 </xliff>
