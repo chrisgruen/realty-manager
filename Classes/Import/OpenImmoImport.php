@@ -154,7 +154,7 @@ class OpenImmoImport
         
         if (empty($zipsToExtract)) {
             $this->addToErrorLog(
-                \sprintf('message_no_zips',$import_path)
+                \sprintf($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_no_zips'),$import_path)
             );          
         } else {
             foreach ($zipsToExtract as $currentZip) {
