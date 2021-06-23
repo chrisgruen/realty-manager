@@ -3,11 +3,32 @@
 <f:layout name="Backend/Default"/>
 
 <f:section name="content">
-    <f:render partial="OpenImmo/StartImportForm"/>
-
-    <f:be.infobox state="{importStatus}"title="{f:translate(key: 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_mod.xlf:importWasExecuted')}">
-        {importResults -> f:format.nl2br()}
-    </f:be.infobox>
+	<h1>
+	    <f:translate key="LLL:EXT:realty_manager/Resources/Private/Language/locallang_mod.xlf:import_tab"/>
+	</h1>
+	
+	<p class="lead">
+	    <f:translate key="LLL:EXT:realty_manager/Resources/Private/Language/locallang_mod.xlf:mlang_labels_tabdescr"/>
+	</p>
+	<f:if condition="{error}">	
+		<f:then>
+		    <div class="alert alert-danger">
+		        <div class="message-header">
+		            {f:translate(key:'LLL:EXT:news/Resources/Private/Language/locallang_be.xlf:import.error.configuration.title')}
+		        </div>
+		        <div class="message-body">
+		            <f:translate key="LLL:EXT:news/Resources/Private/Language/locallang_be.xlf:{error}" default="{error}"/>
+		        </div>
+		    </div>
+	    </f:then>
+	    <f:else>
+		    <f:render partial="OpenImmo/StartImportForm"/>
+		
+		    <f:be.infobox state="{importStatus}"title="{f:translate(key: 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_mod.xlf:importWasExecuted')}">
+		        {importResults -> f:format.nl2br()}
+		    </f:be.infobox>
+	    </f:else>
+    </f:if>
 </f:section>
 
 </html>

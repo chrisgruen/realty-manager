@@ -2,10 +2,13 @@
 
 namespace ChrisGruen\RealtyManager\Import;
 
-use ChrisGruen\RealtyManager\Import\AttachmentImporter;
+
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use ChrisGruen\RealtyManager\Configuration\ConfigurationImport;
+use ChrisGruen\RealtyManager\Import\AttachmentImporter;
 
 
 /**
@@ -53,6 +56,11 @@ class OpenImmoImport
      * @var \Tx_Oelib_ConfigurationProxy to access the EM configuration
      */
     private $globalConfiguration = null;
+    
+    /**
+     * @var \ConfigurationImport for settings
+     */
+    private $settings = null;
 
     /**
      * @var \tx_realty_Model_RealtyObject|null
@@ -99,8 +107,7 @@ class OpenImmoImport
     public function __construct($isTestMode = false)
     {
         $this->isTestMode = $isTestMode;
-        libxml_use_internal_errors(true);
-        //$this->globalConfiguration = Tx_Oelib_ConfigurationProxy::getInstance('realty');
+        $this->settings = GeneralUtility::makeInstance(ConfigurationImport::class);
     }
 
     /**
@@ -128,24 +135,18 @@ class OpenImmoImport
      */
     public function importFromZip()
     {
-        $import_folder = 'Import';
+        /* root folder fileadmin */
+        $import_folder = $this->settings->getResourceFolderImporter();
         $languageServiceBackup = $this->getLanguageService();
-        
-        
+              
         $this->success = true;
 
         $this->addToLogEntry(\date('Y-m-d G:i:s') . "\n");
-        $checkedImportDirectory = $this->unifyPath($import_folder);
         
-        $base_path = $_SERVER['DOCUMENT_ROOT'];
-        $import_path = $base_path.'/typo3conf/ext/realty_manager/'.$import_folder;
-        
-
-        if (!$this->canStartImport($import_path)) {
+        if (!$this->canStartImport($import_folder)) {
             $this->storeLogsAndClearTemporaryLog();
             return $this->logEntry;
         }
-
 
         $zipsToExtract = $this->getPathsOfZipsToExtract($import_path);
         
@@ -164,10 +165,10 @@ class OpenImmoImport
                 $recordData = $this->processRealtyRecordInsertion($currentZip);
                 $emailData = \array_merge($emailData, $recordData);
             }
-            $this->sendEmails($this->prepareEmails($emailData));
+            //$this->sendEmails($this->prepareEmails($emailData));
         }
 
-        $this->cleanUp($checkedImportDirectory);
+        //$this->cleanUp($checkedImportDirectory);
 
         $this->storeLogsAndClearTemporaryLog();
 
@@ -490,34 +491,25 @@ class OpenImmoImport
      */
     private function canStartImport($importDirectory)
     {
-        return $this->isImportDirectoryAccessible($importDirectory);
-    }
 
-    /**
-     * Checks that the import directory exists and is readable and writable.
-     *
-     * @param string $importDirectory unified path of the import directory, must not be empty
-     *
-     * @return bool whether the import directory exists and is readable and writable
-     */
-    private function isImportDirectoryAccessible($importDirectory)
-    {
-        $isAccessible = false;
-
-        if (!is_dir($importDirectory)) {
+        $isAccessible = true;
+        
+        $storageId = (int)$this->settings->getStorageUidImporter();
+        
+        $storage = $this->getResourceFactory()->getStorageObject($storageId);
+        $pathExists = $storage->hasFolder($importDirectory);
+        
+        if (!$pathExists) {
             $this->addToErrorLog(
                 \sprintf('message_import_directory_not_existing',$importDirectory)
             );
-        } elseif (!@\is_readable($importDirectory)) {
-            $this->addFolderAccessErrorMessage('message_import_directory_not_readable', $importDirectory);
-        } elseif (@\is_writable($importDirectory)) {
-            $isAccessible = true;
-        } else {
-            $this->addFolderAccessErrorMessage('message_import_directory_not_writable', $importDirectory);
+            
+            $isAccessible = false;
         }
-
+        
         return $isAccessible;
     }
+
 
     /**
      * Adds the given error message to the error log.
@@ -822,21 +814,6 @@ class OpenImmoImport
         }
     }
 
-    /**
-     * Checks the correct punctuation of a path to a directory. Adds a slash if
-     * missing and strips whitespaces.
-     *
-     * @param string $directory path to be checked, must not be empty
-     *
-     * @return string checked path, possibly modified
-     */
-    protected function unifyPath($directory)
-    {
-        $checkedPath = \trim($directory);
-        $pathWithoutTrailingSlash = \rtrim($checkedPath, '/');
-
-        return $pathWithoutTrailingSlash . '/';
-    }
 
     /**
      * Gets an array of the paths of all ZIP archives in the import folder
@@ -850,7 +827,7 @@ class OpenImmoImport
     {        
         $result = [];
 
-        if (\is_dir($importDirectory)) {
+        if (is_dir($importDirectory)) {
             $result = GeneralUtility::getAllFilesAndFoldersInPath([], $importDirectory, 'zip');
         }
 
@@ -1273,6 +1250,14 @@ class OpenImmoImport
         }
 
         return $this->realtyObject->getRequiredFields();
+    }
+    
+    /**
+     * @return ResourceFactory
+     */
+    protected function getResourceFactory(): ResourceFactory
+    {
+        return GeneralUtility::makeInstance(ResourceFactory::class);
     }
 }
 
