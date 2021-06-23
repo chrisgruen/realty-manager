@@ -133,10 +133,10 @@ class OpenImmoImport
      *                ZIP import, will not be empty, contains at least a
      *                timestamp
      */
-    public function importFromZip()
+    public function importFromZip($employer_folder)
     {
         /* root folder fileadmin */
-        $import_folder = $this->settings->getResourceFolderImporter();
+        $import_folder = $this->settings->getResourceFolderImporter().'/'.$employer_folder;
         $languageServiceBackup = $this->getLanguageService();
               
         $this->success = true;

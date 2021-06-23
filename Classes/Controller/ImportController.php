@@ -87,25 +87,40 @@ class ImportController extends ActionController
     
     public function importAction()
     {
+        $errors = '';
+        $employer_uid = 0;
+        $employer_uid = $this->request->getArgument('employer');
         $importResults = '';
         $success = false;
-        $importResults = $this->importService->importFromZip();
         
-        /*
-        try {
-            $importResults = $this->importService->importFromZip();
-            $success = $this->importService->wasSuccessful();
-        } catch (\Exception $exception) {
-            $backTrace = \json_encode(
-                $exception->getTrace(),
-                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-                );
-            $importResults .= $exception->getMessage() . "\n" . $backTrace;
-            $success = false;
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
+        $sql = "SELECT import_folder from tx_realtymanager_domain_model_employer where uid = $employer_uid";
+        $employer_result = $connection->executeQuery($sql)->fetch();
+        $employer_folder = $employer_result['import_folder'];
+        
+        $errors = $this->checkFolderEmployer($employer_folder);
+        if ($errors != '') {
+            $this->view->assign('error', $this->checkFolderEmployer($employer_folder));
+        } else {      
+        
+            $importResults = $this->importService->importFromZip($employer_folder);
+            
+            /*
+            try {
+                $importResults = $this->importService->importFromZip();
+                $success = $this->importService->wasSuccessful();
+            } catch (\Exception $exception) {
+                $backTrace = \json_encode(
+                    $exception->getTrace(),
+                    JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+                    );
+                $importResults .= $exception->getMessage() . "\n" . $backTrace;
+                $success = false;
+            }
+            */
+            $this->view->assign('importResults', $importResults);
+            $this->view->assign('importStatus', $success ? 0 : 2);
         }
-        */
-        $this->view->assign('importResults', $importResults);
-        $this->view->assign('importStatus', $success ? 0 : 2);
     }
     
     /**
@@ -141,6 +156,38 @@ class ImportController extends ActionController
         } catch (UnexpectedValueException $e) {
             $error = $e->getMessage();
         }
+        return $error;
+    }
+    
+    /**
+     * Check for folder Employer
+     *
+     * @return string
+     * @throws Exception
+     * @throws \TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException
+     */
+    protected function checkFolderEmployer($folder)
+    {
+        $error = '';      
+        $settings = GeneralUtility::makeInstance(ConfigurationImport::class);
+        $base_import_folder = $settings->getResourceFolderImporter();
+        
+        try {
+            $error = '';
+            $base_path = $_SERVER['DOCUMENT_ROOT'];
+            $path_import = $base_path.'/fileadmin'.$base_import_folder.'/'.$folder;
+                       
+            if ($folder == '') {
+                $folder = "NOT_EXIST";
+                throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
+            } else if (!is_dir($path_import)) {
+                throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
+            } else {
+                
+            }
+        } catch (FolderDoesNotExistException $e) {
+            $error = 'Ordner fileadmin'.$base_import_folder.'/'.$folder. ' existiert nicht!';
+        } 
         return $error;
     }
     

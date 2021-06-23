@@ -1,4 +1,8 @@
 <f:form action="import" class="js-realty-import-form">
+	<div class="form-group">
+		<label for="employer">Wohnungsanbieter wählen</label>
+    	<f:form.select name="employer"  class="form-control form-control-sm select-employer" options="{employers}" optionValueField="key" optionLabelField="value" value="{employer}" />
+	</div>
     <p>
         <button class="btn btn-lg btn-primary">
             <f:translate key="LLL:EXT:realty_manager/Resources/Private/Language/locallang_mod.xlf:start_import_button"/>
