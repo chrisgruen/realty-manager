@@ -5,10 +5,10 @@ namespace ChrisGruen\RealtyManager\Import;
 
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use ChrisGruen\RealtyManager\Configuration\ConfigurationImport;
 use ChrisGruen\RealtyManager\Import\AttachmentImporter;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 
 /**
@@ -157,10 +157,10 @@ class OpenImmoImport
                 \sprintf('message_no_zips',$import_path)
             );          
         } else {
-            print_r($zipsToExtract);
-            exit();
             foreach ($zipsToExtract as $currentZip) {
                 $this->extractZip($currentZip);
+                echo "extract";
+                exit();
                 $this->loadXmlFile($currentZip);
                 $recordData = $this->processRealtyRecordInsertion($currentZip);
                 $emailData = \array_merge($emailData, $recordData);
@@ -176,9 +176,11 @@ class OpenImmoImport
     }
 
     /**
+     * Returns the LanguageService
+     *
      * @return LanguageService
      */
-    private function getLanguageService()
+    protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
     }
@@ -191,19 +193,6 @@ class OpenImmoImport
         return $this->success;
     }
 
-    /**
-     * Gets a cached translator object (and creates it first, if necessary).
-     *
-     * @return \tx_realty_translator
-     */
-    private function getTranslator()
-    {
-        if (!self::$translator instanceof \tx_realty_translator) {
-            self::$translator = GeneralUtility::makeInstance(\tx_realty_translator::class);
-        }
-
-        return self::$translator;
-    }
 
     /**
      * Processes the insertion of realty records to database. Tries to fetch the
@@ -288,7 +277,7 @@ class OpenImmoImport
                     $uids[] = $deletedObject->getUid();
                 }
                 $this->addToLogEntry(
-                    $this->getTranslator()->translate('message_deleted_objects_from_full_sync') . ' ' .
+                    $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_deleted_objects_from_full_sync') . ' ' .
                     \implode(', ', $uids)
                 );
             }
@@ -348,7 +337,7 @@ class OpenImmoImport
 
         if (!$this->hasValidOwnerForImport()) {
             $this->addToErrorLog(
-                $this->getTranslator()->translate('message_openimmo_anid_not_matches_allowed_fe_user') . ' "' .
+                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_openimmo_anid_not_matches_allowed_fe_user') . ' "' .
                 $this->realtyObject->getProperty('openimmo_anid') . '".' . "\n"
             );
             return;
@@ -359,17 +348,17 @@ class OpenImmoImport
 
         switch ($errorMessage) {
             case '':
-                $this->addToLogEntry($this->getTranslator()->translate('message_written_to_database') . "\n");
+                $this->addToLogEntry($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_written_to_database') . "\n");
                 break;
             case 'message_deleted_flag_set':
                 // The fall-through is intended.
             case 'message_deleted_flag_causes_deletion':
                 // A set deleted flag is no real error, so is not stored in the error log.
-                $this->addToLogEntry($this->getTranslator()->translate($errorMessage) . "\n");
+                $this->addToLogEntry($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage) . "\n");
                 break;
             case 'message_fields_required':
                 $this->addToErrorLog(
-                    $this->getTranslator()->translate($errorMessage) . ': ' .
+                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage) . ': ' .
                     \implode(', ', $this->realtyObject->checkForRequiredFields()) . '. ' .
                     $this->getPleaseActivateValidationMessage() . "\n"
                 );
@@ -379,7 +368,7 @@ class OpenImmoImport
                 $owner = $this->realtyObject->getOwner();
                 $this->addToErrorLog(
                     \sprintf(
-                        $this->getTranslator()->translate($errorMessage),
+                        $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage),
                         $owner->getName(),
                         $owner->getUid(),
                         $owner->getTotalNumberOfAllowedObjects()
@@ -388,7 +377,7 @@ class OpenImmoImport
                 break;
             default:
                 $this->addToErrorLog(
-                    $this->getTranslator()->translate($errorMessage) . ' ' .
+                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage). ' ' .
                     $this->getPleaseActivateValidationMessage() . "\n"
                 );
         }
@@ -404,7 +393,7 @@ class OpenImmoImport
     private function getPleaseActivateValidationMessage()
     {
         return ($this->globalConfiguration->getAsString('openImmoSchema') !== '')
-            ? $this->getTranslator()->translate('message_please_validate')
+            ? $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_please_validate')
             : '';
     }
 
@@ -740,7 +729,7 @@ class OpenImmoImport
         $contentItem = [];
 
         // collects data for the subpart 'CONTENT_ITEM'
-        $template->setMarker('label_object_number', $this->getTranslator()->translate('label_object_number'));
+        $template->setMarker('label_object_number', $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'label_object_number'));
         foreach ($recordsForOneEmail as $record) {
             // $record is an array of the object number associated with the log
             $template->setMarker('object_number', \key($record));
@@ -749,9 +738,9 @@ class OpenImmoImport
         }
 
         // fills the subpart 'EMAIL_BODY'
-        $template->setMarker('header', $this->getTranslator()->translate('message_introduction'));
+        $template->setMarker('header', $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_introduction'));
         $template->setSubpart('CONTENT_ITEM', \implode("\n", $contentItem));
-        $template->setMarker('footer', $this->getTranslator()->translate('message_explanation'));
+        $template->setMarker('footer', $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_explanation'));
 
         return $template->getSubpart('EMAIL_BODY');
     }
@@ -783,15 +772,14 @@ class OpenImmoImport
             $email = GeneralUtility::makeInstance(MailMessage::class);
             $email->setFrom([$fromRole->getEmailAddress() => $fromRole->getName()]);
             $email->setTo([$address => '']);
-            $email->setSubject($this->getTranslator()->translate('label_subject_openImmo_import'));
+            $email->setSubject($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'label_subject_openImmo_import'));
             $email->setBody($this->fillEmailTemplate($content));
             $email->send();
         }
 
         if (!empty($addressesAndMessages)) {
             $this->addToLogEntry(
-                $this->getTranslator()
-                    ->translate('message_log_sent_to') . ': ' . \implode(', ', \array_keys($addressesAndMessages))
+                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_log_sent_to') . ': ' . \implode(', ', \array_keys($addressesAndMessages))
             );
         }
     }
@@ -848,21 +836,21 @@ class OpenImmoImport
      */
     public function extractZip($zipToExtract)
     {
-        if (!\file_exists($zipToExtract)) {
+        if (!file_exists($zipToExtract)) {
             return;
         }
+        echo $zipToExtract."<br />";
 
         $zip = new \ZipArchive();
         if ($zip->open($zipToExtract)) {
             $extractionDirectory = $this->createExtractionFolder($zipToExtract);
             if ($extractionDirectory !== '') {
                 $zip->extractTo($extractionDirectory);
-                $this->addToLogEntry($zipToExtract . ': ' . $this->getTranslator()
-                        ->translate('message_extracted_successfully'));
+                $this->addToLogEntry($zipToExtract . ': ' .  $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_extracted_successfully'));
             }
             $zip->close();
         } else {
-            $this->addToErrorLog($zipToExtract . ': ' . $this->getTranslator()->translate('message_extraction_failed'));
+            $this->addToErrorLog($zipToExtract . ': ' . $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_extraction_failed'));
         }
     }
 
@@ -900,19 +888,21 @@ class OpenImmoImport
         }
 
         $folderForZipExtraction = $this->getNameForExtractionFolder($pathOfZip);
+        
         if (\is_dir($folderForZipExtraction)) {
-            $this->addToErrorLog(
-                $folderForZipExtraction . ': ' . $this->getTranslator()->translate('message_surplus_folder')
+            $this->addToErrorLog(                
+                $folderForZipExtraction . ': ' .  $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:' . 'message_surplus_folder')
             );
             $folderForZipExtraction = '';
         } else {
+            echo $folderForZipExtraction;
             try {
                 GeneralUtility::mkdir_deep($folderForZipExtraction);
                 $this->filesToDelete[] = $folderForZipExtraction;
                 if (!\is_writable($folderForZipExtraction)) {
                     $this->addToErrorLog(
                         \sprintf(
-                            $this->getTranslator()->translate('message_folder_not_writable'),
+                            $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_folder_not_writable'),
                             $folderForZipExtraction
                         )
                     );
@@ -920,7 +910,7 @@ class OpenImmoImport
             } catch (\RuntimeException $exception) {
                 $this->addToErrorLog(
                     \sprintf(
-                        $this->getTranslator()->translate('message_folder_creation_failed'),
+                        $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_folder_creation_failed'),
                         $folderForZipExtraction
                     )
                 );
@@ -963,7 +953,7 @@ class OpenImmoImport
         }
 
         if ($errorMessage !== '') {
-            $this->addToErrorLog(\basename($pathOfZip) . ': ' . $this->getTranslator()->translate($errorMessage));
+            $this->addToErrorLog(\basename($pathOfZip) . ': ' . $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage));
         }
 
         return $result;
@@ -1028,7 +1018,7 @@ class OpenImmoImport
             $errors = \libxml_get_errors();
             /** @var \LibXMLError $error */
             foreach ($errors as $error) {
-                $validationResult .= $this->getTranslator()->translate('message_line') .
+                $validationResult .= $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_line') .
                     ' ' . $error->line . ': ' . $error->message;
             }
         }
@@ -1048,7 +1038,6 @@ class OpenImmoImport
      */
     private function logValidationResult($validationResult)
     {
-        $translator = $this->getTranslator();
         switch ($validationResult) {
             case '':
                 $this->addToLogEntry($translator->translate('message_successful_validation') . "\n");
@@ -1103,7 +1092,7 @@ class OpenImmoImport
 
         if (!empty($removedFiles)) {
             $this->addToLogEntry(
-                $this->getTranslator()->translate('message_files_removed') . ': ' . \implode(', ', $removedFiles)
+                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_files_removed') . ': ' . \implode(', ', $removedFiles)
             );
         }
     }

@@ -91,7 +91,7 @@ class ImportController extends ActionController
         $employer_uid = 0;
         $employer_uid = $this->request->getArgument('employer');
         $importResults = '';
-        $success = false;
+        //$success = false;
         
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
         $sql = "SELECT import_folder from tx_realtymanager_domain_model_employer where uid = $employer_uid";
