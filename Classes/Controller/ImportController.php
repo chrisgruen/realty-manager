@@ -74,6 +74,11 @@ class ImportController extends ActionController
     
     public function indexAction()
     {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
+        $sql = "SELECT uid, company, openimmo_anid, import_folder from tx_realtymanager_domain_model_employer order by uid";
+        $employers = $connection->executeQuery($sql)->fetchAll();
+        
+        $this->view->assign('employers', $employers);
         $this->view->assign('error', $this->checkCorrectConfiguration());
     }
     
@@ -142,6 +147,20 @@ class ImportController extends ActionController
     protected function getResourceFactory(): ResourceFactory
     {
         return GeneralUtility::makeInstance(ResourceFactory::class);
+    }
+    
+
+    public function getEmployer()
+    {
+        /*
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
+        $sql = "SELECT * from tx_realtymanager_domain_model_employer order by uid";
+        
+        echo $sql;
+        $employers = $connection->executeQuery($sql)->fetchAll();
+        */
+        
+        return '$employers function';
     }
 }
 

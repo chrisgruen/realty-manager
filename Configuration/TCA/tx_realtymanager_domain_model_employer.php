@@ -189,7 +189,16 @@ return [
                 'eval' => 'trim',
             ],
         ],
-        'tx_realty_maximum_objects' => [
+        'import_folder' => [
+            'exclude' => 0,
+            'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:fe_users.import_folder',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'eval' => 'trim',
+            ],
+        ],
+        'maximum_objects' => [
             'exclude' => 0,
             'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:fe_users.tx_realty_maximum_objects',
             'config' => [
@@ -211,7 +220,7 @@ return [
                 --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:fe_users.tabs.personelData,
                     company, --palette--;;2, address, zip, city, country, telephone, fax, email, www, image,
                 --div--;LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:fe_users.tx_realty_tab,
-			        openimmo_anid, maximum_objects, pid_be_user,
+			        openimmo_anid, import_folder, maximum_objects, pid_be_user,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
                     description, TSconfig,
             ',

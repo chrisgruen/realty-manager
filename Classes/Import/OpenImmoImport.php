@@ -148,7 +148,7 @@ class OpenImmoImport
             return $this->logEntry;
         }
 
-        $zipsToExtract = $this->getPathsOfZipsToExtract($import_path);
+        $zipsToExtract = $this->getPathsOfZipsToExtract($import_folder);
         
         $this->storeLogsAndClearTemporaryLog();
         
@@ -824,11 +824,14 @@ class OpenImmoImport
      * @return string[] absolute paths of ZIPs in the import folder, might be empty
      */
     protected function getPathsOfZipsToExtract($importDirectory)
-    {        
+    {       
+        $base_path = $_SERVER['DOCUMENT_ROOT'];
+        $path_import = $base_path.'/fileadmin'.$importDirectory;
+        
         $result = [];
-
-        if (is_dir($importDirectory)) {
-            $result = GeneralUtility::getAllFilesAndFoldersInPath([], $importDirectory, 'zip');
+        
+        if (is_dir($path_import)) {
+            $result = GeneralUtility::getAllFilesAndFoldersInPath([], $path_import, 'zip');
         }
 
         return $result;
