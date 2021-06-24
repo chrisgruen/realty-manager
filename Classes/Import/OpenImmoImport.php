@@ -2,20 +2,15 @@
 
 namespace ChrisGruen\RealtyManager\Import;
 
-
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use ChrisGruen\RealtyManager\Configuration\ConfigurationImport;
 use ChrisGruen\RealtyManager\Import\AttachmentImporter;
+use ChrisGruen\RealtyManager\Import\XmlConverter;
 use TYPO3\CMS\Core\Localization\LanguageService;
 
 
-/**
- * This class imports ZIPs containing OpenImmo records.
- *
- * @author Saskia Metzler <saskia@merlin.owl.de>
- */
 class OpenImmoImport
 {
     /**
@@ -97,7 +92,7 @@ class OpenImmoImport
      * @var bool
      */
     private $success = true;
-
+    
     /**
      * Constructor.
      *
@@ -150,24 +145,23 @@ class OpenImmoImport
 
         $zipsToExtract = $this->getPathsOfZipsToExtract($import_folder);
         
-        $this->storeLogsAndClearTemporaryLog();
+        //$this->storeLogsAndClearTemporaryLog();
         
         if (empty($zipsToExtract)) {
             $this->addToErrorLog(
                 \sprintf($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_no_zips'),$import_path)
-            );          
+            ); 
         } else {
+            
             foreach ($zipsToExtract as $currentZip) {
-                $this->extractZip($currentZip);
-                echo "extract";
-                exit();
-                $this->loadXmlFile($currentZip);
+                $this->extractZip($currentZip);  
+                $xml_file_data = $this->loadXmlFile($currentZip);
                 $recordData = $this->processRealtyRecordInsertion($currentZip);
-                $emailData = \array_merge($emailData, $recordData);
-            }
-            //$this->sendEmails($this->prepareEmails($emailData));
+                    //$emailData = \array_merge($emailData, $recordData);
+                }
         }
-
+            
+        //$this->sendEmails($this->prepareEmails($emailData));
         //$this->cleanUp($checkedImportDirectory);
 
         $this->storeLogsAndClearTemporaryLog();
@@ -210,11 +204,12 @@ class OpenImmoImport
     private function processRealtyRecordInsertion($pathOfCurrentZipFile)
     {
         $emailData = [];
-        $savedRealtyObjects = new \Tx_Oelib_List();
+        //$savedRealtyObjects = new \Tx_Oelib_List();
         $offererId = '';
         $transferMode = null;
 
         $xml = $this->getImportedXml();
+        /*
         if ($xml instanceof \DOMDocument) {
             $xPath = new \DOMXPath($xml);
             $offererNodes = $xPath->query('//openimmo/anbieter/openimmo_anid');
@@ -228,8 +223,14 @@ class OpenImmoImport
                 $transferMode = $transferNode->getAttribute('umfang');
             }
         }
-
+        */
+   
         $recordsToInsert = $this->convertDomDocumentToArray($xml);
+        echo "recordsToInsert: <br />";
+        echo "<pre>";
+          print_r($recordsToInsert);
+        echo "<pre>";
+        exit();
         if (empty($recordsToInsert)) {
             // Ensures that the foreach-loop is passed at least once, so the log gets processed correctly.
             $recordsToInsert = [[]];
@@ -490,7 +491,7 @@ class OpenImmoImport
         
         if (!$pathExists) {
             $this->addToErrorLog(
-                \sprintf('message_import_directory_not_existing',$importDirectory)
+                \sprintf($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_import_directory_not_existing'),$importDirectory)
             );
             
             $isAccessible = false;
@@ -839,14 +840,15 @@ class OpenImmoImport
         if (!file_exists($zipToExtract)) {
             return;
         }
-        echo $zipToExtract."<br />";
 
         $zip = new \ZipArchive();
         if ($zip->open($zipToExtract)) {
             $extractionDirectory = $this->createExtractionFolder($zipToExtract);
             if ($extractionDirectory !== '') {
-                $zip->extractTo($extractionDirectory);
-                $this->addToLogEntry($zipToExtract . ': ' .  $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_extracted_successfully'));
+                if (count(glob($extractionDirectory.'/*')) === 0) {
+                    $zip->extractTo($extractionDirectory);
+                    $this->addToLogEntry($zipToExtract . ': ' .  $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_extracted_successfully'));
+                }               
             }
             $zip->close();
         } else {
@@ -863,13 +865,9 @@ class OpenImmoImport
      *
      * @throws \InvalidArgumentException
      */
-    protected function getNameForExtractionFolder($pathOfZip)
-    {
-        if ($pathOfZip === '') {
-            throw new \InvalidArgumentException('$pathOfZip must not be empty.', 1551119719);
-        }
-
-        return PATH_site . 'typo3temp/var/realty/' . \str_replace('.zip', '/', \basename($pathOfZip));
+    protected function getNameForExtractionFolder($pathOfZip) {
+        $extractions_folder = str_replace('.zip', '/', $pathOfZip);
+        return $extractions_folder;
     }
 
     /**
@@ -893,9 +891,8 @@ class OpenImmoImport
             $this->addToErrorLog(                
                 $folderForZipExtraction . ': ' .  $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:' . 'message_surplus_folder')
             );
-            $folderForZipExtraction = '';
+            //$folderForZipExtraction = '';
         } else {
-            echo $folderForZipExtraction;
             try {
                 GeneralUtility::mkdir_deep($folderForZipExtraction);
                 $this->filesToDelete[] = $folderForZipExtraction;
@@ -972,95 +969,26 @@ class OpenImmoImport
      */
     protected function loadXmlFile($pathOfZip)
     {
+        $xml_file_data = "";
         $xmlPath = $this->getPathForXml($pathOfZip);
+
         if ($xmlPath === '') {
             return;
         }
 
-        $this->importedXml = new \DOMDocument();
-        $this->importedXml->load($xmlPath);
-        $this->validateXml();
-    }
-
-    /**
-     * Returns the current content of the currently loaded XML file as a
-     * DOMDocument.
-     *
-     * @return DOMDocument loaded XML file, may be NULL if no document was
-     *                     loaded e.g. due to validation errors
-     */
-    protected function getImportedXml()
-    {
-        return $this->importedXml;
-    }
-
-    /**
-     * Validates an XML file and writes the validation result to the log.
-     * The XML file must have been loaded before. The schema to validate
-     * against is taken from the path in '$this- >schemaFile'. If this path is
-     * empty or invalid, validation is considered to be successful and the
-     * absence of a schema file is logged.
-     *
-     * @return void
-     */
-    private function validateXml()
-    {
-        $validationResult = '';
-        $schemaFile = $this->globalConfiguration->getAsString('openImmoSchema');
-
-        if ($schemaFile === '') {
-            $validationResult = 'message_no_schema_file';
-        } elseif (!\file_exists($schemaFile)) {
-            $validationResult = 'message_invalid_schema_file_path';
-        } elseif (!$this->getImportedXml()) {
-            $validationResult = 'message_validation_impossible';
-        } elseif (!$this->importedXml->schemaValidate($schemaFile)) {
-            $errors = \libxml_get_errors();
-            /** @var \LibXMLError $error */
-            foreach ($errors as $error) {
-                $validationResult .= $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_line') .
-                    ' ' . $error->line . ': ' . $error->message;
-            }
+        if (!file_exists($xmlPath)) {
+            $this->addToLogEntry($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_invalid_schema_file_path'));
+        } else {
+            $this->importedXml = new \DOMDocument();
+            $this->importedXml->load($xmlPath);
         }
+   }
+   
+   protected function getImportedXml()
+   {
+       return $this->importedXml;
+   }
 
-        $this->logValidationResult($validationResult);
-    }
-
-    /**
-     * Logs the validation result of the XML file.
-     *
-     * @param string $validationResult
-     *        result of the validation, can be either one of the locallang keys "message_no_schema_file",
-     *        "message_invalid_schema_file_path" or "message_validation_impossible" or an already localized error
-     *        message or an empty string if success should be logged
-     *
-     * @return void
-     */
-    private function logValidationResult($validationResult)
-    {
-        switch ($validationResult) {
-            case '':
-                $this->addToLogEntry($translator->translate('message_successful_validation') . "\n");
-                break;
-            case 'message_no_schema_file':
-                $this->addToLogEntry(
-                    $translator->translate($validationResult) . ' ' .
-                    $translator->translate('message_import_without_validation')
-                );
-                break;
-            case 'message_invalid_schema_file_path':
-                $this->addToLogEntry(
-                    $translator->translate($validationResult) . ' ' .
-                    $translator->translate('message_import_without_validation')
-                );
-                break;
-            case 'message_validation_impossible':
-                $this->addToErrorLog($translator->translate($validationResult));
-                break;
-            default:
-                $this->addToErrorLog($validationResult);
-        }
-    }
 
     /**
      * Removes the ZIP archives which have been imported and the folders which
@@ -1130,10 +1058,9 @@ class OpenImmoImport
             return [];
         }
 
-        /** @var \tx_realty_domDocumentConverter $domDocumentConverter */
-        $domDocumentConverter = GeneralUtility::makeInstance(\tx_realty_domDocumentConverter::class);
-
-        return $domDocumentConverter->getConvertedData($realtyRecords);
+        $domDocumentConverter = new XmlConverter;           
+        $recordsToInsert =  $domDocumentConverter->getConvertedData($realtyRecords);
+        return $recordsToInsert;
     }
 
     /**

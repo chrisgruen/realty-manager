@@ -100,6 +100,10 @@
                 <source>The path of the schema file is invalid. Please check your configuration in the extension manager.</source>
                 <target>Der Pfad zur Schemadatei ist ungültig. Bitte überprüfen Sie die Konfiguration im Extension Manager.</target>
             </trans-unit>
+            <trans-unit id="message_xml_novalid" xml:space="preserve" approved="yes">
+                <source>XML file can not read</source>
+                <target>XML-Datei kann nicht gelesen werden!</target>
+            </trans-unit>
             <trans-unit id="message_import_without_validation" xml:space="preserve" approved="yes">
                 <source>The import is done without validation.</source>
                 <target>Der Import wird ohne Validierung durchgeführt.</target>

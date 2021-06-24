@@ -178,7 +178,7 @@ class ImportController extends ActionController
             $path_import = $base_path.'/fileadmin'.$base_import_folder.'/'.$folder;
                        
             if ($folder == '') {
-                $folder = "NOT_EXIST";
+                $folder = "NOT_SET";
                 throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
             } else if (!is_dir($path_import)) {
                 throw new FolderDoesNotExistException('Folder does not exist', 1474827988);

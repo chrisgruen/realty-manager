@@ -5,7 +5,103 @@ namespace ChrisGruen\RealtyManager\Domain\Model;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class Objectimmo extends AbstractEntity
-{      
+{     
+    
+    /**
+     * @var int
+     */
+    const TYPE_FOR_RENT = 0;
+    
+    /**
+     * @var int
+     */
+    const TYPE_FOR_SALE = 1;
+    
+    /**
+     * @var int
+     */
+    const STATUS_VACANT = 0;
+    
+    /**
+     * @var int
+     */
+    const STATUS_RESERVED = 1;
+    
+    /**
+     * @var int
+     */
+    const STATUS_SOLD = 2;
+    
+    /**
+     * @var int
+     */
+    const STATUS_RENTED = 3;
+    
+    /**
+     * @var int
+     */
+    const ENERGY_CERTIFICATE_TYPE_UNDEFINED = 0;
+    
+    /**
+     * @var int
+     */
+    const ENERGY_CERTIFICATE_TYPE_REQUIREMENT = 1;
+    
+    /**
+     * @var int
+     */
+    const ENERGY_CERTIFICATE_TYPE_CONSUMPTION = 2;
+    
+    /**
+     * @var int
+     */
+    const ENERGY_CERTIFICATE_YEAR_UNDEFINED = 0;
+    
+    /**
+     * @var int
+     */
+    const ENERGY_CERTIFICATE_YEAR_2008 = 1;
+    
+    /**
+     * @var int
+     */
+    const ENERGY_CERTIFICATE_YEAR_2014 = 2;
+    
+    /**
+     * @var int
+     */
+    const ENERGY_CERTIFICATE_YEAR_NOT_AVAILABLE = 3;
+    
+    /**
+     * @var int
+     */
+    const ENERGY_CERTIFICATE_YEAR_NOT_REQUIRED = 4;
+    
+    /**
+     * @var int
+     */
+    const BUILDING_TYPE_UNDEFINED = 0;
+    
+    /**
+     * @var int
+     */
+    const BUILDING_TYPE_RESIDENTIAL = 1;
+    
+    /**
+     * @var int
+     */
+    const BUILDING_TYPE_BUSINESS = 2;
+    
+    /**
+     * @var int
+     */
+    const CONTACT_DATA_FROM_REALTY_OBJECT = 0;
+    
+    /**
+     * @var int
+     */
+    const CONTACT_DATA_FROM_OWNER_ACCOUNT = 1;
+    
     /**
      * @var \DateTime
      */
