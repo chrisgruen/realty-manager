@@ -88,15 +88,19 @@ class ImportController extends ActionController
     public function importAction()
     {
         $errors = '';
-        $employer_uid = 0;
-        $employer_uid = $this->request->getArgument('employer');
         $importResults = '';
+        $employer_folder = '';
+        
+        $employer_uid = $this->request->hasArgument('employer') ? $this->request->getArgument('employer') : 0;
+        
         //$success = false;
         
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
-        $sql = "SELECT import_folder from tx_realtymanager_domain_model_employer where uid = $employer_uid";
-        $employer_result = $connection->executeQuery($sql)->fetch();
-        $employer_folder = $employer_result['import_folder'];
+        if($employer_uid > 0) {
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
+            $sql = "SELECT import_folder from tx_realtymanager_domain_model_employer where uid = $employer_uid";
+            $employer_result = $connection->executeQuery($sql)->fetch();
+            $employer_folder = $employer_result['import_folder'];
+        }
         
         $errors = $this->checkFolderEmployer($employer_folder);
         if ($errors != '') {

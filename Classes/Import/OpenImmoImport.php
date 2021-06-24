@@ -8,6 +8,7 @@ use TYPO3\CMS\Core\Resource\ResourceFactory;
 use ChrisGruen\RealtyManager\Configuration\ConfigurationImport;
 use ChrisGruen\RealtyManager\Import\AttachmentImporter;
 use ChrisGruen\RealtyManager\Import\XmlConverter;
+use ChrisGruen\RealtyManager\Domain\Model\Objectimmo;
 use TYPO3\CMS\Core\Localization\LanguageService;
 
 
@@ -58,7 +59,7 @@ class OpenImmoImport
     private $settings = null;
 
     /**
-     * @var \tx_realty_Model_RealtyObject|null
+     * @var Objectimmo | null
      */
     private $realtyObject = null;
 
@@ -188,19 +189,6 @@ class OpenImmoImport
     }
 
 
-    /**
-     * Processes the insertion of realty records to database. Tries to fetch the
-     * data from the currently loaded XML file. If there is data, it is
-     * checked whether the record should be inserted or set to deleted.
-     * Success and failures are logged and an array with data for emails about
-     * the proceedings is returned.
-     *
-     * @param string $pathOfCurrentZipFile path of the current ZIP file, only used for log, may be empty
-     *
-     * @return mixed[][]
-     *         Two-dimensional array of email data. Each inner array has the elements "recipient", "objectNumber",
-     *         "logEntry" and "errorLog". Will be empty if there are no records to insert.
-     */
     private function processRealtyRecordInsertion($pathOfCurrentZipFile)
     {
         $emailData = [];
@@ -209,7 +197,7 @@ class OpenImmoImport
         $transferMode = null;
 
         $xml = $this->getImportedXml();
-        /*
+
         if ($xml instanceof \DOMDocument) {
             $xPath = new \DOMXPath($xml);
             $offererNodes = $xPath->query('//openimmo/anbieter/openimmo_anid');
@@ -223,73 +211,72 @@ class OpenImmoImport
                 $transferMode = $transferNode->getAttribute('umfang');
             }
         }
-        */
+        
+        if (!$this->hasValidOwnerForImport()) {
+            $this->addToErrorLog (
+                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_openimmo_anid_not_matches_allowed_fe_user') . ' "');
+            return;
+        }
    
         $recordsToInsert = $this->convertDomDocumentToArray($xml);
-        echo "recordsToInsert: <br />";
-        echo "<pre>";
-          print_r($recordsToInsert);
-        echo "<pre>";
-        exit();
-        if (empty($recordsToInsert)) {
-            // Ensures that the foreach-loop is passed at least once, so the log gets processed correctly.
-            $recordsToInsert = [[]];
-        } else {
-            // Only ZIP archives that have a valid owner and therefore can be imported are marked as deletable.
-            // The owner is the same for each record within one ZIP archive.
-            $this->loadRealtyObject($recordsToInsert[0]);
-            if ($this->hasValidOwnerForImport()) {
-                $this->filesToDelete[] = $pathOfCurrentZipFile;
-            }
-        }
+        
+        if (!empty($recordsToInsert)) {
+            echo "recordsToInsert: <br />";
+            echo "<pre>";
+            print_r($recordsToInsert[0]);
+            echo "<pre>";
+            exit();
 
-        foreach ($recordsToInsert as $record) {
-            $dataForDatabase = $record;
-            unset($dataForDatabase['attached_files']);
-            $this->writeToDatabase($dataForDatabase);
-
-            $realtyObject = $this->realtyObject;
-            if (!$realtyObject->isDead() && !$realtyObject->isDeleted()) {
-                $this->importAttachments($record, $pathOfCurrentZipFile);
-                $savedRealtyObjects->add($realtyObject);
-                $emailData[] = $this->createEmailRawDataArray(
-                    $this->getContactEmailFromRealtyObject(),
-                    $this->getObjectNumberFromRealtyObject()
-                );
-            }
-            $this->storeLogsAndClearTemporaryLog();
-        }
-
-        if ($transferMode === self::FULL_TRANSFER_MODE
-            && $this->globalConfiguration->getAsBoolean('importCanDeleteRecordsForFullSync')
-        ) {
-            $pid = \Tx_Oelib_ConfigurationProxy::getInstance('realty')->getAsInteger('pidForRealtyObjectsAndImages');
-            /** @var \tx_realty_Mapper_RealtyObject $realtyObjectMapper */
-            $realtyObjectMapper = \Tx_Oelib_MapperRegistry::get(\tx_realty_Mapper_RealtyObject::class);
-            $deletedObjects = $realtyObjectMapper->deleteByAnidAndPidWithExceptions(
-                $offererId,
-                $pid,
-                $savedRealtyObjects
-            );
-            if (!empty($deletedObjects)) {
-                /** @var string[] $uids */
-                $uids = [];
-                foreach ($deletedObjects as $deletedObject) {
-                    $uids[] = $deletedObject->getUid();
+            foreach ($recordsToInsert as $record) {
+                $dataForDatabase = $record;
+                unset($dataForDatabase['attached_files']);
+                $this->writeToDatabase($dataForDatabase);
+    
+                $realtyObject = $this->realtyObject;
+                if (!$realtyObject->isDead() && !$realtyObject->isDeleted()) {
+                    $this->importAttachments($record, $pathOfCurrentZipFile);
+                    $savedRealtyObjects->add($realtyObject);
+                    /*
+                    $emailData[] = $this->createEmailRawDataArray(
+                        $this->getContactEmailFromRealtyObject(),
+                        $this->getObjectNumberFromRealtyObject()
+                    );
+                    */
                 }
-                $this->addToLogEntry(
-                    $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_deleted_objects_from_full_sync') . ' ' .
-                    \implode(', ', $uids)
+                $this->storeLogsAndClearTemporaryLog();
+            }
+    
+            if ($transferMode === self::FULL_TRANSFER_MODE
+                && $this->globalConfiguration->getAsBoolean('importCanDeleteRecordsForFullSync')
+            ) {
+                $pid = \Tx_Oelib_ConfigurationProxy::getInstance('realty')->getAsInteger('pidForRealtyObjectsAndImages');
+                /** @var \tx_realty_Mapper_RealtyObject $realtyObjectMapper */
+                $realtyObjectMapper = \Tx_Oelib_MapperRegistry::get(\tx_realty_Mapper_RealtyObject::class);
+                $deletedObjects = $realtyObjectMapper->deleteByAnidAndPidWithExceptions(
+                    $offererId,
+                    $pid,
+                    $savedRealtyObjects
                 );
+                if (!empty($deletedObjects)) {
+                    /** @var string[] $uids */
+                    $uids = [];
+                    foreach ($deletedObjects as $deletedObject) {
+                        $uids[] = $deletedObject->getUid();
+                    }
+                    $this->addToLogEntry(
+                        $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_deleted_objects_from_full_sync') . ' ' .
+                        \implode(', ', $uids)
+                    );
+                }
+            }
+    
+            if (!$this->deleteCurrentZipFile) {
+                $this->filesToDelete = \array_diff($this->filesToDelete, [$pathOfCurrentZipFile]);
+                $this->deleteCurrentZipFile = true;
             }
         }
-
-        if (!$this->deleteCurrentZipFile) {
-            $this->filesToDelete = \array_diff($this->filesToDelete, [$pathOfCurrentZipFile]);
-            $this->deleteCurrentZipFile = true;
-        }
-
-        return $emailData;
+        return true;
+        //return $emailData;
     }
 
     /**
@@ -319,18 +306,6 @@ class OpenImmoImport
         $attachmentImporter->finishTransaction();
     }
 
-    /**
-     * Tries to write an imported record to the database and checks the contact
-     * email address. If the address is invalid, it is replaced by the default
-     * address as configured in EM.
-     * Note: There is no check for the validity of the default address. If the
-     * DOMDocument cannot be loaded, or if required fields are missing, the
-     * record will not be inserted to the database. Success and failures are logged.
-     *
-     * @param array $realtyRecord record to insert, may be empty
-     *
-     * @return void
-     */
     protected function writeToDatabase(array $realtyRecord)
     {
         $this->loadRealtyObject($realtyRecord);
@@ -398,33 +373,11 @@ class OpenImmoImport
             : '';
     }
 
-    /**
-     * Checks whether the current realty object's supposed owner is in an
-     * allowed FE user group.
-     *
-     * Returns true if this check is disabled by configuration.
-     *
-     * @return bool true if the current realty object's owner matches
-     *                 an allowed FE user, also true if this check is
-     *                 disabled by configuration, false otherwise
-     */
+
     private function hasValidOwnerForImport()
     {
-        if (!$this->globalConfiguration->getAsBoolean('onlyImportForRegisteredFrontEndUsers')) {
-            return true;
-        }
-
-        try {
-            $this->realtyObject->getOwner();
-        } catch (\Tx_Oelib_Exception_NotFound $exception) {
-            return false;
-        }
-
-        $allowedFrontEndUserGroups = $this->globalConfiguration->getAsString('allowedFrontEndUserGroups');
-
-        // An empty string is interpreted as any FE user group being allowed.
-        return $allowedFrontEndUserGroups === ''
-            || $this->realtyObject->getOwner()->hasGroupMembership($allowedFrontEndUserGroups);
+        return true;
+        //return false;
     }
 
     /**
@@ -1078,8 +1031,16 @@ class OpenImmoImport
      */
     protected function loadRealtyObject($data)
     {
-        $this->realtyObject = GeneralUtility::makeInstance(\tx_realty_Model_RealtyObject::class, $this->isTestMode);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
+        $sql = "SHOW COLUMNS FROM tx_realtymanager_domain_model_objectimmo";
+        $col_data = $connection->executeQuery($sql)->fetch;
+        print_r($col_data);
+        exit();
+        
+        /*
+        $this->realtyObject = GeneralUtility::makeInstance(Objectimmo::class, $this->isTestMode);
         $this->realtyObject->loadRealtyObject($data, true);
+        */
     }
 
     /**
@@ -1090,7 +1051,7 @@ class OpenImmoImport
      */
     private function getObjectNumberFromRealtyObject()
     {
-        if (!$this->realtyObject instanceof \tx_realty_Model_RealtyObject || $this->realtyObject->isDead()) {
+        if (!$this->realtyObject instanceof Objectimmo || $this->realtyObject->isDead()) {
             return '';
         }
 
@@ -1113,7 +1074,7 @@ class OpenImmoImport
      */
     protected function getContactEmailFromRealtyObject()
     {
-        if (!$this->realtyObject instanceof \tx_realty_Model_RealtyObject || $this->realtyObject->isDead()) {
+        if (!$this->realtyObject instanceof Objectimmo || $this->realtyObject->isDead()) {
             return '';
         }
 
@@ -1148,7 +1109,7 @@ class OpenImmoImport
      */
     private function setContactEmailOfRealtyObject($address)
     {
-        if (!$this->realtyObject instanceof \tx_realty_Model_RealtyObject) {
+        if (!$this->realtyObject instanceof Objectimmo) {
             return;
         }
 
@@ -1164,7 +1125,7 @@ class OpenImmoImport
      */
     protected function getRequiredFields()
     {
-        if (!$this->realtyObject instanceof \tx_realty_Model_RealtyObject) {
+        if (!$this->realtyObject instanceof Objectimmo) {
             return [];
         }
 
