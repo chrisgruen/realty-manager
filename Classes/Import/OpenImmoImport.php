@@ -5,10 +5,12 @@ namespace ChrisGruen\RealtyManager\Import;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use ChrisGruen\RealtyManager\Configuration\ConfigurationImport;
 use ChrisGruen\RealtyManager\Import\AttachmentImporter;
 use ChrisGruen\RealtyManager\Import\XmlConverter;
 use ChrisGruen\RealtyManager\Domain\Model\Objectimmo;
+use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
 use TYPO3\CMS\Core\Localization\LanguageService;
 
 
@@ -105,6 +107,18 @@ class OpenImmoImport
         $this->isTestMode = $isTestMode;
         $this->settings = GeneralUtility::makeInstance(ConfigurationImport::class);
     }
+    
+    private $objectimmoRepository;
+    
+    /**
+     * Inject the objectimmo repository
+     *
+     * @param ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository $objectimmoRepository
+     */
+    public function injectObjectimmoRepository(ObjectimmoRepository $objectimmoRepository)
+    {
+        $this->objectimmoRepository = $objectimmoRepository;
+    }
 
     /**
      * Extracts ZIP archives from an absolute path of a directory and inserts
@@ -157,7 +171,7 @@ class OpenImmoImport
             foreach ($zipsToExtract as $currentZip) {
                 $this->extractZip($currentZip);  
                 $xml_file_data = $this->loadXmlFile($currentZip);
-                $recordData = $this->processRealtyRecordInsertion($currentZip);
+                $recordData = $this->processRealtyRecordInsertion($employer_folder,$currentZip);
                     //$emailData = \array_merge($emailData, $recordData);
                 }
         }
@@ -189,7 +203,7 @@ class OpenImmoImport
     }
 
 
-    private function processRealtyRecordInsertion($pathOfCurrentZipFile)
+    private function processRealtyRecordInsertion($employer_folder, $pathOfCurrentZipFile)
     {
         $emailData = [];
         //$savedRealtyObjects = new \Tx_Oelib_List();
@@ -205,6 +219,11 @@ class OpenImmoImport
             if ($offererNode instanceof \DOMNode) {
                 $offererId = (string)$offererNode->nodeValue;
             }
+            $ownerNodes = $xPath->query('//openimmo/anbieter/anbieternr');
+            $ownerNode = $ownerNodes->item(0);
+            if ($ownerNode instanceof \DOMNode) {
+                $ownerId = (string)$ownerNode->nodeValue;
+            }
 
             $transferNode = $xPath->query('//openimmo/uebertragung')->item(0);
             if ($transferNode instanceof \DOMNode) {
@@ -212,20 +231,17 @@ class OpenImmoImport
             }
         }
         
-        if (!$this->hasValidOwnerForImport()) {
+        if (!$this->hasValidOwnerForImport($employer_folder, $ownerId)) {
             $this->addToErrorLog (
-                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_openimmo_anid_not_matches_allowed_fe_user') . ' "');
+                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_openimmo_anid_not_matches_allowed_fe_user') . '"'.
+                $ownerId. '".' . "\n"
+             );
             return;
         }
    
         $recordsToInsert = $this->convertDomDocumentToArray($xml);
         
         if (!empty($recordsToInsert)) {
-            echo "recordsToInsert: <br />";
-            echo "<pre>";
-            print_r($recordsToInsert[0]);
-            echo "<pre>";
-            exit();
 
             foreach ($recordsToInsert as $record) {
                 $dataForDatabase = $record;
@@ -308,16 +324,15 @@ class OpenImmoImport
 
     protected function writeToDatabase(array $realtyRecord)
     {
-        $this->loadRealtyObject($realtyRecord);
-        $this->ensureContactEmail();
 
-        if (!$this->hasValidOwnerForImport()) {
-            $this->addToErrorLog(
-                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_openimmo_anid_not_matches_allowed_fe_user') . ' "' .
-                $this->realtyObject->getProperty('openimmo_anid') . '".' . "\n"
-            );
-            return;
-        }
+        $setNewObject = $this->objectimmoRepository->setNewObject($realtyRecord);
+        echo "recordsToInsert: <br />";
+        //echo "<pre>";
+        print_r($realtyRecord['title']);
+        //echo "<pre>";
+        exit();
+        
+
 
         // 'TRUE' allows to add an owner to the realty record if it hasn't got one.
         $errorMessage = $this->realtyObject->writeToDatabase(0, true);
@@ -374,10 +389,10 @@ class OpenImmoImport
     }
 
 
-    private function hasValidOwnerForImport()
+    private function hasValidOwnerForImport($employer_folder, $ownerId)
     {
-        return true;
-        //return false;
+        $checkOwnerAnid = $this->objectimmoRepository->checkOwnerAnid($employer_folder, $ownerId);
+        return $checkOwnerAnid;
     }
 
     /**

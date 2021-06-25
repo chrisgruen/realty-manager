@@ -50,7 +50,7 @@
             </trans-unit>
             <trans-unit id="message_openimmo_anid_not_matches_allowed_fe_user" xml:space="preserve" approved="yes">
                 <source>The record was not imported because the option to restrict import on registered users is activated and this record's OpenImmo ANID did not match any OpenImmo ANID of a FE user who is in the allowed user groups. The record's OpenImmo ANID was:</source>
-                <target>Der Datensatz wurde nicht importiert, weil in der Konfiguration eingestellt ist, dass Datensätze nur für registrierte FE-Benutzer importiert werden dürfen und dieser Datensatz keine OpenImmo-ANID enthält, die mit der eines FE-Benutzers in einer der erlaubten Gruppen übereinstimmt. Die OpenImmo-ANID des Datensatze war:</target>
+                <target>Daten können nicht importiert werden. Der zugewiesene Benutzer hate keine oder falsche OpenImmo-ANID.  Die richtige OpenImmo-ANID der XML-datei war:</target>
             </trans-unit>
             <trans-unit id="message_log_sent_to" xml:space="preserve" approved="yes">
                 <source>The log was sent to</source>

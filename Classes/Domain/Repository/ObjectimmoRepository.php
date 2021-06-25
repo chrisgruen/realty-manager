@@ -169,6 +169,33 @@ class ObjectimmoRepository extends Repository
         $districts = $connection->executeQuery($sql)->fetchAll();
         return $districts;
     }
+    
+    public function checkOwnerAnid($employer_folder, $ownerId) {
+        
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
+        $sql = "SELECT openimmo_anid from tx_realtymanager_domain_model_employer
+                    WHERE import_folder = '".$employer_folder."'";
+        
+        $employer_anid_sql = $connection->executeQuery($sql)->fetch();
+        $employer_anid = $employer_anid_sql['openimmo_anid'];
+        
+        if ($ownerId == $employer_anid) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * set a new Object
+     * Data from Table "tx_realtymanager_domain_model_objectimmo"
+     * @return void
+     */
+    public function setNewObject(array $obj_insert) {
+        echo "new data to insert";
+        print_r($obj_insert);
+        exit();
+    }
       
     
     /**

@@ -200,19 +200,15 @@ class XmlConverter
         $this->fetchUniversalData();
         $numberOfRecords = $this->getNumberOfRecords();
         
-        for (
-            $this->recordNumber = 0;
-            $this->recordNumber < $numberOfRecords;
-            $this->recordNumber++
-            ) {
-                $realtyRecordArray = $this->getRealtyArray();
-                $this->addUniversalData($realtyRecordArray);
-                $result[] = $realtyRecordArray;
-                
-                $this->resetImportedData();
-            }
+        for ($this->recordNumber = 0; $this->recordNumber < $numberOfRecords; $this->recordNumber++) {
+            $realtyRecordArray = $this->getRealtyArray();
+            $this->addUniversalData($realtyRecordArray);
+            $result[] = $realtyRecordArray;
             
-            return $result;
+            $this->resetImportedData();
+        }
+            
+        return $result;
     }
 
     
