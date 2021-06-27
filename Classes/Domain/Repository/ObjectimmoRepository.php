@@ -10,7 +10,7 @@ class ObjectimmoRepository extends Repository
 {
     public function getAllObjects()
     {
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_objectimmo');
         $sql = "SELECT *, obj.uid as uid, obj.title as title FROM tx_realtymanager_domain_model_objectimmo obj
                 LEFT JOIN pages p on obj.pid = p.uid
                 WHERE obj.hidden = 0 AND obj.deleted = 0 AND p.hidden = 0 AND p.deleted = 0
@@ -191,10 +191,50 @@ class ObjectimmoRepository extends Repository
      * Data from Table "tx_realtymanager_domain_model_objectimmo"
      * @return void
      */
-    public function setNewObject(array $obj_insert) {
-        echo "new data to insert";
-        print_r($obj_insert);
-        exit();
+    public function setNewObject($ownerId, array $obj_insert) {
+        
+        $pid_be_employer = 0;
+        $object_number = '';
+        $object_number = $obj_insert['object_number'];
+        
+        $queryOwner = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_employer');
+        $pid_be_employer = $queryOwner
+                            ->select('pid_be_user')
+                            ->from('tx_realtymanager_domain_model_employer')
+                            ->where($queryOwner->expr()->eq('openimmo_anid', $queryOwner->createNamedParameter($ownerId)))
+                            ->execute()
+                            ->fetchColumn(0);
+
+        if ($pid_be_employer > 0) {
+            
+            $queryCheckEntry = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_objectimmo');
+            $checkEntry = $queryCheckEntry
+                            ->select('object_number')
+                            ->from('tx_realtymanager_domain_model_objectimmo')
+                            ->where($queryCheckEntry->expr()->eq('object_number', $queryCheckEntry->createNamedParameter($object_number)))
+                            ->execute()
+                            ->fetchColumn(0);
+            
+            
+            if ($checkEntry == Null) {
+            
+                $dataToInsert = $obj_insert;
+                $dataToInsert['pid'] = $pid_be_employer;
+                $dataToInsert['tstamp'] = $GLOBALS['SIM_EXEC_TIME'];
+                $dataToInsert['crdate'] = $GLOBALS['SIM_EXEC_TIME'];
+                
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_objectimmo');
+                $affectedRows = $queryBuilder
+                                ->insert('tx_realtymanager_domain_model_objectimmo')
+                                ->values($dataToInsert)
+                                ->execute();
+                
+                return true; 
+            }
+            return false; 
+        } else {
+            return false;
+        }
     }
       
     

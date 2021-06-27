@@ -5,7 +5,6 @@ namespace ChrisGruen\RealtyManager\Import;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use ChrisGruen\RealtyManager\Configuration\ConfigurationImport;
 use ChrisGruen\RealtyManager\Import\AttachmentImporter;
 use ChrisGruen\RealtyManager\Import\XmlConverter;
@@ -246,7 +245,7 @@ class OpenImmoImport
             foreach ($recordsToInsert as $record) {
                 $dataForDatabase = $record;
                 unset($dataForDatabase['attached_files']);
-                $this->writeToDatabase($dataForDatabase);
+                $this->writeToDatabase($ownerId, $dataForDatabase);
     
                 $realtyObject = $this->realtyObject;
                 if (!$realtyObject->isDead() && !$realtyObject->isDeleted()) {
@@ -322,18 +321,18 @@ class OpenImmoImport
         $attachmentImporter->finishTransaction();
     }
 
-    protected function writeToDatabase(array $realtyRecord)
+    protected function writeToDatabase($ownerId, array $realtyRecord)
     {
 
-        $setNewObject = $this->objectimmoRepository->setNewObject($realtyRecord);
-        echo "recordsToInsert: <br />";
-        //echo "<pre>";
-        print_r($realtyRecord['title']);
-        //echo "<pre>";
+        $setNewObject = $this->objectimmoRepository->setNewObject($ownerId, $realtyRecord);
+        
+        if ($setNewObject == true) {
+            echo "new entry in table tx_realtymanager_domain_model_objectimmo";
+        } else {
+            echo "Error: new entry in table failed";
+        }
         exit();
         
-
-
         // 'TRUE' allows to add an owner to the realty record if it hasn't got one.
         $errorMessage = $this->realtyObject->writeToDatabase(0, true);
 
