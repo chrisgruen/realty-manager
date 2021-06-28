@@ -323,7 +323,6 @@ class OpenImmoImport
 
     protected function writeToDatabase($ownerId, array $realtyRecord)
     {
-
         $setNewObject = $this->objectimmoRepository->setNewObject($ownerId, $realtyRecord);
         
         if ($setNewObject == true) {

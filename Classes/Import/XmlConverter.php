@@ -3,6 +3,7 @@
 namespace ChrisGruen\RealtyManager\Import;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use ChrisGruen\RealtyManager\Domain\Model\Objectimmo;
 
 
@@ -358,6 +359,7 @@ class XmlConverter
         
         $this->replaceImportedBooleanLikeStrings();
         $this->substituteSurplusDecimals();
+        $this->fixHouseType();
         
         return $this->importedData;
     }
@@ -471,7 +473,39 @@ class XmlConverter
             $this->addImportedData('street', $this->importedData['street'] . ' ' . $streetNumberNode->nodeValue);
         }
     }
-    
+
+    private function fixHouseType() {
+        if (!$this->importedData['house_type'])  {
+            return;
+        }
+
+        $house_type_id = 0;
+        $apartment_type_id = 0;
+        
+        $queryGetHouseId = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_house_types');
+        $house_type_id = $queryGetHouseId
+                            ->select('uid')
+                            ->from('tx_realtymanager_domain_model_house_types')
+                            ->where($queryGetHouseId->expr()->eq('title', $queryGetHouseId->createNamedParameter('Mietwohnung')))
+                            ->execute()
+                            ->fetchColumn(0);
+        
+        $apartment_type_name = floor($this->importedData['number_of_rooms']).'-Raum-Wohnung';
+        
+        $queryGetApartmentTypeId = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_apartment_types');
+        $apartment_type_id = $queryGetApartmentTypeId
+                                ->select('uid')
+                                ->from('tx_realtymanager_domain_model_apartment_types')
+                                ->where($queryGetApartmentTypeId->expr()->eq('title', $queryGetApartmentTypeId->createNamedParameter($apartment_type_name)))
+                                ->execute()
+                                ->fetchColumn(0);
+        
+        if($this->importedData['house_type']=='Wohnung') {
+            $this->addImportedData('house_type', $house_type_id);
+            $this->addImportedData('apartment_type', $apartment_type_id);
+        }
+    }
+
     /**
      * Replaces the value for 'pets' with a describtive string.
      * 'pets' is boolean in OpenImmo records. But in the database the value for
