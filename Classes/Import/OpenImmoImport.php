@@ -201,11 +201,13 @@ class OpenImmoImport
         return $this->success;
     }
 
-
+    /**
+     * start process for dataset insert to "tx_realtymanager_domain_model_objectimmo"
+     * start importAttachments
+     */
     private function processRealtyRecordInsertion($employer_folder, $pathOfCurrentZipFile)
     {
         $emailData = [];
-        //$savedRealtyObjects = new \Tx_Oelib_List();
         $offererId = '';
         $transferMode = null;
         
@@ -247,24 +249,15 @@ class OpenImmoImport
                 $dataForDatabase = $record;
                 unset($dataForDatabase['attached_files']);
                 $dataset_to_mysql = $this->writeToDatabase($ownerId, $dataForDatabase);
-                
+
+                /* if dataset save, start process importAttachments */
                 if ($dataset_to_mysql == true) {
                     $this->importAttachments($ownerId, $record, $pathOfCurrentZipFile);
                 }
                 
+                /* last dev point */
                 return $this->logEntry;
     
-                $realtyObject = $this->realtyObject;
-                if (!$realtyObject->isDead() && !$realtyObject->isDeleted()) {
-                    $this->importAttachments($record, $pathOfCurrentZipFile);
-                    $savedRealtyObjects->add($realtyObject);
-                    /*
-                    $emailData[] = $this->createEmailRawDataArray(
-                        $this->getContactEmailFromRealtyObject(),
-                        $this->getObjectNumberFromRealtyObject()
-                    );
-                    */
-                }
                 //$this->storeLogsAndClearTemporaryLog();
             }
     
