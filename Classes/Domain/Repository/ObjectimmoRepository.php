@@ -223,6 +223,14 @@ class ObjectimmoRepository extends Repository
                 $dataToInsert['tstamp'] = $GLOBALS['SIM_EXEC_TIME'];
                 $dataToInsert['crdate'] = $GLOBALS['SIM_EXEC_TIME'];
                 
+                $dataToInsert['house_type'] = $this->getRealitionUid('tx_realtymanager_domain_model_house_types', $obj_insert['house_type']);
+                $dataToInsert['apartment_type'] = $this->getRealitionUid('tx_realtymanager_domain_model_apartment_types', $obj_insert['apartment_type']);
+                $dataToInsert['city'] = $this->getRealitionUid('tx_realtymanager_domain_model_cities', $obj_insert['city']);
+                $dataToInsert['district'] = $this->getRealitionUid('tx_realtymanager_domain_model_districts', $obj_insert['district']);
+                $dataToInsert['pets'] = $this->getRealitionUid('tx_realtymanager_domain_model_pets', $obj_insert['pets']);
+                $dataToInsert['garage_type'] = $this->getRealitionUid('tx_realtymanager_domain_model_car_places', $obj_insert['garage_type']);
+                
+                
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_objectimmo');
                 $affectedRows = $queryBuilder
                                 ->insert('tx_realtymanager_domain_model_objectimmo')
@@ -235,6 +243,23 @@ class ObjectimmoRepository extends Repository
         } else {
             return false;
         }
+    }
+    
+    /**
+     * set a get realition uid of table
+     * Data from Table $table
+     *
+     */
+    public function getRealitionUid($table, $field_val) {
+
+        $queryGetUId = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+        $uid = $queryGetUId->select('uid')
+                            ->from($table)
+                            ->where($queryGetUId->expr()->eq('title', $queryGetUId->createNamedParameter($field_val)))
+                            ->execute()
+                            ->fetchColumn(0);
+        
+        return $uid;
     }
       
     
