@@ -187,6 +187,45 @@ class ObjectimmoRepository extends Repository
     }
     
     /**
+     * get  $pid_be_employer
+     * Data from Table "tx_realtymanager_domain_model_employer"
+     * @return int
+     */
+    public function getPidEmployer($ownerId) {
+        
+        $queryOwner = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_employer');
+        $pid_be_employer = $queryOwner
+                            ->select('pid_be_user')
+                            ->from('tx_realtymanager_domain_model_employer')
+                            ->where($queryOwner->expr()->eq('openimmo_anid', $queryOwner->createNamedParameter($ownerId)))
+                            ->execute()
+                            ->fetchColumn(0);
+                       
+        
+        return $pid_be_employer;
+    }
+    
+    /**
+     * get  $uid from object
+     * Data from Table "tx_realtymanager_domain_model_objectimmo"
+     * @return int
+     */
+    public function getUidObject($obj_number, $PidEmployer) {
+        
+        $queryUidObject = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_objectimmo');
+        $uidObject = $queryUidObject
+                        ->select('uid')
+                        ->from('tx_realtymanager_domain_model_objectimmo')
+                        ->where($queryUidObject->expr()->eq('object_number', $queryUidObject->createNamedParameter($obj_number)))
+                        ->where($queryUidObject->expr()->eq('pid', $queryUidObject->createNamedParameter($PidEmployer)))
+                        ->orderBy('uid', 'DESC')
+                        ->execute()
+                        ->fetchColumn(0);
+        
+        return $uidObject;
+    }
+    
+    /**
      * set a new Object
      * Data from Table "tx_realtymanager_domain_model_objectimmo"
      * @return void
@@ -198,12 +237,7 @@ class ObjectimmoRepository extends Repository
         $object_number = $obj_insert['object_number'];
         
         $queryOwner = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_employer');
-        $pid_be_employer = $queryOwner
-                            ->select('pid_be_user')
-                            ->from('tx_realtymanager_domain_model_employer')
-                            ->where($queryOwner->expr()->eq('openimmo_anid', $queryOwner->createNamedParameter($ownerId)))
-                            ->execute()
-                            ->fetchColumn(0);
+        $pid_be_employer = $this->getPidEmployer($ownerId);
 
         if ($pid_be_employer > 0) {
             

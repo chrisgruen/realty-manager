@@ -208,6 +208,7 @@ class OpenImmoImport
         //$savedRealtyObjects = new \Tx_Oelib_List();
         $offererId = '';
         $transferMode = null;
+        
 
         $xml = $this->getImportedXml();
 
@@ -245,7 +246,13 @@ class OpenImmoImport
             foreach ($recordsToInsert as $record) {
                 $dataForDatabase = $record;
                 unset($dataForDatabase['attached_files']);
-                $this->writeToDatabase($ownerId, $dataForDatabase);
+                $dataset_to_mysql = $this->writeToDatabase($ownerId, $dataForDatabase);
+                
+                if ($dataset_to_mysql == true) {
+                    $this->importAttachments($ownerId, $record, $pathOfCurrentZipFile);
+                }
+                
+                return $this->logEntry;
     
                 $realtyObject = $this->realtyObject;
                 if (!$realtyObject->isDead() && !$realtyObject->isDeleted()) {
@@ -258,7 +265,7 @@ class OpenImmoImport
                     );
                     */
                 }
-                $this->storeLogsAndClearTemporaryLog();
+                //$this->storeLogsAndClearTemporaryLog();
             }
     
             if ($transferMode === self::FULL_TRANSFER_MODE
@@ -293,22 +300,49 @@ class OpenImmoImport
         return true;
         //return $emailData;
     }
+    
+    /**
+     * @param array $realtyRecord
+     *
+     * @return boolean
+     */
+    protected function writeToDatabase($ownerId, array $realtyRecord)
+    {
+        $setNewObject = $this->objectimmoRepository->setNewObject($ownerId, $realtyRecord);
+        
+        $message = '';
+        if ($setNewObject == true) {
+            $message = "new entry in table tx_realtymanager_domain_model_objectimmo";
+            $this->addToLogEntry($message . "\n");
+            return true;
+        } else {
+            $message = "Error: dataset can not save";
+            $this->addToLogEntry($message . "\n");
+            return false;
+        }
+    }
 
     /**
      * @param array $objectData
-     * @param string $pathOfCurrentZipFile
      *
      * @return void
      */
-    private function importAttachments(array $objectData, $pathOfCurrentZipFile)
+    private function importAttachments($ownerId, array $objectData, $pathOfCurrentZipFile)
     {
         if (empty($objectData['attached_files'])) {
             return;
         }
-
-        $attachmentImporter = GeneralUtility::makeInstance(AttachmentImporter::class, $this->realtyObject);
+        
+        $attachmentImporter = GeneralUtility::makeInstance(AttachmentImporter::class, $ownerId, $objectData, $this->objectimmoRepository);
         $attachmentImporter->startTransaction();
+        
         $extractionFolder = $this->getNameForExtractionFolder($pathOfCurrentZipFile);
+        
+        echo $pathOfCurrentZipFile . " :: " .$extractionFolder."<br />";
+        echo "<pre>";
+            print_r($objectData['attached_files']);
+        echo "</pre>";
+        exit();
 
         /** @var string[] $attachmentData */
         foreach ($objectData['attached_files'] as $attachmentData) {
@@ -321,56 +355,7 @@ class OpenImmoImport
         $attachmentImporter->finishTransaction();
     }
 
-    protected function writeToDatabase($ownerId, array $realtyRecord)
-    {
-        $setNewObject = $this->objectimmoRepository->setNewObject($ownerId, $realtyRecord);
-        
-        if ($setNewObject == true) {
-            echo "new entry in table tx_realtymanager_domain_model_objectimmo";
-        } else {
-            echo "Error: new entry in table failed";
-        }
-        exit();
-        
-        // 'TRUE' allows to add an owner to the realty record if it hasn't got one.
-        $errorMessage = $this->realtyObject->writeToDatabase(0, true);
 
-        switch ($errorMessage) {
-            case '':
-                $this->addToLogEntry($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_written_to_database') . "\n");
-                break;
-            case 'message_deleted_flag_set':
-                // The fall-through is intended.
-            case 'message_deleted_flag_causes_deletion':
-                // A set deleted flag is no real error, so is not stored in the error log.
-                $this->addToLogEntry($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage) . "\n");
-                break;
-            case 'message_fields_required':
-                $this->addToErrorLog(
-                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage) . ': ' .
-                    \implode(', ', $this->realtyObject->checkForRequiredFields()) . '. ' .
-                    $this->getPleaseActivateValidationMessage() . "\n"
-                );
-                break;
-            case 'message_object_limit_reached':
-                $this->deleteCurrentZipFile = false;
-                $owner = $this->realtyObject->getOwner();
-                $this->addToErrorLog(
-                    \sprintf(
-                        $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage),
-                        $owner->getName(),
-                        $owner->getUid(),
-                        $owner->getTotalNumberOfAllowedObjects()
-                    ) . "\n"
-                );
-                break;
-            default:
-                $this->addToErrorLog(
-                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage). ' ' .
-                    $this->getPleaseActivateValidationMessage() . "\n"
-                );
-        }
-    }
 
     /**
      * Returns a localized message that validation should be activated. Will be

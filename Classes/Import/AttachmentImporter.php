@@ -2,27 +2,27 @@
 
 namespace ChrisGruen\RealtyManager\Import;
 
-/**
- * This class handles the import (or update) of attachments for a single realty object.
- *
- * Usage:
- *
- * 1. create instance and pass the realty object
- * 2. start transaction
- * 3. add attachments
- * 4. finish transaction
- *
- * This process will save the updated realty object, save all new attachments, keep all updates attachments,
- * and will delete those attachments that have not been updated.
- *
- * @author Oliver Klee <typo3-coding@oliverklee.de>
- */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Resource\FileRepository;
+use TYPO3\CMS\Core\Resource\Folder;
+use ChrisGruen\RealtyManager\Domain\Model\Objectimmo;
+use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
+
 class AttachmentImporter
 {
+    
     /**
-     * @var \tx_realty_Model_RealtyObject
+     * @var string
      */
-    private $realtyObject = null;
+    private $ownerId = '';
+    
+    /**
+     * @var string[]
+     */
+    private $record = [];
 
     /**
      * @var bool
@@ -42,25 +42,28 @@ class AttachmentImporter
      * @var bool[]
      */
     private $uidsOfFilesToRemove = [];
+    
+    private $objectimmoRepository;
 
-    public function __construct(\tx_realty_Model_RealtyObject $realtyObject)
+
+    public function __construct($ownerId, $record, ObjectimmoRepository $objectimmoRepository)
     {
-        $this->realtyObject = $realtyObject;
+        $this->ownerId = $ownerId;
+        $this->record = $record;
+        $this->objectimmoRepository = $objectimmoRepository;
     }
+    
 
-    /**
-     * @return void
-     *
-     * @throws \BadMethodCallException
-     * @throws \RuntimeException
-     */
     public function startTransaction()
     {
         $this->assertNoTransactionIsInProgress();
         $this->transactionIsInProgress = true;
 
-        $this->ensureUidForRealtyObject();
-        $this->extractAttachmentUids();
+        $uidObject = $this->getUIdRecord();
+        echo $uidObject . " :: ";
+
+        //$this->clearAttachments($uidObject);
+        //$this->extractAttachmentUid($uidObject);
     }
 
     /**
@@ -79,33 +82,18 @@ class AttachmentImporter
     }
 
     /**
-     * @return void
      *
-     * @throws \RuntimeException
+     * @return uid object record
      */
-    private function ensureUidForRealtyObject()
-    {
-        if (!$this->realtyObject->hasUid()) {
-            $result = $this->realtyObject->writeToDatabase();
-            if ($result !== '') {
-                throw new \RuntimeException(
-                    'The realty object could not be saved. This is the reason: ' . $result,
-                    1551133807
-                );
-            }
-        }
+    public function getUIdRecord()
+    {    
+        $obj_number = $this->record['object_number'];
+        $PidEmployer = $this->objectimmoRepository->getPidEmployer($this->ownerId);
+        $uidObject = $this->objectimmoRepository->getUidObject($obj_number, $PidEmployer);
+       
+        return $uidObject;
     }
 
-    /**
-     * @return void
-     */
-    private function extractAttachmentUids()
-    {
-        foreach ($this->realtyObject->getAttachments() as $attachment) {
-            $attachmentUid = $attachment->getOriginalFile()->getUid();
-            $this->uidsOfFilesToRemove[$attachmentUid] = true;
-        }
-    }
 
     /**
      * Marks the given attachment to be added/updated.
@@ -148,6 +136,9 @@ class AttachmentImporter
      */
     public function finishTransaction()
     {
+        echo "finish Transaction";
+        exit();
+        
         $this->assertTransactionIsInProgress();
 
         $this->processAddedAttachments();
@@ -187,5 +178,41 @@ class AttachmentImporter
         foreach ($this->uidsOfFilesToRemove as $uid => $_) {
             $this->realtyObject->removeAttachmentByFileUid($uid);
         }
+    }
+    
+    
+    /**
+     * clear attachements
+     */
+    public function clearAttachments($uidObject)
+    {
+        if ($uidObject < 1) {
+            return [];
+        }
+        
+        $find_attachements = $this->getFileRepository()->findByRelation('tx_realtymanager_domain_model_objectimmo', 'attachments', $uidObject);
+    }
+    
+    /**
+     * @return FileReference[]
+     */
+    public function getAttachments($uidObject)
+    {
+        if ($uidObject < 1) {
+            return [];
+        }
+        
+        return $this->getFileRepository()->findByRelation('tx_realtymanager_domain_model_objectimmo', 'attachments', $uidObject);
+    }
+    
+    /**
+     * @return FileRepository
+     */
+    private function getFileRepository()
+    {
+        /** @var FileRepository $fileRepository */
+        $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+        
+        return $fileRepository;
     }
 }
