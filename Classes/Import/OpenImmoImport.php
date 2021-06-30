@@ -252,7 +252,7 @@ class OpenImmoImport
 
                 /* if dataset save, start process importAttachments */
                 if ($dataset_to_mysql == true) {
-                    $this->importAttachments($ownerId, $record, $pathOfCurrentZipFile);
+                    $this->importAttachments($ownerId, $record, $pathOfCurrentZipFile, $employer_folder);
                 }
                 
                 /* last dev point */
@@ -320,7 +320,7 @@ class OpenImmoImport
      *
      * @return void
      */
-    private function importAttachments($ownerId, array $objectData, $pathOfCurrentZipFile)
+    private function importAttachments($ownerId, array $objectData, $pathOfCurrentZipFile, $employer_folder)
     {
         if (empty($objectData['attached_files'])) {
             return;
@@ -329,21 +329,17 @@ class OpenImmoImport
         $attachmentImporter = GeneralUtility::makeInstance(AttachmentImporter::class, $ownerId, $objectData, $this->objectimmoRepository);
         $attachmentImporter->startTransaction();
         
-        $extractionFolder = $this->getNameForExtractionFolder($pathOfCurrentZipFile);
-        
-        echo $pathOfCurrentZipFile . " :: " .$extractionFolder."<br />";
-        echo "<pre>";
-            print_r($objectData['attached_files']);
-        echo "</pre>";
-        exit();
+        $extractionFolder = $this->getFolderForImport($pathOfCurrentZipFile, $employer_folder);
 
         /** @var string[] $attachmentData */
         foreach ($objectData['attached_files'] as $attachmentData) {
-            $relativePath = $attachmentData['path'];
-            $fullPath = $extractionFolder . $relativePath;
+            $fileExtractionPath = $extractionFolder.$attachmentData['path'];
             $title = $attachmentData['title'];
-            $attachmentImporter->addAttachment($fullPath, $title);
+            $attachmentImporter->addAttachment($fileExtractionPath, $title);
         }
+        
+        
+        exit();
 
         $attachmentImporter->finishTransaction();
     }
@@ -814,6 +810,16 @@ class OpenImmoImport
         return $extractions_folder;
     }
 
+    protected function getFolderForImport($pathOfZip, $employer_folder) {
+        
+        $extractions_folder = '';
+        $import_folder = $this->settings->getResourceFolderImporter().'/'.$employer_folder;
+        $resource_folder = str_replace('.zip', '/', basename($pathOfZip));
+        
+        $extractions_folder = $import_folder . '/'. $resource_folder;        
+        return $extractions_folder;
+    }
+    
     /**
      * Creates a folder to extract a ZIP archive to.
      *

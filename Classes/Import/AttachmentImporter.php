@@ -2,12 +2,8 @@
 
 namespace ChrisGruen\RealtyManager\Import;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Resource\FileReference;
-use TYPO3\CMS\Core\Resource\FileRepository;
-use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ChrisGruen\RealtyManager\Domain\Model\Objectimmo;
 use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
 
@@ -61,9 +57,58 @@ class AttachmentImporter
 
         $uidObject = $this->getUIdRecord();
         echo $uidObject . " :: ";
-
         //$this->clearAttachments($uidObject);
         //$this->extractAttachmentUid($uidObject);
+    }
+    
+        
+    /**
+     *
+     * @return uid object record
+     */
+    public function getUIdRecord()
+    {
+        $obj_number = $this->record['object_number'];
+        $PidEmployer = $this->objectimmoRepository->getPidEmployer($this->ownerId);
+        $uidObject = $this->objectimmoRepository->getUidObject($obj_number, $PidEmployer);
+        
+        return $uidObject;
+    }
+    
+    /**
+     *
+     * @param string $fullPath
+     * @param string $title
+     *
+     * @return void
+     *
+     * @throws \BadMethodCallException
+     */
+    public function addAttachment($fileExtractionPath, $title)
+    {
+        //$import_attachement = $fullPath;
+        $import_attachement = $fileExtractionPath;
+        $realty_store_folder = 'user_upload';
+        
+        $resourceFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\ResourceFactory::class);
+        $storage = $resourceFactory->getDefaultStorage();
+        $file = $storage->getFile($import_attachement);
+        $folder = $storage->getFolder($realty_store_folder);
+        
+        /* check if file exist */
+        $base_path = $_SERVER['DOCUMENT_ROOT'];
+        $file_exist = $base_path.'/fileadmin/'.$realty_store_folder.'/'.basename($fileExtractionPath);
+
+        if (file_exists($file_exist)) {
+            echo $import_attachement ." -> File already copied <br />";
+        } else {
+            $copiedFile = $file->copyTo($folder);
+            echo $import_attachement . " :: " .$title. " -> Files copied <br />";
+        }
+
+        //$this->assertTransactionIsInProgress();
+        
+        //$this->attachmentsToBeAdded[] = ['fullPath' => $fullPath, 'title' => $title];
     }
 
     /**
@@ -81,38 +126,6 @@ class AttachmentImporter
         }
     }
 
-    /**
-     *
-     * @return uid object record
-     */
-    public function getUIdRecord()
-    {    
-        $obj_number = $this->record['object_number'];
-        $PidEmployer = $this->objectimmoRepository->getPidEmployer($this->ownerId);
-        $uidObject = $this->objectimmoRepository->getUidObject($obj_number, $PidEmployer);
-       
-        return $uidObject;
-    }
-
-
-    /**
-     * Marks the given attachment to be added/updated.
-     *
-     * Note: This method does not save anything yet. Saving will be done in finishTransaction().
-     *
-     * @param string $fullPath
-     * @param string $title
-     *
-     * @return void
-     *
-     * @throws \BadMethodCallException
-     */
-    public function addAttachment($fullPath, $title)
-    {
-        $this->assertTransactionIsInProgress();
-
-        $this->attachmentsToBeAdded[] = ['fullPath' => $fullPath, 'title' => $title];
-    }
 
     /**
      * @return void
@@ -206,13 +219,10 @@ class AttachmentImporter
     }
     
     /**
-     * @return FileRepository
+     * @return ResourceFactory
      */
-    private function getFileRepository()
+    protected function getResourceFactory(): ResourceFactory
     {
-        /** @var FileRepository $fileRepository */
-        $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-        
-        return $fileRepository;
+        return GeneralUtility::makeInstance(ResourceFactory::class);
     }
 }
