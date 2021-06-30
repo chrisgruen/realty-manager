@@ -11,6 +11,16 @@ class AttachmentImporter
 {
     
     /**
+     * @var int
+     */
+    private $uidObject = 0;
+    
+    /**
+     * @var int
+     */
+    private $pidObject = 0;
+    
+    /**
      * @var string
      */
     private $ownerId = '';
@@ -55,8 +65,10 @@ class AttachmentImporter
         $this->assertNoTransactionIsInProgress();
         $this->transactionIsInProgress = true;
 
-        $uidObject = $this->getUIdRecord();
-        echo $uidObject . " :: ";
+        $object = $this->getUIdRecord();
+        $this->uidObject = $object['uid'];
+        $this->pidObject = $object['pid'];
+        echo $this->uidObject . "<br />";
         //$this->clearAttachments($uidObject);
         //$this->extractAttachmentUid($uidObject);
     }
@@ -70,9 +82,9 @@ class AttachmentImporter
     {
         $obj_number = $this->record['object_number'];
         $PidEmployer = $this->objectimmoRepository->getPidEmployer($this->ownerId);
-        $uidObject = $this->objectimmoRepository->getUidObject($obj_number, $PidEmployer);
-        
-        return $uidObject;
+        $object = $this->objectimmoRepository->getObject($obj_number, $PidEmployer);
+
+        return $object;
     }
     
     /**
@@ -84,31 +96,54 @@ class AttachmentImporter
      *
      * @throws \BadMethodCallException
      */
-    public function addAttachment($fileExtractionPath, $title)
+    public function addAttachment($fileExtractionPath, $employer_folder, $title)
     {
         //$import_attachement = $fullPath;
         $import_attachement = $fileExtractionPath;
-        $realty_store_folder = 'user_upload';
+        $realty_store_folder = 'realty/'.$employer_folder;
+        
         
         $resourceFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\ResourceFactory::class);
-        $storage = $resourceFactory->getDefaultStorage();
-        $file = $storage->getFile($import_attachement);
-        $folder = $storage->getFolder($realty_store_folder);
+        $storage = $resourceFactory->getDefaultStorage();       
+        $pathExists = $storage->hasFolder($realty_store_folder);
         
-        /* check if file exist */
-        $base_path = $_SERVER['DOCUMENT_ROOT'];
-        $file_exist = $base_path.'/fileadmin/'.$realty_store_folder.'/'.basename($fileExtractionPath);
-
-        if (file_exists($file_exist)) {
-            echo $import_attachement ." -> File already copied <br />";
+        if($pathExists) {
+            $file_name = basename($fileExtractionPath);
+            $file = $storage->getFile($import_attachement);
+            $folder = $storage->getFolder($realty_store_folder);
+                   
+            /* check if file exist */
+            $base_path = $_SERVER['DOCUMENT_ROOT'];
+            $file_exist = $base_path.'/fileadmin/'.$realty_store_folder.'/'.$file_name;
+    
+            if (file_exists($file_exist)) {
+                echo $import_attachement ." -> File already copied <br />";
+            } else {
+                $copiedFile = $file->copyTo($folder);
+                echo $import_attachement . " :: " .$title. " -> Files copied <br />";
+                
+            }
+            
+            //get uid from table sys_file
+            $file_path = '/'.$realty_store_folder.'/'.$file_name;
+            $get_file_uid = $this->objectimmoRepository->getFileUid($file_path); 
+            $set_file_object_relation = $this->objectimmoRepository->setFileObjectRelation($this->uidObject, $this->pidObject, $get_file_uid); 
+            
+            echo $file_path." :: ".$get_file_uid." :: ".$this->uidObject."</br >";
+            if($set_file_object_relation) {
+                echo "File relation created in table: sys_file_reference<br />";
+            }
+              
+            echo "<br />";
         } else {
-            $copiedFile = $file->copyTo($folder);
-            echo $import_attachement . " :: " .$title. " -> Files copied <br />";
+            echo "ERROR: Folder to Copy not found";
         }
-
-        //$this->assertTransactionIsInProgress();
         
-        //$this->attachmentsToBeAdded[] = ['fullPath' => $fullPath, 'title' => $title];
+        //$this->assertTransactionIsInProgress();
+    }
+    
+    public function addRelationFileEntry() {
+        
     }
 
     /**

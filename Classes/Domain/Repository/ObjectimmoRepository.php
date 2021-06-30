@@ -210,17 +210,17 @@ class ObjectimmoRepository extends Repository
      * Data from Table "tx_realtymanager_domain_model_objectimmo"
      * @return int
      */
-    public function getUidObject($obj_number, $PidEmployer) {
+    public function getObject($obj_number, $PidEmployer) {
         
         $queryUidObject = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_objectimmo');
         $uidObject = $queryUidObject
-                        ->select('uid')
+                        ->select('uid', 'pid')
                         ->from('tx_realtymanager_domain_model_objectimmo')
                         ->where($queryUidObject->expr()->eq('object_number', $queryUidObject->createNamedParameter($obj_number)))
                         ->where($queryUidObject->expr()->eq('pid', $queryUidObject->createNamedParameter($PidEmployer)))
                         ->orderBy('uid', 'DESC')
                         ->execute()
-                        ->fetchColumn(0);
+                        ->fetch();
         
         return $uidObject;
     }
@@ -294,6 +294,59 @@ class ObjectimmoRepository extends Repository
                             ->fetchColumn(0);
         
         return $uid;
+    }
+    
+    /**
+     * get sys_file.uid
+     *
+     */
+    public function getFileUid($path) {
+        
+        $queryGetUId = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
+        $uid = $queryGetUId->select('uid')
+                            ->from('sys_file')
+                            ->where($queryGetUId->expr()->eq('identifier', $queryGetUId->createNamedParameter($path)))
+                            ->execute()
+                            ->fetchColumn(0);
+        
+        return $uid;
+    }
+    
+    /**
+     * set FileObjectRelation
+     *
+     */
+    public function setFileObjectRelation($uidObject, $pidObject, $uidFile) {
+        
+        /* check file-relation */
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
+        $sql = "SELECT uid from sys_file_reference 
+                WHERE pid = '".$pidObject."'  
+                AND uid_local  = '".$uidFile."'
+                AND uid_foreign  = '".$uidObject."' ";
+        
+        $sql_entry = $connection->executeQuery($sql)->fetch();
+        
+        if ($sql_entry == Null) {
+            
+            $dataToInsert['tstamp'] = $GLOBALS['SIM_EXEC_TIME'];
+            $dataToInsert['crdate'] = $GLOBALS['SIM_EXEC_TIME'];
+            $dataToInsert['pid'] = $pidObject;
+            $dataToInsert['uid_local'] = $uidFile;
+            $dataToInsert['uid_foreign'] = $uidObject;
+            $dataToInsert['tablenames'] = 'tx_realtymanager_domain_model_objectimmo';
+            $dataToInsert['fieldname'] = 'attachments';
+            $dataToInsert['table_local'] = 'sys_file';
+            
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
+            $affectedRows = $queryBuilder
+                            ->insert('sys_file_reference')
+                            ->values($dataToInsert)
+                            ->execute();
+            return true;
+        }
+        
+        return false;
     }
       
     

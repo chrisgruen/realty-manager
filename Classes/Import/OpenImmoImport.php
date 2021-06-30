@@ -335,7 +335,7 @@ class OpenImmoImport
         foreach ($objectData['attached_files'] as $attachmentData) {
             $fileExtractionPath = $extractionFolder.$attachmentData['path'];
             $title = $attachmentData['title'];
-            $attachmentImporter->addAttachment($fileExtractionPath, $title);
+            $attachmentImporter->addAttachment($fileExtractionPath, $employer_folder, $title);
         }
         
         
