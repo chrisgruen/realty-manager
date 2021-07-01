@@ -251,6 +251,16 @@ class Objectimmo extends AbstractEntity
      * @var string
      */
     protected $provision;
+
+    /**
+     * @var string
+     */
+    protected $contactPersonFirstName;
+
+    /**
+     * @var string
+     */
+    protected $contactPersonSalutation;
     
   
     public function __construct()
@@ -1056,5 +1066,46 @@ class Objectimmo extends AbstractEntity
     public function getProvision()
     {
         return $this->provision;
+    }
+
+    /**
+     * Set contactPersonFirstName
+     *
+     * @param string $contactPersonFirstName contactPersonFirstName
+     */
+    public function setContactPersonFirstName($contactPersonFirstName)
+    {
+        $this->contactPersonFirstName = $contactPersonFirstName;
+    }
+
+    /**
+     * Get contactPersonFirstName
+     *
+     * @return string
+     */
+    public function getContactPersonFirstName()
+    {
+        return $this->contactPersonFirstName;
+    }
+
+
+    /**
+     * Set contactPersonSalutation
+     *
+     * @param string $contactPersonSalutation contactPersonSalutation
+     */
+    public function setContactPersonSalutation($contactPersonSalutation)
+    {
+        $this->contactPersonSalutation = $contactPersonSalutation;
+    }
+
+    /**
+     * Get contactPersonSalutation
+     *
+     * @return string
+     */
+    public function getContactPersonSalutation()
+    {
+        return $this->contactPersonSalutation;
     }
 }

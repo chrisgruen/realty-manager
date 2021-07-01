@@ -91,6 +91,7 @@ class ObjectimmoRepository extends Repository
                 INNER JOIN sys_file f on fs.uid_local = f.uid
                 INNER JOIN sys_file_metadata fm on fm.file = f.uid
                 WHERE uid_foreign = '".$uid."'
+                AND f.extension <> 'pdf'
                 ORDER BY sorting_foreign";
         
         $images = $connection->executeQuery($sql)->fetchAll();
@@ -316,7 +317,7 @@ class ObjectimmoRepository extends Repository
      * set FileObjectRelation
      *
      */
-    public function setFileObjectRelation($uidObject, $pidObject, $uidFile) {
+    public function setFileObjectRelation($uidObject, $pidObject, $uidFile, $title) {
         
         /* check file-relation */
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
@@ -328,7 +329,7 @@ class ObjectimmoRepository extends Repository
         $sql_entry = $connection->executeQuery($sql)->fetch();
         
         if ($sql_entry == Null) {
-            
+
             $dataToInsert['tstamp'] = $GLOBALS['SIM_EXEC_TIME'];
             $dataToInsert['crdate'] = $GLOBALS['SIM_EXEC_TIME'];
             $dataToInsert['pid'] = $pidObject;
@@ -337,19 +338,29 @@ class ObjectimmoRepository extends Repository
             $dataToInsert['tablenames'] = 'tx_realtymanager_domain_model_objectimmo';
             $dataToInsert['fieldname'] = 'attachments';
             $dataToInsert['table_local'] = 'sys_file';
-            
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
-            $affectedRows = $queryBuilder
-                            ->insert('sys_file_reference')
-                            ->values($dataToInsert)
-                            ->execute();
+
+            $queryBuilder1 = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_reference');
+            $insertFileReferenz = $queryBuilder1
+                                ->insert('sys_file_reference')
+                                ->values($dataToInsert)
+                                ->execute();
+
+            $queryBuilder2 = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_metadata');
+            $updateFileMeta = $queryBuilder2
+                                ->update('sys_file_metadata')
+                                ->where(
+                                    $queryBuilder2->expr()->eq('uid', $uidFile)
+                                )
+                                ->set('title', $title)
+                                ->set('description', $title)
+                                ->set('alternative', $title)
+                                ->execute();
+
             return true;
         }
-        
         return false;
     }
-      
-    
+
     /**
      * get PriceRange
      * @return array

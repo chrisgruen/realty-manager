@@ -121,13 +121,12 @@ class AttachmentImporter
             } else {
                 $copiedFile = $file->copyTo($folder);
                 echo $import_attachement . " :: " .$title. " -> Files copied <br />";
-                
             }
             
             //get uid from table sys_file
             $file_path = '/'.$realty_store_folder.'/'.$file_name;
             $get_file_uid = $this->objectimmoRepository->getFileUid($file_path); 
-            $set_file_object_relation = $this->objectimmoRepository->setFileObjectRelation($this->uidObject, $this->pidObject, $get_file_uid); 
+            $set_file_object_relation = $this->objectimmoRepository->setFileObjectRelation($this->uidObject, $this->pidObject, $get_file_uid, $title);
             
             echo $file_path." :: ".$get_file_uid." :: ".$this->uidObject."</br >";
             if($set_file_object_relation) {
@@ -143,7 +142,7 @@ class AttachmentImporter
     }
     
     public function addRelationFileEntry() {
-        
+
     }
 
     /**

@@ -125,7 +125,13 @@
 		</p>
 		<h3><span class="font-weight-bolder">Kontaktperson</span></h3>
 		<p>
-			{object.contactPerson} <br />
+			<f:if condition="{object.contactPersonSalutation}">
+				{object.contactPersonSalutation}
+			</f:if>
+			<f:if condition="{object.contactPersonFirstName}">
+				{object.contactPersonFirstName}
+			</f:if>
+			{object.contactPerson}<br />
 			Telefon:  {object.phoneSwitchboard}<br />
 			Email: {object.contactEmail}
 		</p>

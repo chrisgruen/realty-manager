@@ -59,7 +59,7 @@ class ImageListViewHelper extends AbstractViewHelper
                         $img_alt = $image['alternative'];
                         $img_title = $image['title'];
                         $html_output .= "<div class='list-img'>";
-                        $html_output .= "<img class='img-fluid' src='".$img_path."' alt='".$img_alt."' title='".$img_title."' />";
+                        $html_output .= "<img class='prev-list-img' src='".$img_path."' alt='".$img_alt."' title='".$img_title."' width='150' height='100'/>";
                         $html_output .= "</div>";
                     }
                     

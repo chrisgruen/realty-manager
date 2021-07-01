@@ -11,6 +11,7 @@ use ChrisGruen\RealtyManager\Import\XmlConverter;
 use ChrisGruen\RealtyManager\Domain\Model\Objectimmo;
 use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 
 class OpenImmoImport
@@ -787,12 +788,16 @@ class OpenImmoImport
             if ($extractionDirectory !== '') {
                 if (count(glob($extractionDirectory.'/*')) === 0) {
                     $zip->extractTo($extractionDirectory);
-                    $this->addToLogEntry($zipToExtract . ': ' .  $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_extracted_successfully'));
+                    $this->addToLogEntry(
+                        $zipToExtract . ': '. LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extracted_successfully', 'The ZIP archive was extracted successfully.')
+                     );
                 }               
             }
             $zip->close();
         } else {
-            $this->addToErrorLog($zipToExtract . ': ' . $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_extraction_failed'));
+            $this->addToErrorLog(
+                $zipToExtract . ': ' . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extraction_failed', 'The extraction of this ZIP archive failed. The ZIP archive could not be opened. The file might be corrupt.')
+            );
         }
     }
 
@@ -839,9 +844,8 @@ class OpenImmoImport
         
         if (\is_dir($folderForZipExtraction)) {
             $this->addToErrorLog(                
-                $folderForZipExtraction . ': ' .  $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:' . 'message_surplus_folder')
+                $folderForZipExtraction . ': ' . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_surplus_folder', 'The folder which needs to be created for importing already exists in your import directory. The record cannot be imported as long as this folder exists. Please remove this folder.')
             );
-            //$folderForZipExtraction = '';
         } else {
             try {
                 GeneralUtility::mkdir_deep($folderForZipExtraction);
