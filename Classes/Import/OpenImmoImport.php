@@ -75,13 +75,7 @@ class OpenImmoImport
      */
     private $deleteCurrentZipFile = true;
 
-    /**
-     * @var string[] ZIP archives which are deleted at the end of import and
-     *            folders which were created during the import.
-     *            Archives are added to this array if they contain exactly one
-     *            XML file as this is the criterion for trying to import the
-     *            XML file as an OpenImmo record.
-     */
+
     private $filesToDelete = [];
 
     /**
@@ -119,26 +113,16 @@ class OpenImmoImport
     {
         $this->objectimmoRepository = $objectimmoRepository;
     }
+    
+    /**
+     * @return bool
+     */
+    public function wasSuccessful()
+    {
+        return $this->success;
+    }
 
     /**
-     * Extracts ZIP archives from an absolute path of a directory and inserts
-     * realty records to database:
-     * If the directory, specified in the EM configuration, exists and ZIP
-     * archives are found, folders are created. They are named like the ZIP
-     * archives without the suffix '.zip'. The ZIP archives are unpacked to
-     * these folders. Then for each ZIP file the following is done: The validity
-     * of the XML file found in the ZIP archive is checked by using the XSD
-     * file defined in the EM. The realty records are fetched and inserted to
-     * database. The validation failures are logged.
-     * If the records of one XML could be inserted to database, images found
-     * in the extracted ZIP archive are copied to the uploads folder.
-     * Afterwards the extraction folders are removed and a log string about the
-     * proceedings of import is passed back.
-     * Depending on the configuration in EM the log or only the errors are sent
-     * via email to the contact addresses of each realty record if they are
-     * available. Else the information goes to the address configured in EM. If
-     * no email address is configured, the sending of emails is disabled.
-     *
      * @return string log entry with information about the proceedings of
      *                ZIP import, will not be empty, contains at least a
      *                timestamp
@@ -194,13 +178,7 @@ class OpenImmoImport
         return $GLOBALS['LANG'];
     }
 
-    /**
-     * @return bool
-     */
-    public function wasSuccessful()
-    {
-        return $this->success;
-    }
+
 
     /**
      * start process for dataset insert to "tx_realtymanager_domain_model_objectimmo"
@@ -413,9 +391,6 @@ class OpenImmoImport
     }
 
     /**
-     * Checks whether the import may start. Will return true if he import directory is writable.
-     * Otherwise, the result will be false and the reason will be logged.
-     *
      * @param string $importDirectory unified path of the import directory, must not be empty
      *
      * @return bool
@@ -439,35 +414,6 @@ class OpenImmoImport
         }
         
         return $isAccessible;
-    }
-
-
-    /**
-     * Adds the given error message to the error log.
-     *
-     * @param string $message locallang label for the error message to add to the log, must not be empty
-     * @param string $path the path to be displayed in the error message, must not be empty
-     *
-     * @return void
-     */
-    private function addFolderAccessErrorMessage($message, $path)
-    {
-        $ownerUid = \fileowner($path);
-        if (\function_exists('posix_getpwuid')) {
-            $ownerName = \posix_getpwuid($ownerUid) . ', ' . $ownerUid;
-        } else {
-            $ownerName = $ownerUid;
-        }
-
-        $this->addToErrorLog(
-            \sprintf(
-                $message,
-                $path,
-                $ownerName,
-                \substr(\decoct(\fileperms($path)), 2),
-                \get_current_user()
-            )
-        );
     }
 
     /**
@@ -501,119 +447,6 @@ class OpenImmoImport
         return $this->globalConfiguration->getAsBoolean('notifyContactPersons');
     }
 
-    /**
-     * Stores all information for an email to an array with the keys
-     * "recipient", "objectNumber", "logEntry" and "errorLog".
-     *
-     * @param string $email email address, may be empty
-     * @param string $objectNumber object number, may be empty
-     *
-     * @return string[] email raw data, contains the elements "recipient", "objectNumber", "logEntry" and "errorLog",
-     *                  will not be empty
-     */
-    private function createEmailRawDataArray($email, $objectNumber)
-    {
-        return [
-            'recipient' => $email,
-            'objectNumber' => $objectNumber,
-            'logEntry' => $this->temporaryLogEntry,
-            'errorLog' => $this->temporaryErrorLog,
-        ];
-    }
-
-    /**
-     * Prepares the sending of emails. Resorts $emailData. Sets the value for
-     * 'recipient' to the default email address wherever there is no email
-     * address given. Sets the value for "objectNumber" to "------" if is not
-     * set. Purges empty records, so no empty messages are sent.
-     * If "onlyErrors" is enabled in EM, the messages will just contain error
-     * messages and no information about success.
-     *
-     * @param array[] $emailData
-     *        Two-dimensional array of email data. Each inner array has the elements "recipient", "objectNumber",
-     *        "logEntry" and "errorLog". May be empty.
-     *
-     * @return array[] Three -dimensional array with email addresses as
-     *               keys of the outer array. Innermost there is an array
-     *               with only one element: Object number as key and the
-     *               corresponding log information as value. This array
-     *               is wrapped by a numeric array as object numbers are
-     *               not necessarily unique. Empty if the input array is
-     *               empty or invalid.
-     */
-    protected function prepareEmails(array $emailData)
-    {
-        if (!$this->validateEmailDataArray($emailData)) {
-            return [];
-        }
-
-        $result = [];
-        $emailDataToPrepare = $emailData;
-        if ($this->isErrorLogOnlyEnabled()) {
-            $log = 'errorLog';
-        } else {
-            $log = 'logEntry';
-        }
-
-        foreach ($emailDataToPrepare as $record) {
-            if ((string)($record['recipient'] === '') || !$this->isNotifyContactPersonsEnabled()) {
-                $record['recipient'] = $this->getDefaultEmailAddress();
-            }
-
-            if ((string)$record['objectNumber'] === '') {
-                $record['objectNumber'] = '------';
-            }
-
-            $result[$record['recipient']][] = [
-                $record['objectNumber'] => $record[$log],
-            ];
-        }
-
-        $this->purgeRecordsWithoutLogMessages($result);
-        $this->purgeRecipientsForEmptyMessages($result);
-
-        return $result;
-    }
-
-    /**
-     * Validates an email data array which is used to prepare emails. Returns
-     * true if the structure is correct, false otherwise.
-     *
-     * The structure is correct if there are arrays as values for each numeric
-     * key and if those arrays contain the elements "recipient", "objectNumber",
-     * "logEntry" and "errorLog" as keys.
-     *
-     * @param array[] $emailData
-     *        email data array to validate with arrays as values for each numeric key and if those arrays contain the
-     *        elements "recipient", "objectNumber", "logEntry" and "errorLog" as keys, may be empty
-     *
-     * @return bool whether the structure of the array is valid
-     */
-    private function validateEmailDataArray(array $emailData)
-    {
-        $isValidDataArray = true;
-        $requiredKeys = [
-            'recipient',
-            'objectNumber',
-            'logEntry',
-            'errorLog',
-        ];
-
-        foreach ($emailData as $dataArray) {
-            if (!\is_array($dataArray)) {
-                $isValidDataArray = false;
-                break;
-            }
-            $numberOfValidArrays = \count(\array_intersect(\array_keys($dataArray), $requiredKeys));
-
-            if ($numberOfValidArrays !== 4) {
-                $isValidDataArray = false;
-                break;
-            }
-        }
-
-        return $isValidDataArray;
-    }
 
     /**
      * Deletes object numbers from $emailData if there is no message to report.
@@ -632,115 +465,6 @@ class OpenImmoImport
                     unset($emailData[$recipient][$key]);
                 }
             }
-        }
-    }
-
-    /**
-     * Deletes email recipients from a $emailData if are no records to report
-     * about.
-     *
-     * @param array[] &$emailData prepared email data, must not be empty
-     *
-     * @return void
-     */
-    private function purgeRecipientsForEmptyMessages(array &$emailData)
-    {
-        foreach ($emailData as $recipient => $data) {
-            if (empty($data)) {
-                unset($emailData[$recipient]);
-            }
-        }
-    }
-
-    /**
-     * Fills a template file, which has already been included, with data for one
-     * email.
-     *
-     * @param array[] $recordsForOneEmail
-     *        Wrapped message content for one email: Each object number-message pair is wrapped by a numeric key as
-     *     object numbers are not necessarily unique. Must not be empty.
-     *
-     * @return string email body
-     */
-    private function fillEmailTemplate($recordsForOneEmail)
-    {
-        /** @var $template \Tx_Oelib_TemplateHelper */
-        $template = GeneralUtility::makeInstance(\Tx_Oelib_TemplateHelper::class);
-        $template->init(['templateFile' => $this->globalConfiguration->getAsString('emailTemplate')]);
-        $template->getTemplateCode();
-        $contentItem = [];
-
-        // collects data for the subpart 'CONTENT_ITEM'
-        $template->setMarker('label_object_number', $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'label_object_number'));
-        foreach ($recordsForOneEmail as $record) {
-            // $record is an array of the object number associated with the log
-            $template->setMarker('object_number', \key($record));
-            $template->setMarker('log', \implode('', $record));
-            $contentItem[] = $template->getSubpart('CONTENT_ITEM');
-        }
-
-        // fills the subpart 'EMAIL_BODY'
-        $template->setMarker('header', $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_introduction'));
-        $template->setSubpart('CONTENT_ITEM', \implode("\n", $contentItem));
-        $template->setMarker('footer', $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_explanation'));
-
-        return $template->getSubpart('EMAIL_BODY');
-    }
-
-    /**
-     * Sends an email with log information to each address given as a key of
-     * $addressesAndMessages.
-     * If there is no default address configured in the EM, no messages will be
-     * sent at all.
-     *
-     * @param array[] $addressesAndMessages
-     *        Three-dimensional array with email addresses as keys of the outer array. Innermost there is an array
-     *     with only one element: Object number as key and the corresponding log information as value. This array is
-     *     wrapped by a numeric array as object numbers are not necessarily unique. Must not be empty.
-     *
-     * @return void
-     */
-    private function sendEmails(array $addressesAndMessages)
-    {
-        /** @var SystemEmailFromBuilder $emailRoleBuilder */
-        $emailRoleBuilder = GeneralUtility::makeInstance(SystemEmailFromBuilder::class);
-        if ($this->getDefaultEmailAddress() === '' || !$emailRoleBuilder->canBuild()) {
-            return;
-        }
-
-        $fromRole = $emailRoleBuilder->build();
-        foreach ($addressesAndMessages as $address => $content) {
-            /** @var MailMessage $email */
-            $email = GeneralUtility::makeInstance(MailMessage::class);
-            $email->setFrom([$fromRole->getEmailAddress() => $fromRole->getName()]);
-            $email->setTo([$address => '']);
-            $email->setSubject($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'label_subject_openImmo_import'));
-            $email->setBody($this->fillEmailTemplate($content));
-            $email->send();
-        }
-
-        if (!empty($addressesAndMessages)) {
-            $this->addToLogEntry(
-                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_log_sent_to') . ': ' . \implode(', ', \array_keys($addressesAndMessages))
-            );
-        }
-    }
-
-    /**
-     * Ensures a contact email address for the current realty record. Checks
-     * whether there is a valid contact email for the current record. Inserts
-     * the default address configured in EM if 'contact_email' if the current
-     * record's contact email is empty or invalid.
-     *
-     * @return void
-     */
-    protected function ensureContactEmail()
-    {
-        $address = $this->getContactEmailFromRealtyObject();
-        $isValid = ($address !== '') && GeneralUtility::validEmail($address);
-
-        if (!$isValid) {
-            $this->setContactEmailOfRealtyObject($this->getDefaultEmailAddress());
         }
     }
 
@@ -1059,37 +783,6 @@ class OpenImmoImport
         return $this->realtyObject->getProperty('object_number');
     }
 
-    /**
-     * Returns the contact email address of a realty object.
-     *
-     * The returned email address depends on the configuration for
-     * 'useFrontEndUserDataAsContactDataForImportedRecords'. If this option is
-     * enabled and if there is an owner, the owner's email address will be
-     * fetched. Otherwise the contact email address found in the realty record
-     * will be returned.
-     *
-     * @return string email address, depending on the configuration either the
-     *                field 'contact_email' from the realty record or the
-     *                owner's email address, will be empty if no email address
-     *                was found or if the realty object is not initialized
-     */
-    protected function getContactEmailFromRealtyObject()
-    {
-        if (!$this->realtyObject instanceof Objectimmo || $this->realtyObject->isDead()) {
-            return '';
-        }
-
-        $emailAddress = $this->realtyObject->getProperty('contact_email');
-
-        if ($this->mayUseOwnerData()) {
-            try {
-                $emailAddress = $this->realtyObject->getOwner()->getEmailAddress();
-            } catch (\Tx_Oelib_Exception_NotFound $exception) {
-            }
-        }
-
-        return $emailAddress;
-    }
 
     /**
      * Checks whether the owner's data may be used.
@@ -1101,21 +794,6 @@ class OpenImmoImport
         return $this->globalConfiguration->getAsBoolean('useFrontEndUserDataAsContactDataForImportedRecords');
     }
 
-    /**
-     * Sets the contact email address of a realty object.
-     *
-     * @param string $address contact email address, must not be empty
-     *
-     * @return void
-     */
-    private function setContactEmailOfRealtyObject($address)
-    {
-        if (!$this->realtyObject instanceof Objectimmo) {
-            return;
-        }
-
-        $this->realtyObject->setProperty('contact_email', $address);
-    }
 
     /**
      * Gets the required fields of a realty object.

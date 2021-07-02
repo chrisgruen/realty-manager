@@ -38,7 +38,7 @@
                 <source>The record was not imported because the required fields are not set</source>
             </trans-unit>
             <trans-unit id="message_openimmo_anid_not_matches_allowed_fe_user" xml:space="preserve">
-                <source>The record was not imported because the option to restrict import on registered users is activated and this record's OpenImmo ANID did not match any OpenImmo ANID of a FE user who is in the allowed user groups. The record's OpenImmo ANID was:</source>
+                <source>The record was not imported because the option to restrict import on registered users is activated and this records OpenImmo ANID did not match any OpenImmo ANID of a FE user who is in the allowed user groups. The records OpenImmo ANID was:</source>
             </trans-unit>
             <trans-unit id="message_log_sent_to" xml:space="preserve">
                 <source>The log was sent to</source>
@@ -53,10 +53,10 @@
                 <source>The folder which needs to be created for importing already exists in your import directory. The record cannot be imported as long as this folder exists. Please remove this folder.</source>
             </trans-unit>
             <trans-unit id="message_folder_creation_failed" xml:space="preserve">
-                <source>The folder &quot;%s&quot; could not be created. Please check your access rights.</source>
+                <source>The folder could not be created. Please check your access rights.</source>
             </trans-unit>
             <trans-unit id="message_folder_not_writable" xml:space="preserve">
-                <source>The folder &quot;%s&quot; has been created successfully, but is not writable. Please check your access rights.</source>
+                <source>The folder has been created successfully, but is not writable. Please check your access rights.</source>
             </trans-unit>
             <trans-unit id="message_invalid_xml_path" xml:space="preserve">
                 <source>The path of the XML file is not valid. There might be no extraction folder. This could be a file permissions problem. Please check you are permitted to write in the import directory.</source>
