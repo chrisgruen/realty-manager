@@ -35,6 +35,9 @@ class ConfigurationImport
     
     /** @var string */
     protected $resourceFolderImporter = '/import';
+
+    /** @var string */
+    protected $resourceFolderExporter = '/realty';
     
     
     public function getStorageUidImporter(): int
@@ -45,5 +48,10 @@ class ConfigurationImport
     public function getResourceFolderImporter(): string
     {
         return $this->resourceFolderImporter;
+    }
+
+    public function getResourceFolderExporter(): string
+    {
+        return $this->resourceFolderExporter ;
     }
 }

@@ -103,6 +103,7 @@ class ImportController extends ActionController
         }
         
         $errors = $this->checkFolderEmployer($employer_folder);
+
         if ($errors != '') {
             $this->view->assign('error', $this->checkFolderEmployer($employer_folder));
         } else {      
@@ -175,23 +176,30 @@ class ImportController extends ActionController
         $error = '';      
         $settings = GeneralUtility::makeInstance(ConfigurationImport::class);
         $base_import_folder = $settings->getResourceFolderImporter();
-        
+        $base_export_folder = $settings->getResourceFolderExporter();
+        $error = '';
+        $base_path = $_SERVER['DOCUMENT_ROOT'];
+        $path_import = $base_path.'/fileadmin'.$base_import_folder.'/'.$folder;
+        $path_export = $base_path.'/fileadmin'.$base_export_folder.'/'.$folder;
+
+        /* Check Folder for Import Export */
         try {
-            $error = '';
-            $base_path = $_SERVER['DOCUMENT_ROOT'];
-            $path_import = $base_path.'/fileadmin'.$base_import_folder.'/'.$folder;
-                       
             if ($folder == '') {
                 $folder = "NOT_SET";
+                $message = 'Ordner für Import/Export: ';
                 throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
             } else if (!is_dir($path_import)) {
+                $message = 'Import-Ordner für Zip-Import: ';
+                throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
+            } else if (!is_dir($path_export)) {
+                $message = 'Export-Ordner für Bilder, PDFs: ';
                 throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
             } else {
                 
             }
         } catch (FolderDoesNotExistException $e) {
-            $error = 'Ordner fileadmin'.$base_import_folder.'/'.$folder. ' existiert nicht!';
-        } 
+            $error = $message.$base_import_folder.'/'.$folder. ' existiert nicht!';
+        }
         return $error;
     }
     
@@ -222,4 +230,3 @@ class ImportController extends ActionController
         return $employers;
     }
 }
-
