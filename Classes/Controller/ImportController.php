@@ -106,9 +106,9 @@ class ImportController extends ActionController
 
         if ($errors != '') {
             $this->view->assign('error', $this->checkFolderEmployer($employer_folder));
-        } else {      
-        
+        } else {
             $importResults = $this->importService->importFromZip($employer_folder);
+            //$delImportFolder = $this->importService->deleteImportFolder($employer_folder);
             
             /*
             try {

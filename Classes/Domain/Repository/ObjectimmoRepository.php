@@ -328,7 +328,7 @@ class ObjectimmoRepository extends Repository
         
         $sql_entry = $connection->executeQuery($sql)->fetch();
         
-        if ($sql_entry == Null) {
+        if (!$sql_entry) {
 
             $dataToInsert['tstamp'] = $GLOBALS['SIM_EXEC_TIME'];
             $dataToInsert['crdate'] = $GLOBALS['SIM_EXEC_TIME'];
@@ -345,18 +345,20 @@ class ObjectimmoRepository extends Repository
                                 ->values($dataToInsert)
                                 ->execute();
 
-            $queryBuilder2 = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_metadata');
-            $updateFileMeta = $queryBuilder2
-                                ->update('sys_file_metadata')
-                                ->where(
-                                    $queryBuilder2->expr()->eq('uid', $uidFile)
-                                )
-                                ->set('title', $title)
-                                ->set('description', $title)
-                                ->set('alternative', $title)
-                                ->execute();
-
-            return true;
+            if($insertFileReferenz) {
+                $queryBuilder2 = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_metadata');
+                $updateFileMeta = $queryBuilder2
+                                    ->update('sys_file_metadata')
+                                    ->where(
+                                        $queryBuilder2->expr()->eq('uid', $uidFile)
+                                    )
+                                    ->set('title', $title)
+                                    ->set('description', $title)
+                                    ->set('alternative', $title)
+                                    ->execute();
+    
+                return true;
+            }
         }
         return false;
     }

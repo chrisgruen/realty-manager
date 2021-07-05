@@ -5,7 +5,7 @@
         <header/>
         <body>
             <trans-unit id="message_import_directory_not_existing" xml:space="preserve">
-                <source>Importing is impossible because the configured import directory &quot;%s&quot; does not exist. It is also possible that the current user &quot;%s&quot; has no read permissions on one of the parent folders. Please check your configuration and restart the import.</source>
+                <source>Importing is impossible because the configured import directory &quot;%s&quot; does not exist. Please check your configuration and restart the import.</source>
             </trans-unit>
             <trans-unit id="message_import_directory_not_readable" xml:space="preserve">
                 <source>Importing is impossible because the configured import directory &quot;%s&quot; is not readable. Please fix file permissions or configure another directory and restart the import. The folder belongs to the user: &quot;%s&quot; and has the following permissions: &quot;%s&quot;. The user starting this import was: &quot;%s&quot;.</source>
@@ -53,10 +53,10 @@
                 <source>The folder which needs to be created for importing already exists in your import directory. The record cannot be imported as long as this folder exists. Please remove this folder.</source>
             </trans-unit>
             <trans-unit id="message_folder_creation_failed" xml:space="preserve">
-                <source>The folder could not be created. Please check your access rights.</source>
+                <source>The folder &quot;%s&quot; could not be created. Please check your access rights.</source>
             </trans-unit>
             <trans-unit id="message_folder_not_writable" xml:space="preserve">
-                <source>The folder has been created successfully, but is not writable. Please check your access rights.</source>
+                <source>The folder &quot;%s&quot; has been created successfully, but is not writable. Please check your access rights.</source>
             </trans-unit>
             <trans-unit id="message_invalid_xml_path" xml:space="preserve">
                 <source>The path of the XML file is not valid. There might be no extraction folder. This could be a file permissions problem. Please check you are permitted to write in the import directory.</source>
@@ -65,7 +65,7 @@
                 <source>There must not be more than one XML file in the ZIP archive. Please remove the surplus XML files from the archive.</source>
             </trans-unit>
             <trans-unit id="message_no_xml" xml:space="preserve">
-                <source>No XML file could be found in the ZIP archive. If there is one anyway, please ensure the name ends with '.xml'.</source>
+                <source>No XML file could be found in the ZIP archive. If there is one anyway, please ensure the name ends with .xml</source>
             </trans-unit>
             <trans-unit id="message_xml_novalid" xml:space="preserve">
                 <source>XML file can't read</source>

@@ -5,8 +5,8 @@
         <header/>
         <body>
             <trans-unit id="message_import_directory_not_existing" xml:space="preserve" approved="yes">
-                <source>Importing is impossible because the configured import directory &quot;%s&quot; does not exist. It is also possible that the current user &quot;%s&quot; has no read permissions on one of the parent folders. Please check your configuration and restart the import.</source>
-                <target>Der Import kann nicht durchgeführt werden, weil der konfigurierte Import-Ordner &quot;%s&quot; nicht existiert. Es besteht auch die Möglichkeit, dass der aktuelle Benutzer &quot;%s&quot; keine Leserechte auf einen der übergeordneten Ordner besitzt. Bitte überprüfen Sie Ihre Konfiguration und starten Sie den Import erneut.</target>
+                <source>Importing is impossible because the configured import directory &quot;%s&quot; does not exist. Please check your configuration and restart the import.</source>
+                <target>Der Import kann nicht durchgeführt werden, weil der konfigurierte Import-Ordner &quot;%s&quot; nicht existiert. Bitte überprüfen Sie Ihre Konfiguration und starten Sie den Import erneut.</target>
             </trans-unit>
             <trans-unit id="message_import_directory_not_readable" xml:space="preserve" approved="yes">
                 <source>Importing is impossible because the configured import directory &quot;%s&quot; is not readable. Please fix file permissions or configure another directory and restart the import. The folder belongs to the user: &quot;%s&quot; and has the following permissions: &quot;%s&quot;. The user starting this import was: &quot;%s&quot;.</source>
@@ -69,11 +69,11 @@
                 <target>Der Ordner, der für den Import erstellt werden muss, existiert bereits in Ihrem Import-Verzeichnis. Der Datensatz kann nicht importiert werden, solange dieser Ordner existiert. Bitte entfernen Sie ihn aus dem Import-Verzeichnis.</target>
             </trans-unit>
             <trans-unit id="message_folder_creation_failed" xml:space="preserve" approved="yes">
-                <source>The folder could not be created. Please check your access rights.</source>
+                <source>The folder &quot;%s&quot; could not be created. Please check your access rights.</source>
                 <target>Der Ordner &quot;%s&quot; konnte nicht erstellt werden. Bitte überprüfen Sie Ihre Zugriffsrechte.</target>
             </trans-unit>
             <trans-unit id="message_folder_not_writable" xml:space="preserve" approved="yes">
-                <source>The folder has been created successfully, but is not writable. Please check your access rights.</source>
+                <source>The folder &quot;%s&quot; has been created successfully, but is not writable. Please check your access rights.</source>
                 <target>Der Ordner &quot;%s&quot; wurde erfolgreich erstellt, ist aber nicht beschreibbar. Bitte überprüfen Sie Ihre Zugriffsrechte.</target>
             </trans-unit>
             <trans-unit id="message_invalid_xml_path" xml:space="preserve" approved="yes">
@@ -85,7 +85,7 @@
                 <target>Es darf nicht mehr als eine XML-Datei im ZIP-Archiv sein. Bitte entfernen Sie die überschüssigen XML-Dateien aus dem Archiv.</target>
             </trans-unit>
             <trans-unit id="message_no_xml" xml:space="preserve" approved="yes">
-                <source>No XML file could be found in the ZIP archive. If there is one anyway, please ensure the name ends with '.xml'.</source>
+                <source>No XML file could be found in the ZIP archive. If there is one anyway, please ensure the name ends with .xml</source>
                 <target>Im ZIP-Archiv kann keine XML-Datei gefunden werden. Sollte es dennoch eine geben, stellen Sie bitte sicher, dass sie mit '.xml' endet.</target>
             </trans-unit>
             <trans-unit id="message_successful_validation" xml:space="preserve" approved="yes">

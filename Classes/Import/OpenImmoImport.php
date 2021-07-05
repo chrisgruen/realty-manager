@@ -10,7 +10,6 @@ use ChrisGruen\RealtyManager\Import\AttachmentImporter;
 use ChrisGruen\RealtyManager\Import\XmlConverter;
 use ChrisGruen\RealtyManager\Domain\Model\Objectimmo;
 use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 
@@ -123,6 +122,30 @@ class OpenImmoImport
     }
 
     /**
+     * @param string $importDirectory unified path of the import directory, must not be empty
+     *
+     * @return bool
+     */
+    private function canStartImport($importDirectory)
+    {
+        $isAccessible = true;
+
+        $storageId = (int)$this->settings->getStorageUidImporter();
+
+        $storage = $this->getResourceFactory()->getStorageObject($storageId);
+        $pathExists = $storage->hasFolder($importDirectory);
+
+        if (!$pathExists) {
+            $this->addToErrorLog(
+                \sprintf(LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_import_directory_not_existing', 'Importing is impossible because the configured import directory &quot;%s&quot; does not exist. Please check your configuration and restart the import.'),$importDirectory)
+            );
+
+            $isAccessible = false;
+        }
+        return $isAccessible;
+    }
+
+    /**
      * @return string log entry with information about the proceedings of
      *                ZIP import, will not be empty, contains at least a
      *                timestamp
@@ -131,7 +154,6 @@ class OpenImmoImport
     {
         /* root folder fileadmin */
         $import_folder = $this->settings->getResourceFolderImporter().'/'.$employer_folder;
-        $languageServiceBackup = $this->getLanguageService();
               
         $this->success = true;
 
@@ -143,21 +165,20 @@ class OpenImmoImport
         }
 
         $zipsToExtract = $this->getPathsOfZipsToExtract($import_folder);
-        
+
         //$this->storeLogsAndClearTemporaryLog();
         
         if (empty($zipsToExtract)) {
             $this->addToErrorLog(
-                \sprintf($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_no_zips'),$import_path)
+                LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_no_zips', 'No ZIPs to extract. The configured import folder does not contain any ZIP archives. Please check the path configured in the extension manager and the contents of the folder.')
             ); 
         } else {
-            
             foreach ($zipsToExtract as $currentZip) {
                 $this->extractZip($currentZip);  
                 $xml_file_data = $this->loadXmlFile($currentZip);
                 $recordData = $this->processRealtyRecordInsertion($employer_folder,$currentZip);
-                    //$emailData = \array_merge($emailData, $recordData);
-                }
+                //$emailData = \array_merge($emailData, $recordData);
+            }
         }
             
         //$this->sendEmails($this->prepareEmails($emailData));
@@ -169,15 +190,98 @@ class OpenImmoImport
     }
 
     /**
-     * Returns the LanguageService
      *
-     * @return LanguageService
+     * @param string $pathOfZip absolute path where to find the ZIP archive which includes an XML file,
+     *        must not be empty
+     *
+     * @return void
      */
-    protected function getLanguageService(): LanguageService
+    protected function loadXmlFile($pathOfZip)
     {
-        return $GLOBALS['LANG'];
+        $xml_file_data = "";
+        $xmlPath = $this->getPathForXml($pathOfZip);
+
+        if ($xmlPath === '') {
+            return;
+        }
+
+        if (!file_exists($xmlPath)) {
+            $this->addToLogEntry(
+                LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_invalid_schema_file_path', 'The path of the schema file is invalid. Please check your configuration in the extension manager.')
+            );
+        } else {
+            $this->importedXml = new \DOMDocument();
+            $this->importedXml->load($xmlPath);
+        }
     }
 
+    /**
+     *
+     * @param string $pathOfZip absolute path where to find the ZIP archive which includes an XML file,
+     *        must not be empty
+     *
+     * @return string absolute path of the XML file, empty string on error
+     */
+    protected function getPathForXml($pathOfZip)
+    {
+        $result = '';
+
+        $errorMessage = '';
+        $folderWithXml = $this->getNameForExtractionFolder($pathOfZip);
+
+        if (\is_dir($folderWithXml)) {
+            $pathOfXml = \glob($folderWithXml . '*.xml');
+
+            if (\count($pathOfXml) === 1) {
+                $result = \implode('', $pathOfXml);
+            } elseif (\count($pathOfXml) > 1) {
+                $this->addToErrorLog(
+                    LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_too_many_xml', 'There must not be more than one XML file in the ZIP archive. Please remove the surplus XML files from the archive.')
+                );
+            } else {
+                $this->addToErrorLog(
+                    LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_no_xml', 'No XML file could be found in the ZIP archive. If there is one anyway, please ensure the name ends with .xml')
+                );
+            }
+        } else {
+            $this->addToErrorLog(
+                LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_invalid_xml_path', 'The path of the XML file is not valid. There might be no extraction folder. This could be a file permissions problem. Please check you are permitted to write in the import directory.')
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     *
+     * @param string $zipToExtract path to the ZIP archive to extract, must not be empty
+     *
+     * @return void
+     */
+    public function extractZip($zipToExtract)
+    {
+        if (!file_exists($zipToExtract)) {
+            return;
+        }
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipToExtract)) {
+            $extractionDirectory = $this->createExtractionFolder($zipToExtract);
+            if ($extractionDirectory !== '') {
+                if (count(glob($extractionDirectory.'/*')) === 0) {
+                    $zip->extractTo($extractionDirectory);
+                    $this->addToLogEntry(
+                        $zipToExtract . ': '. LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extracted_successfully', 'The ZIP archive was extracted successfully.')
+                    );
+                }
+            }
+            $zip->close();
+        } else {
+            $this->addToErrorLog(
+                $zipToExtract . ': ' . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extraction_failed', 'The extraction of this ZIP archive failed. The ZIP archive could not be opened. The file might be corrupt.')
+            );
+        }
+    }
 
 
     /**
@@ -211,12 +315,13 @@ class OpenImmoImport
                 $transferMode = $transferNode->getAttribute('umfang');
             }
         }
-        
+
+
         if (!$this->hasValidOwnerForImport($employer_folder, $ownerId)) {
             $this->addToErrorLog (
-                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_openimmo_anid_not_matches_allowed_fe_user') . '"'.
+                LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_openimmo_anid_not_matches_allowed_fe_user', 'The record was not imported because the option to restrict import on registered users is activated and this records OpenImmo ANID did not match any OpenImmo ANID of a FE user who is in the allowed user groups. The records OpenImmo ANID was:') . '"'.
                 $ownerId. '".' . "\n"
-             );
+            );
             return;
         }
    
@@ -239,35 +344,13 @@ class OpenImmoImport
     
                 //$this->storeLogsAndClearTemporaryLog();
             }
-    
-            if ($transferMode === self::FULL_TRANSFER_MODE
-                && $this->globalConfiguration->getAsBoolean('importCanDeleteRecordsForFullSync')
-            ) {
-                $pid = \Tx_Oelib_ConfigurationProxy::getInstance('realty')->getAsInteger('pidForRealtyObjectsAndImages');
-                /** @var \tx_realty_Mapper_RealtyObject $realtyObjectMapper */
-                $realtyObjectMapper = \Tx_Oelib_MapperRegistry::get(\tx_realty_Mapper_RealtyObject::class);
-                $deletedObjects = $realtyObjectMapper->deleteByAnidAndPidWithExceptions(
-                    $offererId,
-                    $pid,
-                    $savedRealtyObjects
-                );
-                if (!empty($deletedObjects)) {
-                    /** @var string[] $uids */
-                    $uids = [];
-                    foreach ($deletedObjects as $deletedObject) {
-                        $uids[] = $deletedObject->getUid();
-                    }
-                    $this->addToLogEntry(
-                        $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_deleted_objects_from_full_sync') . ' ' .
-                        \implode(', ', $uids)
-                    );
-                }
-            }
-    
+
+            /*
             if (!$this->deleteCurrentZipFile) {
                 $this->filesToDelete = \array_diff($this->filesToDelete, [$pathOfCurrentZipFile]);
                 $this->deleteCurrentZipFile = true;
             }
+            */
         }
         return true;
         //return $emailData;
@@ -284,12 +367,12 @@ class OpenImmoImport
         
         $message = '';
         if ($setNewObject == true) {
-            $message = "new entry in table tx_realtymanager_domain_model_objectimmo";
-            $this->addToLogEntry($message . "\n");
+            $message = "new object created in table: tx_realtymanager_domain_model_objectimmo";
+            $this->addToLogEntry("\n" . $message . "\n");
             return true;
         } else {
             $message = "Error: dataset can not save";
-            $this->addToLogEntry($message . "\n");
+            $this->addToLogEntry("\n" . $message . "\n");
             return false;
         }
     }
@@ -314,37 +397,16 @@ class OpenImmoImport
         foreach ($objectData['attached_files'] as $attachmentData) {
             $fileExtractionPath = $extractionFolder.$attachmentData['path'];
             $title = $attachmentData['title'];
-            $attachmentImporter->addAttachment($fileExtractionPath, $employer_folder, $title);
+            if($attachmentImporter->addAttachment($fileExtractionPath, $employer_folder, $title) == true) {
+                $this->addToLogEntry($fileExtractionPath . " file copied \n");
+            }
         }
-        
-        
-        exit();
+
+        //exit();
 
         $attachmentImporter->finishTransaction();
     }
 
-
-
-    /**
-     * Returns a localized message that validation should be activated. Will be
-     * empty if validation is active.
-     *
-     * @return string localized message that validation should be enabled,
-     *                an empty string if this is already enabled
-     */
-    private function getPleaseActivateValidationMessage()
-    {
-        return ($this->globalConfiguration->getAsString('openImmoSchema') !== '')
-            ? $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_please_validate')
-            : '';
-    }
-
-
-    private function hasValidOwnerForImport($employer_folder, $ownerId)
-    {
-        $checkOwnerAnid = $this->objectimmoRepository->checkOwnerAnid($employer_folder, $ownerId);
-        return $checkOwnerAnid;
-    }
 
     /**
      * Logs information about the proceedings of the import.
@@ -391,85 +453,6 @@ class OpenImmoImport
     }
 
     /**
-     * @param string $importDirectory unified path of the import directory, must not be empty
-     *
-     * @return bool
-     */
-    private function canStartImport($importDirectory)
-    {
-
-        $isAccessible = true;
-        
-        $storageId = (int)$this->settings->getStorageUidImporter();
-        
-        $storage = $this->getResourceFactory()->getStorageObject($storageId);
-        $pathExists = $storage->hasFolder($importDirectory);
-        
-        if (!$pathExists) {
-            $this->addToErrorLog(
-                \sprintf($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_import_directory_not_existing'),$importDirectory)
-            );
-            
-            $isAccessible = false;
-        }
-        
-        return $isAccessible;
-    }
-
-    /**
-     * Checks if the configuration in the EM enables sending errors only.
-     *
-     * @return bool whether "onlyErrors" is enabled
-     */
-    private function isErrorLogOnlyEnabled()
-    {
-        return $this->globalConfiguration->getAsBoolean('onlyErrors');
-    }
-
-    /**
-     * Returns the default email address, configured in the EM.
-     *
-     * @return string default email address, may be empty
-     */
-    private function getDefaultEmailAddress()
-    {
-        return $this->globalConfiguration->getAsString('emailAddress');
-    }
-
-    /**
-     * Checks whether contact persons of each record should receive emails
-     * about the import of their records.
-     *
-     * @return bool whether contact persons should receive emails
-     */
-    private function isNotifyContactPersonsEnabled()
-    {
-        return $this->globalConfiguration->getAsBoolean('notifyContactPersons');
-    }
-
-
-    /**
-     * Deletes object numbers from $emailData if there is no message to report.
-     * Messages could only be empty if 'onlyErrors' is activated in the EM
-     * configuration.
-     *
-     * @param array[] &$emailData prepared email data, must not be empty
-     *
-     * @return void
-     */
-    private function purgeRecordsWithoutLogMessages(array &$emailData)
-    {
-        foreach ($emailData as $recipient => $data) {
-            foreach ($data as $key => $emailContent) {
-                if (\implode('', $emailContent) === '') {
-                    unset($emailData[$recipient][$key]);
-                }
-            }
-        }
-    }
-
-
-    /**
      * Gets an array of the paths of all ZIP archives in the import folder
      * and its subfolders.
      *
@@ -491,39 +474,6 @@ class OpenImmoImport
         return $result;
     }
 
-    /**
-     * Extracts each ZIP archive into a directory in the import folder which is
-     * named like the ZIP archive without the suffix '.zip'.
-     * Logs success and failures.
-     *
-     * @param string $zipToExtract path to the ZIP archive to extract, must not be empty
-     *
-     * @return void
-     */
-    public function extractZip($zipToExtract)
-    {
-        if (!file_exists($zipToExtract)) {
-            return;
-        }
-
-        $zip = new \ZipArchive();
-        if ($zip->open($zipToExtract)) {
-            $extractionDirectory = $this->createExtractionFolder($zipToExtract);
-            if ($extractionDirectory !== '') {
-                if (count(glob($extractionDirectory.'/*')) === 0) {
-                    $zip->extractTo($extractionDirectory);
-                    $this->addToLogEntry(
-                        $zipToExtract . ': '. LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extracted_successfully', 'The ZIP archive was extracted successfully.')
-                     );
-                }               
-            }
-            $zip->close();
-        } else {
-            $this->addToErrorLog(
-                $zipToExtract . ': ' . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extraction_failed', 'The extraction of this ZIP archive failed. The ZIP archive could not be opened. The file might be corrupt.')
-            );
-        }
-    }
 
     /**
      * Gets the full path for the folder according to the ZIP archive to extract to it.
@@ -567,9 +517,10 @@ class OpenImmoImport
         $folderForZipExtraction = $this->getNameForExtractionFolder($pathOfZip);
         
         if (\is_dir($folderForZipExtraction)) {
-            $this->addToErrorLog(                
-                $folderForZipExtraction . ': ' . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_surplus_folder', 'The folder which needs to be created for importing already exists in your import directory. The record cannot be imported as long as this folder exists. Please remove this folder.')
+            $this->addToErrorLog(
+                $folderForZipExtraction . "\n" . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_surplus_folder', 'The folder which needs to be created for importing already exists in your import directory. The record cannot be imported as long as this folder exists. Please remove this folder.')
             );
+            return;
         } else {
             try {
                 GeneralUtility::mkdir_deep($folderForZipExtraction);
@@ -577,7 +528,7 @@ class OpenImmoImport
                 if (!\is_writable($folderForZipExtraction)) {
                     $this->addToErrorLog(
                         \sprintf(
-                            $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_folder_not_writable'),
+                            LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_folder_not_writable', 'The folder &quot;%s&quot; has been created successfully, but is not writable. Please check your access rights.'),
                             $folderForZipExtraction
                         )
                     );
@@ -585,7 +536,7 @@ class OpenImmoImport
             } catch (\RuntimeException $exception) {
                 $this->addToErrorLog(
                     \sprintf(
-                        $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_folder_creation_failed'),
+                        LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_folder_creation_failed', 'The folder &quot;%s&quot; could not be created. Please check your access rights.'),
                         $folderForZipExtraction
                     )
                 );
@@ -595,73 +546,6 @@ class OpenImmoImport
         return $folderForZipExtraction;
     }
 
-    /**
-     * Finds an XML file in the folder named like $pathOfZip without the suffix
-     * '.zip' and returns its path. The ZIP archive must have been extracted
-     * before. In case no or several XML files are found, an empty string is
-     * returned and the error is logged.
-     *
-     * @param string $pathOfZip absolute path where to find the ZIP archive which includes an XML file,
-     *        must not be empty
-     *
-     * @return string absolute path of the XML file, empty string on error
-     */
-    protected function getPathForXml($pathOfZip)
-    {
-        $result = '';
-
-        $errorMessage = '';
-        $folderWithXml = $this->getNameForExtractionFolder($pathOfZip);
-
-        if (\is_dir($folderWithXml)) {
-            $pathOfXml = \glob($folderWithXml . '*.xml');
-
-            if (\count($pathOfXml) === 1) {
-                $result = \implode('', $pathOfXml);
-            } elseif (\count($pathOfXml) > 1) {
-                $errorMessage = 'message_too_many_xml';
-            } else {
-                $errorMessage = 'message_no_xml';
-            }
-        } else {
-            $errorMessage = 'message_invalid_xml_path';
-        }
-
-        if ($errorMessage !== '') {
-            $this->addToErrorLog(\basename($pathOfZip) . ': ' . $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . $errorMessage));
-        }
-
-        return $result;
-    }
-
-    /**
-     * Loads and validates an XML file from a ZIP archive as a DOMDocument which
-     * is stored in an array.
-     * The ZIP archive must have been extracted to a folder named like the ZIP
-     * without the suffix '.zip' before.
-     *
-     * @param string $pathOfZip absolute path where to find the ZIP archive which includes an XML file,
-     *        must not be empty
-     *
-     * @return void
-     */
-    protected function loadXmlFile($pathOfZip)
-    {
-        $xml_file_data = "";
-        $xmlPath = $this->getPathForXml($pathOfZip);
-
-        if ($xmlPath === '') {
-            return;
-        }
-
-        if (!file_exists($xmlPath)) {
-            $this->addToLogEntry($this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_invalid_schema_file_path'));
-        } else {
-            $this->importedXml = new \DOMDocument();
-            $this->importedXml->load($xmlPath);
-        }
-   }
-   
    protected function getImportedXml()
    {
        return $this->importedXml;
@@ -669,9 +553,6 @@ class OpenImmoImport
 
 
     /**
-     * Removes the ZIP archives which have been imported and the folders which
-     * have been created to extract the ZIP archives.
-     * Logs which ZIP archives have been deleted.
      *
      * @param string $importDirectory absolute path of the folder which contains the ZIP archives, must not be empty
      *
@@ -698,9 +579,34 @@ class OpenImmoImport
 
         if (!empty($removedFiles)) {
             $this->addToLogEntry(
-                $this->getLanguageService()->sL('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:' . 'message_files_removed') . ': ' . \implode(', ', $removedFiles)
+                LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_files_removed', 'The following files have been removed') . ': ' . \implode(', ', $removedFiles)
             );
         }
+    }
+
+    /**
+     * delete Importfolder
+     */
+    public function deleteImportFolder($employer_folder)
+    {
+        $import_folder = $this->settings->getResourceFolderImporter().'/'.$employer_folder;
+        $storageId = (int)$this->settings->getStorageUidImporter();
+        $storage = $this->getResourceFactory()->getStorageObject($storageId);
+        $pathExists = $storage->hasFolder($import_folder);
+
+        if ($pathExists) {
+            $base_path = $_SERVER['DOCUMENT_ROOT'];
+            $import_folder = $base_path.'/fileadmin'.$this->settings->getResourceFolderImporter().'/'.$employer_folder;
+            self::delTree($import_folder);
+        }
+    }
+
+    public static function delTree($dir) {
+        $files = array_diff(scandir($dir), array('..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
+        }
+        //return rmdir($dir);
     }
 
     /**
@@ -742,33 +648,6 @@ class OpenImmoImport
     }
 
     /**
-     * Loads a realty object.
-     *
-     * The data can either be a database result row or an array which has
-     * database column names as keys (may be empty). The data can also be a UID
-     * of an existent realty object to load from the database. If the data is of
-     * an invalid type the realty object stays empty.
-     *
-     * @param array|mixed $data
-     *        data for the realty object as an array
-     *
-     * @return void
-     */
-    protected function loadRealtyObject($data)
-    {
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
-        $sql = "SHOW COLUMNS FROM tx_realtymanager_domain_model_objectimmo";
-        $col_data = $connection->executeQuery($sql)->fetch;
-        print_r($col_data);
-        exit();
-        
-        /*
-        $this->realtyObject = GeneralUtility::makeInstance(Objectimmo::class, $this->isTestMode);
-        $this->realtyObject->loadRealtyObject($data, true);
-        */
-    }
-
-    /**
      * Returns the object number of a realty object if it is set.
      *
      * @return string object number, may be empty if no object number
@@ -783,33 +662,12 @@ class OpenImmoImport
         return $this->realtyObject->getProperty('object_number');
     }
 
-
-    /**
-     * Checks whether the owner's data may be used.
-     *
-     * @return bool whether it is allowed by configuration to use the owner's data
-     */
-    private function mayUseOwnerData()
+    private function hasValidOwnerForImport($employer_folder, $ownerId)
     {
-        return $this->globalConfiguration->getAsBoolean('useFrontEndUserDataAsContactDataForImportedRecords');
+        $checkOwnerAnid = $this->objectimmoRepository->checkOwnerAnid($employer_folder, $ownerId);
+        return $checkOwnerAnid;
     }
 
-
-    /**
-     * Gets the required fields of a realty object.
-     * This function is needed for unit testing only.
-     *
-     * @return string[] required fields, may be empty if no fields are
-     *               required or if the realty object is not initialized
-     */
-    protected function getRequiredFields()
-    {
-        if (!$this->realtyObject instanceof Objectimmo) {
-            return [];
-        }
-
-        return $this->realtyObject->getRequiredFields();
-    }
     
     /**
      * @return ResourceFactory
@@ -819,4 +677,3 @@ class OpenImmoImport
         return GeneralUtility::makeInstance(ResourceFactory::class);
     }
 }
-

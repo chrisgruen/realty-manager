@@ -68,7 +68,7 @@ class AttachmentImporter
         $object = $this->getUIdRecord();
         $this->uidObject = $object['uid'];
         $this->pidObject = $object['pid'];
-        echo $this->uidObject . "<br />";
+        //echo $this->uidObject . "<br />";
         //$this->clearAttachments($uidObject);
         //$this->extractAttachmentUid($uidObject);
     }
@@ -108,6 +108,7 @@ class AttachmentImporter
         $pathExists = $storage->hasFolder($realty_store_folder);
         
         if($pathExists) {
+            $get_file_uid = 0;
             $file_name = basename($fileExtractionPath);
             $file = $storage->getFile($import_attachement);
             $folder = $storage->getFolder($realty_store_folder);
@@ -117,10 +118,10 @@ class AttachmentImporter
             $file_exist = $base_path.'/fileadmin/'.$realty_store_folder.'/'.$file_name;
     
             if (file_exists($file_exist)) {
-                echo $import_attachement ." -> File already copied <br />";
+                //echo $import_attachement ." -> File already copied <br />";
             } else {
                 $copiedFile = $file->copyTo($folder);
-                echo $import_attachement . " :: " .$title. " -> Files copied <br />";
+                //echo $import_attachement . " :: " .$title. " -> Files copied <br />";
             }
             
             //get uid from table sys_file
@@ -128,17 +129,17 @@ class AttachmentImporter
             $get_file_uid = $this->objectimmoRepository->getFileUid($file_path); 
             $set_file_object_relation = $this->objectimmoRepository->setFileObjectRelation($this->uidObject, $this->pidObject, $get_file_uid, $title);
             
-            echo $file_path." :: ".$get_file_uid." :: ".$this->uidObject."</br >";
+            //echo $file_path." :: ".$get_file_uid." :: ".$this->uidObject."</br >";
             if($set_file_object_relation) {
-                echo "File relation created in table: sys_file_reference<br />";
+                //echo "File relation created in table: sys_file_reference<br />";
             }
-              
-            echo "<br />";
+
+            return true;
         } else {
-            echo "ERROR: Folder to Copy not found";
+            return false;
         }
         
-        //$this->assertTransactionIsInProgress();
+        $this->assertTransactionIsInProgress();
     }
     
     public function addRelationFileEntry() {
@@ -183,39 +184,16 @@ class AttachmentImporter
      */
     public function finishTransaction()
     {
+        /*
         echo "finish Transaction";
         exit();
+        */
         
         $this->assertTransactionIsInProgress();
-
-        $this->processAddedAttachments();
-        $this->processRemovedAttachments();
-        $this->realtyObject->writeToDatabase();
-
+        //$this->processRemovedAttachments();
         $this->transactionIsInProgress = false;
     }
 
-    /**
-     * @return void
-     */
-    private function processAddedAttachments()
-    {
-        foreach ($this->attachmentsToBeAdded as $attachment) {
-            $fullPath = $attachment['fullPath'];
-            $baseName = \basename($fullPath);
-            $existingAttachment = $this->realtyObject->getAttachmentByBaseName($baseName);
-            if ($existingAttachment !== null) {
-                $fileUid = $existingAttachment->getOriginalFile()->getUid();
-                unset($this->uidsOfFilesToRemove[$fileUid]);
-            } else {
-                if (!\file_exists($fullPath)) {
-                    continue;
-                }
-                $title = $attachment['title'];
-                $this->realtyObject->addAndSaveAttachment($fullPath, $title);
-            }
-        }
-    }
 
     /**
      * @return void
