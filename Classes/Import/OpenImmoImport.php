@@ -181,6 +181,7 @@ class OpenImmoImport
             }
         }
             
+        $delImportFolder = $this->deleteImportFolder($employer_folder);
         //$this->sendEmails($this->prepareEmails($emailData));
         //$this->cleanUp($checkedImportDirectory);
 
@@ -589,6 +590,12 @@ class OpenImmoImport
      */
     public function deleteImportFolder($employer_folder)
     {
+        $this->addToErrorLog(
+            "delete: ".$employer_folder 
+        );
+        return;
+        echo "delete: ".$employer_folder;
+        exit();
         $import_folder = $this->settings->getResourceFolderImporter().'/'.$employer_folder;
         $storageId = (int)$this->settings->getStorageUidImporter();
         $storage = $this->getResourceFactory()->getStorageObject($storageId);
@@ -602,7 +609,7 @@ class OpenImmoImport
     }
 
     public static function delTree($dir) {
-        $files = array_diff(scandir($dir), array('..'));
+        $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
         }
