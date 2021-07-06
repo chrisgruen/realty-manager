@@ -419,8 +419,6 @@ class OpenImmoImport
             }
         }
 
-        //exit();
-
         $attachmentImporter->finishTransaction();
     }
 

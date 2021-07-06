@@ -47,7 +47,10 @@ class ImageListViewHelper extends AbstractViewHelper
                         'fm',
                         $queryBuilder->expr()->eq('fm.file', $queryBuilder->quoteIdentifier('sys_file.uid'))
                         )
-                    ->where($queryBuilder->expr()->eq('uid_foreign', $uid_obj, \PDO::PARAM_INT))
+                    ->where(
+                        $queryBuilder->expr()->eq('uid_foreign', $uid_obj, \PDO::PARAM_INT),
+                        $queryBuilder->expr()->eq('type', 2,  \PDO::PARAM_INT)
+                    )
                     ->orderby('sorting_foreign')
                     ->setMaxResults(2)
                     ->execute()
