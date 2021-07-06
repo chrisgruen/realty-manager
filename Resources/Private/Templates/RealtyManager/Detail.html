@@ -95,9 +95,16 @@
 				</f:if>
 			</tbody> 	
 		</table>
-		<p><b>Beschreibung</b> <br />
-		 	<f:format.html>{object.description}</f:format.html>
-	 	</p>
+		<f:if condition="{object.equipment}">
+			<p><b>Ausstattung</b> <br />
+				<f:format.html>{object.equipment}</f:format.html>
+			</p>
+		</f:if>
+		<f:if condition="{object.description}">
+			<p><b>Beschreibung</b> <br />
+				<f:format.html>{object.description}</f:format.html>
+			</p>
+	 	</f:if>
 	 	<p><b>Addresse</b> <br />
 		 	{object.street} <br />
 		 	{object.zip} 

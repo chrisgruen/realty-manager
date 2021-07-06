@@ -171,6 +171,11 @@ class Objectimmo extends AbstractEntity
      * @var string
      */
     protected $description;
+
+    /**
+     * @var string
+     */
+    protected $equipment;
     
     /**
      * @var string
@@ -746,6 +751,26 @@ class Objectimmo extends AbstractEntity
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set $equipment
+     *
+     * @param string $equipment equipment
+     */
+    public function setEquipment($equipment)
+    {
+        $this->equipment = $equipment;
+    }
+
+    /**
+     * Get equipment
+     *
+     * @return string
+     */
+    public function getEquipment()
+    {
+        return $this->equipment;
     }
         
     /**
