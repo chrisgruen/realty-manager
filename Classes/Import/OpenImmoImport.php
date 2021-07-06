@@ -316,7 +316,6 @@ class OpenImmoImport
             }
         }
 
-
         if (!$this->hasValidOwnerForImport($employer_folder, $ownerId)) {
             $this->addToErrorLog (
                 LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_openimmo_anid_not_matches_allowed_fe_user', 'The record was not imported because the option to restrict import on registered users is activated and this records OpenImmo ANID did not match any OpenImmo ANID of a FE user who is in the allowed user groups. The records OpenImmo ANID was:') . '"'.
@@ -338,20 +337,13 @@ class OpenImmoImport
                 if ($dataset_to_mysql == true) {
                     $this->importAttachments($ownerId, $record, $pathOfCurrentZipFile, $employer_folder);
                 }
-
-                /* last dev point */
-                return $this->logEntry;
-
                 //$this->storeLogsAndClearTemporaryLog();
             }
 
-            /*
-            if (!$this->deleteCurrentZipFile) {
-                $this->filesToDelete = \array_diff($this->filesToDelete, [$pathOfCurrentZipFile]);
-                $this->deleteCurrentZipFile = true;
-            }
-            */
+            /* last dev point */
+            return $this->logEntry;
         }
+
         return true;
         //return $emailData;
     }
@@ -386,15 +378,17 @@ class OpenImmoImport
      */
     protected function writeToDatabase($ownerId, array $realtyRecord)
     {
-        $setNewObject = $this->objectimmoRepository->setNewObject($ownerId, $realtyRecord);
-
+        if ($realtyRecord['object_number'] != '') {
+            $setNewObject = $this->objectimmoRepository->setNewObject($ownerId, $realtyRecord);
+        }
+        
         $message = '';
         if ($setNewObject == true) {
-            $message = "new object created in table: tx_realtymanager_domain_model_objectimmo";
+            $message = "new object: " .$realtyRecord['object_number']." created in table: tx_realtymanager_domain_model_objectimmo";
             $this->addToLogEntry("\n" . $message . "\n");
             return true;
         } else {
-            $message = "Error: dataset can not save";
+            $message = "Error: ". $realtyRecord['object_number'] ." already in table. Dataset can not save";
             $this->addToLogEntry("\n" . $message . "\n");
             return false;
         }

@@ -94,11 +94,8 @@ class ImportController extends ActionController
         if ($errors != '') {
             $this->view->assign('error', $this->checkFolderEmployer($employer_folder));
         } else {
-            $importResults = $this->importService->importFromZip($employer_folder);
-
-            /*
             try {
-                $importResults = $this->importService->importFromZip();
+                $importResults = $this->importService->importFromZip($employer_folder);
                 $success = $this->importService->wasSuccessful();
             } catch (\Exception $exception) {
                 $backTrace = \json_encode(
@@ -108,7 +105,7 @@ class ImportController extends ActionController
                 $importResults .= $exception->getMessage() . "\n" . $backTrace;
                 $success = false;
             }
-            */
+
             $this->view->assign('importResults', $importResults);
             $this->view->assign('importStatus', $success ? 0 : 2);
         }
