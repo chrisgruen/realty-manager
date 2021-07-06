@@ -81,6 +81,7 @@ class ImportController extends ActionController
         $employer_uid = $this->request->hasArgument('employer') ? $this->request->getArgument('employer') : 0;
 
         //$success = false;
+        set_time_limit(300);
 
         if($employer_uid > 0) {
             $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');

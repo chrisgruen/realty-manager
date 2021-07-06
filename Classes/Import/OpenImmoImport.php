@@ -381,7 +381,7 @@ class OpenImmoImport
         if ($realtyRecord['object_number'] != '') {
             $setNewObject = $this->objectimmoRepository->setNewObject($ownerId, $realtyRecord);
         }
-        
+
         $message = '';
         if ($setNewObject == true) {
             $message = "new object: " .$realtyRecord['object_number']." created in table: tx_realtymanager_domain_model_objectimmo";
