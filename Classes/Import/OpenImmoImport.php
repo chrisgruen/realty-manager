@@ -53,7 +53,7 @@ class OpenImmoImport
      * @var \Tx_Oelib_ConfigurationProxy to access the EM configuration
      */
     private $globalConfiguration = null;
-    
+
     /**
      * @var \ConfigurationImport for settings
      */
@@ -88,7 +88,7 @@ class OpenImmoImport
      * @var bool
      */
     private $success = true;
-    
+
     /**
      * Constructor.
      *
@@ -100,9 +100,9 @@ class OpenImmoImport
         $this->isTestMode = $isTestMode;
         $this->settings = GeneralUtility::makeInstance(ConfigurationImport::class);
     }
-    
+
     private $objectimmoRepository;
-    
+
     /**
      * Inject the objectimmo repository
      *
@@ -112,7 +112,7 @@ class OpenImmoImport
     {
         $this->objectimmoRepository = $objectimmoRepository;
     }
-    
+
     /**
      * @return bool
      */
@@ -154,11 +154,11 @@ class OpenImmoImport
     {
         /* root folder fileadmin */
         $import_folder = $this->settings->getResourceFolderImporter().'/'.$employer_folder;
-              
+
         $this->success = true;
 
         $this->addToLogEntry(\date('Y-m-d G:i:s') . "\n");
-        
+
         if (!$this->canStartImport($import_folder)) {
             $this->storeLogsAndClearTemporaryLog();
             return $this->logEntry;
@@ -167,23 +167,22 @@ class OpenImmoImport
         $zipsToExtract = $this->getPathsOfZipsToExtract($import_folder);
 
         //$this->storeLogsAndClearTemporaryLog();
-        
+
         if (empty($zipsToExtract)) {
             $this->addToErrorLog(
                 LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_no_zips', 'No ZIPs to extract. The configured import folder does not contain any ZIP archives. Please check the path configured in the extension manager and the contents of the folder.')
-            ); 
+            );
         } else {
             foreach ($zipsToExtract as $currentZip) {
-                $this->extractZip($currentZip);  
+                $this->extractZip($currentZip);
                 $xml_file_data = $this->loadXmlFile($currentZip);
                 $recordData = $this->processRealtyRecordInsertion($employer_folder,$currentZip);
-                //$emailData = \array_merge($emailData, $recordData);
             }
         }
-            
+
         $delImportFolder = $this->deleteImportFolder($employer_folder);
+        $clearImageTables = $this->clearImageTables($employer_folder);
         //$this->sendEmails($this->prepareEmails($emailData));
-        //$this->cleanUp($checkedImportDirectory);
 
         $this->storeLogsAndClearTemporaryLog();
 
@@ -294,7 +293,7 @@ class OpenImmoImport
         $emailData = [];
         $offererId = '';
         $transferMode = null;
-        
+
 
         $xml = $this->getImportedXml();
 
@@ -325,9 +324,9 @@ class OpenImmoImport
             );
             return;
         }
-   
+
         $recordsToInsert = $this->convertDomDocumentToArray($xml);
-        
+
         if (!empty($recordsToInsert)) {
 
             foreach ($recordsToInsert as $record) {
@@ -339,10 +338,10 @@ class OpenImmoImport
                 if ($dataset_to_mysql == true) {
                     $this->importAttachments($ownerId, $record, $pathOfCurrentZipFile, $employer_folder);
                 }
-                
+
                 /* last dev point */
                 return $this->logEntry;
-    
+
                 //$this->storeLogsAndClearTemporaryLog();
             }
 
@@ -356,7 +355,30 @@ class OpenImmoImport
         return true;
         //return $emailData;
     }
-    
+
+    protected function getImportedXml()
+    {
+        return $this->importedXml;
+    }
+
+    /**
+     * Converts a DOMDocument to an array.
+     *
+     * @param \DOMDocument|null $realtyRecords which contains realty records
+     *
+     * @return array[] $realtyRecords realty records in an array, will be empty if the data was not convertible
+     */
+    protected function convertDomDocumentToArray(\DOMDocument $realtyRecords = null)
+    {
+        if ($realtyRecords === null) {
+            return [];
+        }
+
+        $domDocumentConverter = new XmlConverter;
+        $recordsToInsert =  $domDocumentConverter->getConvertedData($realtyRecords);
+        return $recordsToInsert;
+    }
+
     /**
      * @param array $realtyRecord
      *
@@ -365,7 +387,7 @@ class OpenImmoImport
     protected function writeToDatabase($ownerId, array $realtyRecord)
     {
         $setNewObject = $this->objectimmoRepository->setNewObject($ownerId, $realtyRecord);
-        
+
         $message = '';
         if ($setNewObject == true) {
             $message = "new object created in table: tx_realtymanager_domain_model_objectimmo";
@@ -388,10 +410,10 @@ class OpenImmoImport
         if (empty($objectData['attached_files'])) {
             return;
         }
-        
+
         $attachmentImporter = GeneralUtility::makeInstance(AttachmentImporter::class, $ownerId, $objectData, $this->objectimmoRepository);
         $attachmentImporter->startTransaction();
-        
+
         $extractionFolder = $this->getFolderForImport($pathOfCurrentZipFile, $employer_folder);
 
         /** @var string[] $attachmentData */
@@ -462,12 +484,12 @@ class OpenImmoImport
      * @return string[] absolute paths of ZIPs in the import folder, might be empty
      */
     protected function getPathsOfZipsToExtract($importDirectory)
-    {       
+    {
         $base_path = $_SERVER['DOCUMENT_ROOT'];
         $path_import = $base_path.'/fileadmin'.$importDirectory;
-        
+
         $result = [];
-        
+
         if (is_dir($path_import)) {
             $result = GeneralUtility::getAllFilesAndFoldersInPath([], $path_import, 'zip');
         }
@@ -491,15 +513,15 @@ class OpenImmoImport
     }
 
     protected function getFolderForImport($pathOfZip, $employer_folder) {
-        
+
         $extractions_folder = '';
         $import_folder = $this->settings->getResourceFolderImporter().'/'.$employer_folder;
         $resource_folder = str_replace('.zip', '/', basename($pathOfZip));
-        
-        $extractions_folder = $import_folder . '/'. $resource_folder;        
+
+        $extractions_folder = $import_folder . '/'. $resource_folder;
         return $extractions_folder;
     }
-    
+
     /**
      * Creates a folder to extract a ZIP archive to.
      *
@@ -516,7 +538,7 @@ class OpenImmoImport
         }
 
         $folderForZipExtraction = $this->getNameForExtractionFolder($pathOfZip);
-        
+
         if (\is_dir($folderForZipExtraction)) {
             $this->addToErrorLog(
                 $folderForZipExtraction . "\n" . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_surplus_folder', 'The folder which needs to be created for importing already exists in your import directory. The record cannot be imported as long as this folder exists. Please remove this folder.')
@@ -547,55 +569,11 @@ class OpenImmoImport
         return $folderForZipExtraction;
     }
 
-   protected function getImportedXml()
-   {
-       return $this->importedXml;
-   }
-
-
-    /**
-     *
-     * @param string $importDirectory absolute path of the folder which contains the ZIP archives, must not be empty
-     *
-     * @return void
-     */
-    public function cleanUp($importDirectory)
-    {
-        if (!\is_dir($importDirectory)) {
-            return;
-        }
-
-        $removedFiles = [];
-        $deleteImportedZips = $this->globalConfiguration->getAsBoolean('deleteZipsAfterImport');
-
-        foreach ($this->getPathsOfZipsToExtract($importDirectory) as $currentPath) {
-            if ($deleteImportedZips) {
-                $removedZipArchive = $this->deleteFile($currentPath);
-                if ($removedZipArchive !== '') {
-                    $removedFiles[] = $removedZipArchive;
-                }
-            }
-            $this->deleteFile($this->getNameForExtractionFolder($currentPath));
-        }
-
-        if (!empty($removedFiles)) {
-            $this->addToLogEntry(
-                LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_files_removed', 'The following files have been removed') . ': ' . \implode(', ', $removedFiles)
-            );
-        }
-    }
-
     /**
      * delete Importfolder
      */
-    public function deleteImportFolder($employer_folder)
+    protected function deleteImportFolder($employer_folder)
     {
-        $this->addToErrorLog(
-            "delete: ".$employer_folder 
-        );
-        return;
-        echo "delete: ".$employer_folder;
-        exit();
         $import_folder = $this->settings->getResourceFolderImporter().'/'.$employer_folder;
         $storageId = (int)$this->settings->getStorageUidImporter();
         $storage = $this->getResourceFactory()->getStorageObject($storageId);
@@ -604,70 +582,55 @@ class OpenImmoImport
         if ($pathExists) {
             $base_path = $_SERVER['DOCUMENT_ROOT'];
             $import_folder = $base_path.'/fileadmin'.$this->settings->getResourceFolderImporter().'/'.$employer_folder;
-            self::delTree($import_folder);
+            $subdirectories = self::getSubDirectories($import_folder);
+            foreach ($subdirectories as $key => $subdirectory) {
+                if ($key == 0)
+                    continue;
+
+                self::delTree($subdirectory);
+                $this->addToErrorLog(
+                    "Import folder: ".$employer_folder."/".$subdirectory
+                );
+            }
+            $this->addToErrorLog(
+                "\n Clear Importfolder \n"
+            );
+        } else {
+            $this->addToErrorLog(
+                "\n Importfolder not exist! \n"
+            );
         }
     }
 
-    public static function delTree($dir) {
+    public static function getSubDirectories($dir)
+    {
+        $subDir = array();
+        $directories = array_filter(glob($dir), 'is_dir');
+        $subDir = array_merge($subDir, $directories);
+        foreach ($directories as $directory) $subDir = array_merge($subDir, self::getSubDirectories($directory.'/*'));
+        return $subDir;
+    }
+
+
+    public static function delTree($dir)
+    {
         $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
         }
-        //return rmdir($dir);
+        return rmdir($dir);
     }
 
-    /**
-     * Removes a file if it occurs in the list of files for which deletion is
-     * allowed.
-     *
-     * @param string $pathOfFile path of the file to delete, must not be empty
-     *
-     * @return string basename of the deleted file or an empty string if
-     *                no file was deleted
-     */
-    private function deleteFile($pathOfFile)
+    protected function clearImageTables($dir)
     {
-        $removedFile = '';
-        if (\in_array($pathOfFile, $this->filesToDelete, true)) {
-            GeneralUtility::rmdir($pathOfFile, true);
-            $removedFile = \basename($pathOfFile);
-        }
+        $identifier_phrase = 'import/'.$dir;
+        $delattachements = $this->objectimmoRepository->clearSysFiles($identifier_phrase);
 
-        return $removedFile;
+        $this->addToErrorLog(
+            "\n Clear image table \n"
+        );
     }
 
-    /**
-     * Converts a DOMDocument to an array.
-     *
-     * @param \DOMDocument|null $realtyRecords which contains realty records
-     *
-     * @return array[] $realtyRecords realty records in an array, will be empty if the data was not convertible
-     */
-    protected function convertDomDocumentToArray(\DOMDocument $realtyRecords = null)
-    {
-        if ($realtyRecords === null) {
-            return [];
-        }
-
-        $domDocumentConverter = new XmlConverter;           
-        $recordsToInsert =  $domDocumentConverter->getConvertedData($realtyRecords);
-        return $recordsToInsert;
-    }
-
-    /**
-     * Returns the object number of a realty object if it is set.
-     *
-     * @return string object number, may be empty if no object number
-     *                was set or if the realty object is not initialized
-     */
-    private function getObjectNumberFromRealtyObject()
-    {
-        if (!$this->realtyObject instanceof Objectimmo || $this->realtyObject->isDead()) {
-            return '';
-        }
-
-        return $this->realtyObject->getProperty('object_number');
-    }
 
     private function hasValidOwnerForImport($employer_folder, $ownerId)
     {
@@ -675,7 +638,7 @@ class OpenImmoImport
         return $checkOwnerAnid;
     }
 
-    
+
     /**
      * @return ResourceFactory
      */

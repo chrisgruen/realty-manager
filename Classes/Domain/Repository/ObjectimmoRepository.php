@@ -328,7 +328,7 @@ class ObjectimmoRepository extends Repository
         
         $sql_entry = $connection->executeQuery($sql)->fetch();
         
-        if (!$sql_entry) {
+        if ($sql_entry == Null) {
 
             $dataToInsert['tstamp'] = $GLOBALS['SIM_EXEC_TIME'];
             $dataToInsert['crdate'] = $GLOBALS['SIM_EXEC_TIME'];
@@ -345,22 +345,43 @@ class ObjectimmoRepository extends Repository
                                 ->values($dataToInsert)
                                 ->execute();
 
-            if($insertFileReferenz) {
-                $queryBuilder2 = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_metadata');
-                $updateFileMeta = $queryBuilder2
-                                    ->update('sys_file_metadata')
-                                    ->where(
-                                        $queryBuilder2->expr()->eq('uid', $uidFile)
-                                    )
-                                    ->set('title', $title)
-                                    ->set('description', $title)
-                                    ->set('alternative', $title)
-                                    ->execute();
-    
-                return true;
-            }
+            $queryBuilder2 = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_metadata');
+            $updateFileMeta = $queryBuilder2
+                                ->update('sys_file_metadata')
+                                ->where(
+                                    $queryBuilder2->expr()->eq('file', $uidFile)
+                                )
+                                ->set('title', $title)
+                                ->set('description', $title)
+                                ->set('alternative', $title)
+                                ->execute();
+
+            return true;
         }
         return false;
+    }
+
+    /**
+     * clear sys_file, sys_file_metadata
+     *
+     */
+    public function clearSysFiles($phrase) {
+
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file');
+        $sql = "SELECT uid from sys_file 
+                WHERE identifier  LIKE '%".$phrase."%'";
+
+        $del_files = $connection->executeQuery($sql)->fetchAll();
+
+        $del_file_uids = [];
+        foreach ($del_files as $key => $del_file) {
+            $file_uid = $del_file['uid'];
+            $sql_del1 = "DELETE FROM sys_file_metadata WHERE file = '".$file_uid."' ";
+            $del_files1 = $connection->executeQuery($sql_del1);
+            $sql_del2 = "DELETE FROM sys_file WHERE uid = '".$file_uid."' ";
+            $del_files2 = $connection->executeQuery($sql_del2);
+        }
+        return;
     }
 
     /**

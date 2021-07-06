@@ -3,23 +3,10 @@
 namespace ChrisGruen\RealtyManager\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Backend\Clipboard\Clipboard;
-use TYPO3\CMS\Backend\Template\Components\ButtonBar;
-use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
-use TYPO3\CMS\Backend\Utility\BackendUtility as BackendUtilityCore;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\FormProtection\FormProtectionFactory;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\HttpUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 //use Exception;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
@@ -29,27 +16,27 @@ use ChrisGruen\RealtyManager\Import\OpenImmoImport;
 
 class ImportController extends ActionController
 {
-    
+
     /**
      * BackendTemplateContainer
      *
      * @var BackendTemplateView
      */
     protected $view;
-    
-    
+
+
     /**
      * @var
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
-    
-    
+
+
     /**
      * @var OpenImmoImport
      */
     protected $importService = null;
-    
-     /**
+
+    /**
      * Inject the objectimmo import
      *
      * @param ChrisGruen\RealtyManager\Import\OpenImmoImport $importService
@@ -71,44 +58,44 @@ class ImportController extends ActionController
         /** @var BackendTemplateView $view */
         parent::initializeView($view);
     }
-    
+
     public function indexAction()
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
         $sql = "SELECT uid, company, openimmo_anid, import_folder from tx_realtymanager_domain_model_employer order by uid";
         $dataEmployers = $connection->executeQuery($sql)->fetchAll();
-        
-        $employers = $this->selectEmployers($dataEmployers); 
-        
+
+        $employers = $this->selectEmployers($dataEmployers);
+
         $this->view->assign('employers', $employers);
         $this->view->assign('error', $this->checkCorrectConfiguration());
     }
-    
-    
+
+
     public function importAction()
     {
         $errors = '';
         $importResults = '';
         $employer_folder = '';
-        
+
         $employer_uid = $this->request->hasArgument('employer') ? $this->request->getArgument('employer') : 0;
-        
+
         //$success = false;
-        
+
         if($employer_uid > 0) {
             $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
             $sql = "SELECT import_folder from tx_realtymanager_domain_model_employer where uid = $employer_uid";
             $employer_result = $connection->executeQuery($sql)->fetch();
             $employer_folder = $employer_result['import_folder'];
         }
-        
+
         $errors = $this->checkFolderEmployer($employer_folder);
 
         if ($errors != '') {
             $this->view->assign('error', $this->checkFolderEmployer($employer_folder));
         } else {
             $importResults = $this->importService->importFromZip($employer_folder);
-            
+
             /*
             try {
                 $importResults = $this->importService->importFromZip();
@@ -126,7 +113,7 @@ class ImportController extends ActionController
             $this->view->assign('importStatus', $success ? 0 : 2);
         }
     }
-    
+
     /**
      * Check for correct configuration
      *
@@ -137,9 +124,9 @@ class ImportController extends ActionController
     protected function checkCorrectConfiguration()
     {
         $error = '';
-        
+
         $settings = GeneralUtility::makeInstance(ConfigurationImport::class);
-               
+
         try {
             $storageId = (int)$settings->getStorageUidImporter();
             $path = $settings->getResourceFolderImporter();
@@ -162,7 +149,7 @@ class ImportController extends ActionController
         }
         return $error;
     }
-    
+
     /**
      * Check for folder Employer
      *
@@ -172,7 +159,7 @@ class ImportController extends ActionController
      */
     protected function checkFolderEmployer($folder)
     {
-        $error = '';      
+        $error = '';
         $settings = GeneralUtility::makeInstance(ConfigurationImport::class);
         $base_import_folder = $settings->getResourceFolderImporter();
         $base_export_folder = $settings->getResourceFolderExporter();
@@ -194,14 +181,14 @@ class ImportController extends ActionController
                 $message = 'Export-Ordner für Bilder, PDFs: ';
                 throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
             } else {
-                
+
             }
         } catch (FolderDoesNotExistException $e) {
             $error = $message.$base_import_folder.'/'.$folder. ' existiert nicht!';
         }
         return $error;
     }
-    
+
     /**
      * @return ResourceFactory
      */
@@ -209,7 +196,7 @@ class ImportController extends ActionController
     {
         return GeneralUtility::makeInstance(ResourceFactory::class);
     }
-    
+
 
     /**
      * prepare employers for select box

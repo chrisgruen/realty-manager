@@ -108,7 +108,6 @@ class AttachmentImporter
         $pathExists = $storage->hasFolder($realty_store_folder);
         
         if($pathExists) {
-            $get_file_uid = 0;
             $file_name = basename($fileExtractionPath);
             $file = $storage->getFile($import_attachement);
             $folder = $storage->getFolder($realty_store_folder);

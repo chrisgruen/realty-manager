@@ -23,10 +23,11 @@
 	    </f:then>
 	    <f:else>
 		    <f:render partial="OpenImmo/StartImportForm"/>
-		
-		    <f:be.infobox state="{importStatus}"title="{f:translate(key: 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_mod.xlf:importWasExecuted')}">
-		        {importResults -> f:format.nl2br()}
-		    </f:be.infobox>
+			<div style="overflow: auto;">
+				<f:be.infobox state="{importStatus}"title="{f:translate(key: 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_mod.xlf:importWasExecuted')}">
+					{importResults -> f:format.nl2br()}
+				</f:be.infobox>
+			</div>
 	    </f:else>
     </f:if>
 </f:section>
