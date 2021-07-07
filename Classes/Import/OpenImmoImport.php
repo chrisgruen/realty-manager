@@ -182,6 +182,7 @@ class OpenImmoImport
 
         $delImportFolder = $this->deleteImportFolder($employer_folder);
         $clearImageTables = $this->clearImageTables($employer_folder);
+        //$clearZipFile = $this->deleteZipFile($employer_folder);
         //$this->sendEmails($this->prepareEmails($emailData));
 
         $this->storeLogsAndClearTemporaryLog();
@@ -384,11 +385,11 @@ class OpenImmoImport
 
         $message = '';
         if ($setNewObject == true) {
-            $message = "new object: " .$realtyRecord['object_number']." created in table: tx_realtymanager_domain_model_objectimmo";
+            $message = "new object (number): " .$realtyRecord['object_number']." created in table: tx_realtymanager_domain_model_objectimmo";
             $this->addToLogEntry("\n" . $message . "\n");
             return true;
         } else {
-            $message = "Error: ". $realtyRecord['object_number'] ." already in table. Dataset can not save";
+            $message = "Error: Object number ". $realtyRecord['object_number'] ." already in table. Dataset can not save";
             $this->addToLogEntry("\n" . $message . "\n");
             return false;
         }
@@ -590,6 +591,30 @@ class OpenImmoImport
         } else {
             $this->addToErrorLog(
                 "\n Importfolder not exist! \n"
+            );
+        }
+    }
+
+    /**
+     * clear Importfolder (files)
+     */
+    protected function deleteZipFile($employer_folder)
+    {
+        $base_path = $_SERVER['DOCUMENT_ROOT'];
+        $files_employer_folder = glob($base_path . '/fileadmin' . $this->settings->getResourceFolderImporter() . '/' . $employer_folder . '/*');
+        print_r(count($files_employer_folder));
+        if (count($files_employer_folder) > 0) {
+            foreach ($files_employer_folder as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                }
+            }
+            $this->addToErrorLog(
+                "\n Remove Files from employer folder \n"
+            );
+        } else {
+            $this->addToErrorLog(
+                "\n No (zip)-files detected \n"
             );
         }
     }

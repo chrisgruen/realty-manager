@@ -68,9 +68,6 @@ class AttachmentImporter
         $object = $this->getUIdRecord();
         $this->uidObject = $object['uid'];
         $this->pidObject = $object['pid'];
-        //echo $this->uidObject . "<br />";
-        //$this->clearAttachments($uidObject);
-        //$this->extractAttachmentUid($uidObject);
     }
     
         
@@ -140,10 +137,7 @@ class AttachmentImporter
         
         $this->assertTransactionIsInProgress();
     }
-    
-    public function addRelationFileEntry() {
 
-    }
 
     /**
      * @return void
@@ -159,7 +153,6 @@ class AttachmentImporter
             );
         }
     }
-
 
     /**
      * @return void
@@ -183,51 +176,10 @@ class AttachmentImporter
      */
     public function finishTransaction()
     {
-        /*
-        echo "finish Transaction";
-        exit();
-        */
-        
         $this->assertTransactionIsInProgress();
-        //$this->processRemovedAttachments();
         $this->transactionIsInProgress = false;
     }
 
-
-    /**
-     * @return void
-     */
-    private function processRemovedAttachments()
-    {
-        foreach ($this->uidsOfFilesToRemove as $uid => $_) {
-            $this->realtyObject->removeAttachmentByFileUid($uid);
-        }
-    }
-    
-    
-    /**
-     * clear attachements
-     */
-    public function clearAttachments($uidObject)
-    {
-        if ($uidObject < 1) {
-            return [];
-        }
-        
-        $find_attachements = $this->getFileRepository()->findByRelation('tx_realtymanager_domain_model_objectimmo', 'attachments', $uidObject);
-    }
-    
-    /**
-     * @return FileReference[]
-     */
-    public function getAttachments($uidObject)
-    {
-        if ($uidObject < 1) {
-            return [];
-        }
-        
-        return $this->getFileRepository()->findByRelation('tx_realtymanager_domain_model_objectimmo', 'attachments', $uidObject);
-    }
     
     /**
      * @return ResourceFactory
