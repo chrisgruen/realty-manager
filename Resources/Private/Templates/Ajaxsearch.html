@@ -1,4 +1,10 @@
 {namespace myhelper=ChrisGruen\RealtyManager\ViewHelpers}
+<div class="row list-immo-row pb-3">
+	<div class="col">
+		<div class="show-count-obj"> ({count_objects} objekte)</div>
+	</div>
+</div>
 <f:for each="{objects}" as="object">
 	<f:render partial="List/Item" arguments="{_all}" />
 </f:for>
+<f:asset.script identifier="AjaxPagination" src="EXT:realty_manager/Resources/Public/JavaScript/AjaxPagination.js" />

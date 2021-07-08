@@ -80,7 +80,10 @@ class RealtyManagerController extends ActionController
     {
         //$objects = $this->objectimmoRepository->findAll()
         $objects = $this->objectimmoRepository->getAllObjects();
+        $count_objects = count($objects);
+
         $this->view->assign('objects', $objects);
+        $this->view->assign('count_objects', $count_objects);
     } 
     
     /**
@@ -94,7 +97,7 @@ class RealtyManagerController extends ActionController
         if($form_data) {
             $objects = $this->objectimmoRepository->getAllObjectsBySearch($form_data);
         }
-               
+
         $this->view->assign('objects', $objects);
     }
     
@@ -105,13 +108,17 @@ class RealtyManagerController extends ActionController
     public function ajaxsearchAction()
     {
         $form_data = $this->request->getArguments();
+        $count_objects = 0;
         
         if($form_data) {
             $objects = $this->objectimmoRepository->getAllObjectsBySearch($form_data);
+            $count_objects = count($objects);
         }
         
         $this->view->setTemplatePathAndFilename('typo3conf/ext/' .$this->request->getControllerExtensionKey() .'/Resources/Private/Templates/Ajaxsearch.html');
-        $ajaxcontent = $this->view->assign('objects', $objects);
+
+        $this->view->assign('objects', $objects);
+        $this->view->assign('count_objects', $count_objects);
     }
     
     /**

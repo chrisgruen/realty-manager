@@ -20,6 +20,7 @@ page {
     }
 }
 
+widget.ChrisGruen\RealtyManager\ViewHelpers\Widget\PaginateViewHelper.templateRootPath = EXT:realty_manager/Resources/Private/Templates/
 
 settings {
 	typeNum = 999999
@@ -42,3 +43,5 @@ ajaxselectlist_page {
 
     10 < tt_content.list.20.realtymanager_immobilienmanager
 }
+
+
