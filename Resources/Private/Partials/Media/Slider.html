@@ -1,0 +1,20 @@
+<div id="multi-slider" class="row mt-3 mb-4" >
+    <div class="col" style="min-height: 100px;">
+        <div class="MS-content">
+            <f:for each="{images}" as="image" iteration="iterator">
+                <div class="item">
+                    <div class="caption-img">
+                        <a href="fileadmin/{image.identifier}" data-lightbox="images_obj" data-title="{image.title}" ><img src="fileadmin/{image.identifier}" alt="{image.alternative}" title="{image.title}" width="147" height="147" /></a>
+                    </div>
+                </div>
+            </f:for>
+        </div>
+        <div class="MS-controls">
+            <button class="MS-left"><img src="fileadmin/images/lightbox2/prev.png" alt="prev" /></button>
+            <button class="MS-right"><img src="fileadmin/images/lightbox2/next.png" alt="next" /></button>
+        </div>
+    </div>
+</div>
+
+<f:asset.script identifier="Multislider" src="EXT:realty_manager/Resources/Public/JavaScript/Multislider.js" />
+<f:asset.script identifier="lighbox2" src="EXT:realty_manager/Resources/Public/JavaScript/Lightbox2.js" />
