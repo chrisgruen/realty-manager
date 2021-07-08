@@ -5,12 +5,12 @@
 <h3>Wir bieten Dir folgende Objekte an:</h3>
 <div class="ajax-loading"><img src="fileadmin/layout/images/ajax-loader-3.gif" /></div>
 <div id="ajaxSearchResult">
-	<div class="show-count-obj"> ({count_objects} objekte)</div>
+	<div class="show-count-obj {itemsPerPage}"> ({count_objects} objekte)</div>
 	<f:if condition="{objects}">
 		<f:then>
 			<f:if condition="{objects -> f:count()} > 3">
 				<f:then>
-					<f:widget.paginate objects="{objects}" as="subObjects" configuration="{itemsPerPage: 3, insertAbove: 1, insertBelow: 1, maximumNumberOfLinks: 5}">
+					<f:widget.paginate objects="{objects}" as="subObjects" configuration="{itemsPerPage: itemsPerPage, insertAbove: 1, insertBelow: 1, maximumNumberOfLinks: 5}">
 						<f:for each="{subObjects}" as="object">
 							<f:render partial="List/Item" arguments="{_all}" />
 						</f:for>

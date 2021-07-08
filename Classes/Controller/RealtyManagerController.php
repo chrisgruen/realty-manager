@@ -5,7 +5,7 @@ namespace ChrisGruen\RealtyManager\Controller;
 use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Page\AssetCollector;
+use ChrisGruen\RealtyManager\Configuration\ConfigurationObject;
 
 class RealtyManagerController extends ActionController
 {
@@ -78,12 +78,16 @@ class RealtyManagerController extends ActionController
      */ 
     public function listAction()
     {
+        $settings = GeneralUtility::makeInstance(ConfigurationObject::class);
+        $itemsPerPage = (int)$settings->getPaginateItemsPerPage();
+
         //$objects = $this->objectimmoRepository->findAll()
         $objects = $this->objectimmoRepository->getAllObjects();
         $count_objects = count($objects);
 
         $this->view->assign('objects', $objects);
         $this->view->assign('count_objects', $count_objects);
+        $this->view->assign('itemsPerPage', $itemsPerPage);
     } 
     
     /**
