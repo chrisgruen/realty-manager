@@ -5,7 +5,7 @@ mod {
     web_layout {
         BackendLayouts {
             example {
-                title = LLL:EXT:chess_manager/Resources/Private/Language/locallang_be.xlf:backend_layout.example
+                title = LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:backend_layout.example
                 config {
                     backend_layout {
                         colCount = 1

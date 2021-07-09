@@ -118,11 +118,17 @@ class RealtyManagerController extends ActionController
             $objects = $this->objectimmoRepository->getAllObjectsBySearch($form_data);
             $count_objects = count($objects);
         }
-        
+
+        $settings = GeneralUtility::makeInstance(ConfigurationObject::class);
+        $ajaxPaging = (int)$settings->getAjaxPaging();
+        $itemsPerPage = (int)$settings->getPaginateItemsPerPage();
+
         $this->view->setTemplatePathAndFilename('typo3conf/ext/' .$this->request->getControllerExtensionKey() .'/Resources/Private/Templates/Ajaxsearch.html');
 
         $this->view->assign('objects', $objects);
         $this->view->assign('count_objects', $count_objects);
+        $this->view->assign('ajaxPaging', $ajaxPaging);
+        $this->view->assign('itemsPerPage', $itemsPerPage);
     }
     
     /**

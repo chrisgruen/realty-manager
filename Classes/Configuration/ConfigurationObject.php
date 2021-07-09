@@ -33,9 +33,16 @@ class ConfigurationObject
     /** @var int */
     protected $paginateItemsPerPage = 6;
 
+    /** @var boolean */
+    protected $ajaxPaging = false;
+
     public function getPaginateItemsPerPage()
     {
         return (int)$this->paginateItemsPerPage;
     }
 
+    public function getAjaxPaging()
+    {
+        return $this->ajaxPaging;
+    }
 }

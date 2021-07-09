@@ -1,6 +1,6 @@
 <?php
 /**
- * Extension Manager/Repository config file for ext "chess_manager".
+ * Extension Manager/Repository config file for ext "realty_manager".
  */
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Realty Manager',

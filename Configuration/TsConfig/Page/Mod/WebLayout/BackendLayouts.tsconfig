@@ -1,4 +1,3 @@
 #
 # BACKENDLAYOUTS
 #
-<INCLUDE_TYPOSCRIPT: source="DIR:EXT:chess_manager/Configuration/TsConfig/Page/Mod/WebLayout/BackendLayouts" extensions="tsconfig">
