@@ -51,7 +51,7 @@ $(document).ready(function () {
 	   });
 	});
 
-	$('#ajaxSearchResult').on('click', '.f3-widget-paginator a', function (e) {
+	$('#ajaxSearchResult').on('click', '.ajax-widget-paginator a', function (e) {
 		e.preventDefault();
 
 		var ajaxQuery = $(this).attr("href");
