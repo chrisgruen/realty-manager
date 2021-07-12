@@ -5,6 +5,7 @@ namespace ChrisGruen\RealtyManager\Controller;
 use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Page\AssetCollector;
 use ChrisGruen\RealtyManager\Configuration\ConfigurationObject;
 
 class RealtyManagerController extends ActionController
@@ -132,6 +133,8 @@ class RealtyManagerController extends ActionController
         if($form_data) {
             $objects = $this->objectimmoRepository->getAllObjectsBySearch($form_data);
         }
+
+        //GeneralUtility::makeInstance(AssetCollector::class)->addJavaScript('ajax_form', 'EXT:realty_manager/Resources/Public/JavaScript/Ajax.js', ['type' => 'module']);
 
         $this->view->assign('objects', $objects);
     }
