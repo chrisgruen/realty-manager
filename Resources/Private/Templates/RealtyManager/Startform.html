@@ -1,0 +1,39 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:n="http://typo3.org/ns/ChrisGruen/RealtyManager/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<h3 class="element-subheader">Finde Dein neues Zuhause:</h3><br />
+<div class="container backendlayout-2_columns_50_50 start-form">
+    <div class="section-row">
+        <div class="section-column maincontent-wrap">
+            <f:form action="search" pageUid="13" id="startform" controller="RealtyManager">
+                <div class="form-group">
+                    <label for="house_type">Wähle deine Wohnform</label>
+                    <f:form.select name="house_type"  class="form-control form-control-sm" options="{housetypes}" optionValueField="key" optionLabelField="value" value="{house_type}" />
+                </div>
+                <div class="form-group">
+                    <label for="living_area">Wähle die Mietfläche:</label><br />
+                    <span style="padding-left: 5px; padding-right: 5px;">von:</span>
+                    <f:form.select name="living_area_from" class="selectcol" options="{areas}" optionValueField="key" optionLabelField="value" value="{living_area_from}" />
+                    <span style="padding-left: 5px; padding-right: 5px;">bis:</span>
+                    <f:form.select name="living_area_to" class="selectcol" options="{areas}" optionValueField="key" optionLabelField="value" value="{area_last}" />
+                </div>
+                <div class="form-group">
+                    <label for="rent">Wähle den Mietpreis:</label><br />
+                    <span style="padding-left: 5px; padding-right: 5px;">von:</span>
+                    <f:form.select name="rent_from" class="selectcol" options="{rentprices}" optionValueField="key" optionLabelField="value" value="{rent_from}" />
+                    <span style="padding-left: 5px; padding-right: 5px;">bis:</span>
+                    <f:form.select name="rent_to" class="selectcol" options="{rentprices}" optionValueField="key" optionLabelField="value" value="{price_last}" />
+                </div>
+
+                <div class="form-group mt-3">
+                    <f:form.submit class="f-submit" value="Beginne mit der Suche!" />
+                </div>
+            </f:form>
+        </div>
+        <div class="section-column subcontent-wrap" >
+           <img src="fileadmin/layout/images/start_logo.jpg" width="200"/>
+        </div>
+    </div>
+</div>
+</html>

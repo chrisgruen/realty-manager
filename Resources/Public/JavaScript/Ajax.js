@@ -31,7 +31,7 @@ $(document).ready(function () {
 		var url= "/suche?tx_realtymanager_immobilienmanager%5Baction%5D=ajaxsearch&tx_realtymanager_immobilienmanager%5Bcontroller%5D=RealtyManager&type=999999";
 		var formData = $('#searchform').serialize();
 		var resultContainer = $('#ajaxSearchResult');
-		
+
 		$.ajax({
 		      type: "POST",
 		      url: url,

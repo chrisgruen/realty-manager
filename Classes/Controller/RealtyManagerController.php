@@ -20,7 +20,38 @@ class RealtyManagerController extends ActionController
     {
         $this->objectimmoRepository = $objectimmoRepository;
     }
-    
+
+    /**
+     *
+     * return view for formAction (show Searchform)
+     */
+    public function startformAction()
+    {
+        /* get opt-select housetypes */
+        $dataHouseTypes = $this->objectimmoRepository->getHouseTypes();
+        $housetypes = $this->selectHousetypes($dataHouseTypes);
+
+        /* get opt-select pricerange */
+        $dataPrices = $this->objectimmoRepository->getPriceRange();
+        $rentprices = $this->selectPrices($dataPrices);
+        $price_key_last = array_key_last($rentprices);
+        $price_last = $rentprices[$price_key_last];
+        $price_last = $price_last->key;
+
+        /* get opt-select arearange */
+        $dataAreas = $this->objectimmoRepository->getAreaRange();
+        $areas = $this->selectAreas($dataAreas);
+        $area_key_last = array_key_last($areas);
+        $area_last = $areas[$area_key_last];
+        $area_last = $area_last->key;
+
+        $this->view->assign('housetypes', $housetypes);
+        $this->view->assign('rentprices', $rentprices);
+        $this->view->assign('price_last', $price_last);
+        $this->view->assign('areas', $areas);
+        $this->view->assign('area_last', $area_last);
+    }
+
     /**
      *
      * return view for formAction (show Searchform)

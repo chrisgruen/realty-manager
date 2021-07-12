@@ -11,9 +11,13 @@
 				<target>Bitte Auswählen!</target>
 			</trans-unit>
 			<trans-unit id="flexforms_general.mode.form" xml:space="preserve">
-				<source>Form</source>
+				<source>Search form</source>
 				<target>Suchformular</target>
 			</trans-unit>
+            <trans-unit id="flexforms_general.mode.startform" xml:space="preserve">
+                <source>Start form</source>
+                <target>Start Suchformular</target>
+            </trans-unit>
 			<trans-unit id="flexforms_general.mode.list" xml:space="preserve">
 				<source>List</source>
 				<target>Liste</target>
