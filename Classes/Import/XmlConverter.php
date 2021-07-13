@@ -91,6 +91,9 @@ class XmlConverter
         'heat_energy_requirement_class' => ['energiepass' => 'hwbklasse'],
         'total_energy_efficiency_value' => ['energiepass' => 'fgeewert'],
         'total_energy_efficiency_class' => ['energiepass' => 'fgeeklasse'],
+        'tv_enabled' => ['ausstattung' => 'kabel_sat_tv'],
+        'bicycleroom' => ['ausstattung' => 'fahrradraum'],
+        'washingroom' => ['ausstattung' => 'wasch_trockenraum'],
     ];
     
     /**
@@ -127,6 +130,11 @@ class XmlConverter
         'has_pool',
         'has_community_pool',
         'with_hot_water',
+        'tv_enabled',
+        'cleaning',
+        'bicycleroom',
+        'washingroom',
+        'furnished',
     ];
     
     /**
@@ -596,6 +604,8 @@ class XmlConverter
             [
                 'assisted_living' => $rawAttributes['serviceleistungen']['betreutes_wohnen'],
                 'fitted_kitchen' => $rawAttributes['kueche']['ebk'],
+                'furnished' => ($rawAttributes['moebliert']['moeb']=='voll'?true:false),
+                'cleaning' => $rawAttributes['serviceleistungen']['reinigung'],
                 // For realty records, the type of elevator is not relevant.
                 'elevator' => $rawAttributes['fahrstuhl']['lasten'],
             ] as $key => $value
