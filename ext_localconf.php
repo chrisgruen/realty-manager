@@ -19,5 +19,5 @@ defined('TYPO3_MODE') || die('Access denied.');
     'Immobilienmanager',
     [\ChrisGruen\RealtyManager\Controller\RealtyManagerController::class => 'list, form, search, detail, ajaxselectdistrict, ajaxsearch, ajaxsearch'],
     // non-cacheable actions
-    [\ChrisGruen\RealtyManager\Controller\RealtyManagerController::class => 'list, search']
+    [\ChrisGruen\RealtyManager\Controller\RealtyManagerController::class => 'list, search, form']
 );

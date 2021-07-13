@@ -59,6 +59,8 @@ class RealtyManagerController extends ActionController
      */
     public function formAction()
     {  
+        $search = $GLOBALS['TSFE']->fe_user->getKey('ses','search');
+        
         /* get opt-select housetypes */
         $dataHouseTypes = $this->objectimmoRepository->getHouseTypes();
         $housetypes = $this->selectHousetypes($dataHouseTypes);
@@ -92,7 +94,17 @@ class RealtyManagerController extends ActionController
         $area_key_last = array_key_last($areas);
         $area_last = $areas[$area_key_last];
         $area_last = $area_last->key;
-
+        
+        if(count($search) > 0) {
+            if($search['living_area_to'] != 'egal') {
+                $area_last = $search['living_area_to'];
+            }
+            
+            if($search['rent_to'] != 'egal') {
+                $price_last = $search['rent_to'];
+            }
+        }
+            
         $this->view->assign('housetypes', $housetypes);
         $this->view->assign('apartmenttypes', $apartmenttypes);
         $this->view->assign('employers', $employers);
@@ -102,6 +114,7 @@ class RealtyManagerController extends ActionController
         $this->view->assign('areas', $areas);
         $this->view->assign('price_last', $price_last);    
         $this->view->assign('area_last', $area_last); 
+        $this->view->assign('search', $search);
     } 
  
     /**
@@ -120,6 +133,9 @@ class RealtyManagerController extends ActionController
         } else {
             $objects = $this->objectimmoRepository->getAllObjects();
         }
+        
+        $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $form_data);
+        $GLOBALS["TSFE"]->fe_user->storeSessionData();
         
         $count_objects = count($objects);
 
