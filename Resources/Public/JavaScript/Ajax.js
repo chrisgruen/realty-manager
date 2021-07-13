@@ -145,7 +145,7 @@ function getQueryParam(param, defaultValue = undefined) {
 
 function scrollToTop() {
 	window.scrollTo({
-		top: 200,
+		top: 100,
 		left: 0,
 		behavior: 'smooth'
 	});
