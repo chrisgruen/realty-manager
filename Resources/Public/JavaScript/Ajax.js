@@ -24,30 +24,29 @@ $(document).ready(function () {
 	
 	$('#searchform').submit(function (event) {
 		event.preventDefault();
+		scrollToTop();
 		$('.ajax-loading').show();
 		$('#ajaxSearchResult').hide();
-
 
 		var url= "/suche?tx_realtymanager_immobilienmanager%5Baction%5D=ajaxsearch&tx_realtymanager_immobilienmanager%5Bcontroller%5D=RealtyManager&type=999999";
 		var formData = $('#searchform').serialize();
 		var resultContainer = $('#ajaxSearchResult');
-		
+
 		$.ajax({
-		      type: "POST",
-		      url: url,
-		      headers: {
-		         'Cache-Control': 'no-cache, no-store, must-revalidate',
-		         'Pragma': 'no-cache',
-		         'Expires': '0'
-		      },
-		      dataType: 'html',
-		      data: formData,
-		      success: function (content) {
-		    	$('#ajaxSearchResult').show();
-		      	resultContainer.html(content).fadeIn('fast');
-		      	$('.ajax-loading').hide();
-			    scrollToTop();
-		      }
+			type: "POST",
+			url: url,
+			headers: {
+			 'Cache-Control': 'no-cache, no-store, must-revalidate',
+			 'Pragma': 'no-cache',
+			 'Expires': '0'
+			},
+			dataType: 'html',
+			data: formData,
+			success: function (content) {
+				$('#ajaxSearchResult').show();
+				resultContainer.html(content).fadeIn('fast');
+				$('.ajax-loading').hide();
+			}
 	   });
 	});
 
