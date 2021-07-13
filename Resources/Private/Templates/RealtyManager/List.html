@@ -10,7 +10,7 @@
 		<f:then>
 			<f:if condition="{objects -> f:count()} > {itemsPerPage}">
 				<f:then>
-					<div class="show-count-obj {itemsPerPage}"> ({count_objects} objekte)</div>
+					<div class="show-count-obj {itemsPerPage}"> ({count_objects} Objekte)</div>
 					<f:widget.paginate objects="{objects}" as="subObjects" configuration="{itemsPerPage: itemsPerPage, insertAbove: 1, insertBelow: 1, maximumNumberOfLinks: 5}">
 						<hr />
 						<f:for each="{subObjects}" as="object">
