@@ -6,11 +6,11 @@
 
 <div class="ajax-loading"><img src="fileadmin/layout/images/ajax-loader-3.gif" /></div>
 <div id="ajaxSearchResult">
-	<div class="show-count-obj {itemsPerPage}"> ({count_objects} objekte)</div>
 	<f:if condition="{objects}">
 		<f:then>
 			<f:if condition="{objects -> f:count()} > {itemsPerPage}">
 				<f:then>
+					<div class="show-count-obj {itemsPerPage}"> ({count_objects} objekte)</div>
 					<f:widget.paginate objects="{objects}" as="subObjects" configuration="{itemsPerPage: itemsPerPage, insertAbove: 1, insertBelow: 1, maximumNumberOfLinks: 5}">
 						<hr />
 						<f:for each="{subObjects}" as="object">
@@ -19,7 +19,11 @@
 					</f:widget.paginate>
 				</f:then>
 				<f:else>
-					<hr />
+					<div class="row list-immo-row pb-3">
+						<div class="col">
+							<div class="show-count-obj"> ({count_objects} objekte)</div>
+						</div>
+					</div>
 					<f:for each="{objects}" as="object">
 						<f:render partial="List/Item" arguments="{_all}" />
 					</f:for>
