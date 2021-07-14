@@ -114,6 +114,8 @@ class AttachmentImporter
             $file_exist = $base_path.'/fileadmin/'.$realty_store_folder.'/'.$file_name;
     
             if (file_exists($file_exist)) {
+                unlink($file_exist);
+                $copiedFile = $file->copyTo($folder);
                 //echo $import_attachement ." -> File already copied <br />";
             } else {
                 $copiedFile = $file->copyTo($folder);
