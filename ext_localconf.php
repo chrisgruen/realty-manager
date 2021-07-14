@@ -22,7 +22,7 @@ defined('TYPO3_MODE') || die('Access denied.');
     [\ChrisGruen\RealtyManager\Controller\RealtyManagerController::class => 'list, search, form']
 );
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ChrisGruen\RealtyManager\ImportTaskOpenImmo::class] = [
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ChrisGruen\RealtyManager\Import\TaskOpenImmo::class] = [
     'extension' => 'RealtyManager',
     'title' => 'Scheduler Task',
     'description' => 'Trigger OpenImmo import',
