@@ -112,6 +112,7 @@ class OpenImmoImport
      */
     public function wasSuccessful()
     {
+        echo "import no errors \n";
         return $this->success;
     }
 

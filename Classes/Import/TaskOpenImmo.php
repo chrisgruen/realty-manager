@@ -13,19 +13,11 @@ class TaskOpenImmo extends AbstractTask {
      */
     protected $importService = null;
 
-    /**
-     * Inject the objectimmo import
-     *
-     * @param ChrisGruen\RealtyManager\Import\OpenImmoImport $importService
-     */
-    public function injectImportService(OpenImmoImport $importService)
-    {
-        $this->importService = $importService;
-    }
 
     public function execute() {
 
         set_time_limit(300);
+        $this->importService = new OpenImmoImport();
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
         $sql = "SELECT import_folder from tx_realtymanager_domain_model_employer";
@@ -37,11 +29,6 @@ class TaskOpenImmo extends AbstractTask {
                 $importResults = $this->importService->importFromZip($employer_folder);
             }
         }
-        
-        /*
-        print_r($employer_results);
-        exit();
-        */
 
         return $this->importService->wasSuccessful();
     }
