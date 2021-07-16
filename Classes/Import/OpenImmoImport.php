@@ -92,6 +92,7 @@ class OpenImmoImport
     
     
     private $objectimmoRepository;
+    //private $documentBaseRoot = __DIR__;
 
     /**
      * Constructor.
@@ -473,9 +474,10 @@ class OpenImmoImport
      */
     protected function getPathsOfZipsToExtract($importDirectory)
     {
-        $base_path = $_SERVER['DOCUMENT_ROOT'];
+        //$base_path = $_SERVER['DOCUMENT_ROOT'];
+        $base_path = realpath(__DIR__ . '/../../../../../');
         $path_import = $base_path.'/fileadmin'.$importDirectory;
-
+        
         $result = [];
 
         if (is_dir($path_import)) {
@@ -568,7 +570,8 @@ class OpenImmoImport
         $pathExists = $storage->hasFolder($import_folder);
 
         if ($pathExists) {
-            $base_path = $_SERVER['DOCUMENT_ROOT'];
+            //$base_path = $_SERVER['DOCUMENT_ROOT'];
+            $base_path = realpath(__DIR__ . '/../../../../../');
             $import_folder = $base_path.'/fileadmin'.$this->settings->getResourceFolderImporter().'/'.$employer_folder;
             $subdirectories = self::getSubDirectories($import_folder);
             foreach ($subdirectories as $key => $subdirectory) {
@@ -595,7 +598,8 @@ class OpenImmoImport
      */
     protected function deleteZipFile($employer_folder)
     {
-        $base_path = $_SERVER['DOCUMENT_ROOT'];
+        //$base_path = $_SERVER['DOCUMENT_ROOT'];
+        $base_path = realpath(__DIR__ . '/../../../../../');
         $files_employer_folder = glob($base_path . '/fileadmin' . $this->settings->getResourceFolderImporter() . '/' . $employer_folder . '/*');
         print_r(count($files_employer_folder));
         if (count($files_employer_folder) > 0) {
