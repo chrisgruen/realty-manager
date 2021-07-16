@@ -5,6 +5,7 @@ namespace ChrisGruen\RealtyManager\Import;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use ChrisGruen\RealtyManager\Configuration\ConfigurationImport;
 use ChrisGruen\RealtyManager\Import\AttachmentImporter;
 use ChrisGruen\RealtyManager\Import\XmlConverter;
@@ -88,6 +89,9 @@ class OpenImmoImport
      * @var bool
      */
     private $success = true;
+    
+    
+    private $objectimmoRepository;
 
     /**
      * Constructor.
@@ -99,18 +103,8 @@ class OpenImmoImport
     {
         $this->isTestMode = $isTestMode;
         $this->settings = GeneralUtility::makeInstance(ConfigurationImport::class);
-    }
-
-    private $objectimmoRepository;
-
-    /**
-     * Inject the objectimmo repository
-     *
-     * @param ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository $objectimmoRepository
-     */
-    public function injectObjectimmoRepository(ObjectimmoRepository $objectimmoRepository)
-    {
-        $this->objectimmoRepository = $objectimmoRepository;
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->objectimmoRepository = $objectManager->get(ObjectimmoRepository::class);
     }
 
     /**
@@ -641,6 +635,7 @@ class OpenImmoImport
     protected function clearImageTables($dir)
     {
         $identifier_phrase = 'import/'.$dir;
+                
         $delattachements = $this->objectimmoRepository->clearSysFiles($identifier_phrase);
 
         $this->addToErrorLog(

@@ -37,6 +37,7 @@ class TaskOpenImmo extends AbstractTask {
                 $importResults = $this->importService->importFromZip($employer_folder);
             }
         }
+        
         /*
         print_r($employer_results);
         exit();
