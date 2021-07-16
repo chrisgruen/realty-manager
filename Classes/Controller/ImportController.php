@@ -162,7 +162,7 @@ class ImportController extends ActionController
         $base_import_folder = $settings->getResourceFolderImporter();
         $base_export_folder = $settings->getResourceFolderExporter();
         $error = '';
-        $base_path = $_SERVER['DOCUMENT_ROOT'];
+        $base_path = $base_path = realpath(__DIR__ . '/../../../../../');
         $path_import = $base_path.'/fileadmin'.$base_import_folder.'/'.$folder;
         $path_export = $base_path.'/fileadmin'.$base_export_folder.'/'.$folder;
 
