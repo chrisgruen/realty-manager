@@ -233,16 +233,16 @@ class OpenImmoImport
                 $result = \implode('', $pathOfXml);
             } elseif (\count($pathOfXml) > 1) {
                 $this->addToErrorLog(
-                    LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_too_many_xml', '\n There must not be more than one XML file in the ZIP archive. Please remove the surplus XML files from the archive.')
+                    LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_too_many_xml', 'There must not be more than one XML file in the ZIP archive. Please remove the surplus XML files from the archive.')
                 );
             } else {
                 $this->addToErrorLog(
-                    LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_no_xml', '\n No XML file could be found in the ZIP archive. If there is one anyway, please ensure the name ends with .xml')
+                    LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_no_xml', 'No XML file could be found in the ZIP archive. If there is one anyway, please ensure the name ends with .xml')
                 );
             }
         } else {
             $this->addToErrorLog(
-                LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_invalid_xml_path', '\n The path of the XML file is not valid. There might be no extraction folder. This could be a file permissions problem. Please check you are permitted to write in the import directory.')
+                LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_invalid_xml_path', 'The path of the XML file is not valid. There might be no extraction folder. This could be a file permissions problem. Please check you are permitted to write in the import directory.')
             );
         }
 
@@ -268,7 +268,7 @@ class OpenImmoImport
                 if (count(glob($extractionDirectory.'/*')) === 0) {
                     $zip->extractTo($extractionDirectory);
                     $this->addToLogEntry(
-                        $zipToExtract . ': '. LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extracted_successfully', 'The ZIP archive was extracted successfully.')
+                        $zipToExtract . "\n". LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extracted_successfully', 'The ZIP archive was extracted successfully'). "\n"
                     );
                 }
             }
@@ -487,7 +487,7 @@ class OpenImmoImport
 
         if (\is_dir($folderForZipExtraction)) {            
             $this->addToLogEntry(
-                $folderForZipExtraction . "\n" . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_import_folder_true', 'The folder for import files was created')
+                $folderForZipExtraction . "\n" . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_import_folder_true', 'The folder for import files was created'). "\n"
             );
         } else {
             $create_import_folder = GeneralUtility::mkdir_deep($folderForZipExtraction);
@@ -496,11 +496,11 @@ class OpenImmoImport
                 $this->filesToDelete[] = $folderForZipExtraction;
                 
                 $this->addToLogEntry(
-                    $folderForZipExtraction . "\n" . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_import_folder_true', 'The folder for import files was created')
+                    $folderForZipExtraction . "\n" . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_import_folder_true', 'The folder for import files was created'). "\n"
                 );
             } else {
                 $this->addToLogEntry(
-                    $folderForZipExtraction . "\n" . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_import_folder_false', 'The folder for import files not exist')
+                    $folderForZipExtraction . "\n" . LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_import_folder_false', 'The folder for import files not exist'). "\n"
                 );
                 return '';
             }
@@ -528,7 +528,7 @@ class OpenImmoImport
 
                 self::delTree($subdirectory);
                 $this->addToLogEntry(
-                    "Import folder: ".$employer_folder."/".$subdirectory
+                    "\n DELETE Import folder: ".$employer_folder."/".$subdirectory
                 );
             }
             $this->addToLogEntry(
