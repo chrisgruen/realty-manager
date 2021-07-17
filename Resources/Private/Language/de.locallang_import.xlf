@@ -68,6 +68,14 @@
                 <source>The folder which needs to be created for importing already exists in your import directory. The record cannot be imported as long as this folder exists. Please remove this folder.</source>
                 <target>Der Ordner, der für den Import erstellt werden muss, existiert bereits in Ihrem Import-Verzeichnis. Der Datensatz kann nicht importiert werden, solange dieser Ordner existiert. Bitte entfernen Sie ihn aus dem Import-Verzeichnis.</target>
             </trans-unit>
+            <trans-unit id="message_import_folder_true" xml:space="preserve" approved="yes">
+                <source>The folder for import files was created</source>
+                <target>Der Ordner für Import-Dateien wurde erstellt.</target>
+            </trans-unit>
+            <trans-unit id="message_import_folder_false" xml:space="preserve" approved="yes">
+                <source>The folder for import files not exist</source>
+                <target>Der Ordner für Import-Dateien existiert nicht. Bitte erstellen unter realty/{employer-folder} ein Verzeichniss.</target>
+            </trans-unit>
             <trans-unit id="message_folder_creation_failed" xml:space="preserve" approved="yes">
                 <source>The folder &quot;%s&quot; could not be created. Please check your access rights.</source>
                 <target>Der Ordner &quot;%s&quot; konnte nicht erstellt werden. Bitte überprüfen Sie Ihre Zugriffsrechte.</target>

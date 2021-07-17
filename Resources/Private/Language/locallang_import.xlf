@@ -52,6 +52,15 @@
             <trans-unit id="message_surplus_folder" xml:space="preserve">
                 <source>The folder which needs to be created for importing already exists in your import directory. The record cannot be imported as long as this folder exists. Please remove this folder.</source>
             </trans-unit>
+            <trans-unit id="message_import_folder_true" xml:space="preserve" approved="yes">
+                <source>The folder for import files was created</source>
+            </trans-unit>
+            <trans-unit id="message_import_folder_false" xml:space="preserve" approved="yes">
+                <source>The folder for import files not exist</source>
+            </trans-unit>
+            <trans-unit id="message_import_folder_false" xml:space="preserve" approved="yes">
+                <source>The folder for import files was created</source>
+            </trans-unit>
             <trans-unit id="message_folder_creation_failed" xml:space="preserve">
                 <source>The folder &quot;%s&quot; could not be created. Please check your access rights.</source>
             </trans-unit>

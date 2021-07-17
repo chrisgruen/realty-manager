@@ -36,16 +36,6 @@ class ImportController extends ActionController
      */
     protected $importService = null;
 
-    /**
-     * Inject the objectimmo import
-     *
-     * @param ChrisGruen\RealtyManager\Import\OpenImmoImport $importService
-     */
-    public function injectImportService(OpenImmoImport $importService)
-    {
-        $this->importService = $importService;
-    }
-
 
     /**
      * Set up the doc header properly here
@@ -95,6 +85,9 @@ class ImportController extends ActionController
         if ($errors != '') {
             $this->view->assign('error', $this->checkFolderEmployer($employer_folder));
         } else {
+            
+            $this->importService = new OpenImmoImport();
+            
             try {
                 $importResults = $this->importService->importFromZip($employer_folder);
                 $success = $this->importService->wasSuccessful();
