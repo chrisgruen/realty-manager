@@ -110,7 +110,7 @@ class AttachmentImporter
             $folder = $storage->getFolder($realty_store_folder);
                    
             /* check if file exist */
-            $base_path = $base_path = realpath(__DIR__ . '/../../../../../');
+            $base_path = realpath(__DIR__ . '/../../../../../');
             $file_exist = $base_path.'/fileadmin/'.$realty_store_folder.'/'.$file_name;
     
             if (file_exists($file_exist)) {

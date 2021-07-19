@@ -236,8 +236,7 @@ class ObjectimmoRepository extends Repository
         $pid_be_employer = 0;
         $object_number = '';
         $object_number = $obj_insert['object_number'];
-        
-        $queryOwner = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_employer');
+
         $pid_be_employer = $this->getPidEmployer($ownerId);
 
         if ($pid_be_employer > 0) {
@@ -277,6 +276,46 @@ class ObjectimmoRepository extends Repository
             return false; 
         } else {
             return false;
+        }
+    }
+
+    /**
+     * delete Object
+     * Data from Table "tx_realtymanager_domain_model_objectimmo"
+     * @return void
+     */
+    public function delObject($ownerId, $obj_number) {
+
+        $pid_be_employer = 0;
+        $object_number = '';
+        $pid_be_employer = $this->getPidEmployer($ownerId);
+
+        if($obj_number != '') {
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_objectimmo');
+            $sql_del_obj = "DELETE FROM tx_realtymanager_domain_model_objectimmo 
+                            WHERE object_number = '".$obj_number."'
+                            AND pid = '".$pid_be_employer."' ";
+
+            $del_obj = $connection->executeQuery($sql_del_obj);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * delete all Objects from Employer
+     * Data from Table "tx_realtymanager_domain_model_objectimmo"
+     * @return void
+     */
+    public function delAllObjects($employer_pid) {
+
+        if($employer_pid > 0) {
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_objectimmo');
+            $sql_all_objects = "DELETE FROM tx_realtymanager_domain_model_objectimmo 
+                                WHERE pid = '".$employer_pid."' ";
+
+            $del_all_objects = $connection->executeQuery($sql_all_objects);
+            return true;
         }
     }
     

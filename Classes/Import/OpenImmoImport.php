@@ -2,6 +2,7 @@
 
 namespace ChrisGruen\RealtyManager\Import;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -169,6 +170,7 @@ class OpenImmoImport
                 LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_no_zips', 'No ZIPs to extract. The configured import folder does not contain any ZIP archives. Please check the path configured in the extension manager and the contents of the folder.')
             );
         } else {
+            $clear_employer_entries = $this->clearEmployerEntries($employer_folder);
             foreach ($zipsToExtract as $currentZip) {
                 $this->extractZip($currentZip);
                 $xml_file_data = $this->loadXmlFile($currentZip);
@@ -177,7 +179,7 @@ class OpenImmoImport
         }
 
         $delImportFolder = $this->deleteImportFolder($employer_folder);
-        $clearImageTables = $this->clearImageTables($employer_folder);
+        $clearImageTables = $this->clearImageTables($employer_folder, 'import');
         //$clearZipFile = $this->deleteZipFile($employer_folder);
         //$this->sendEmails($this->prepareEmails($emailData));
 
@@ -386,8 +388,12 @@ class OpenImmoImport
             $this->addToLogEntry("\n" . $message . "\n");
             return true;
         } else {
-            $message = "DELETE: Object number ". $realtyRecord['object_number'] ." already in table. Dataset can not save";
-            $this->addToLogEntry("\n" . $message . "\n");
+            $object_number = $realtyRecord['object_number'] ;
+            if($object_number != '') {
+                $delete_entry = $this->objectimmoRepository->delObject($ownerId, $realtyRecord);
+                $message = "DELETE: Object number ". $realtyRecord['object_number'] ." Dataset removed";
+                $this->addToLogEntry("\n" . $message . "\n");
+            }
             return false;
         }
     }
@@ -478,7 +484,6 @@ class OpenImmoImport
      */
     public function checkExtractionFolder($pathOfZip)
     {
-
         if (!\file_exists($pathOfZip)) {
             return '';
         }
@@ -506,6 +511,66 @@ class OpenImmoImport
             }
         }
         return $folderForZipExtraction;
+    }
+
+    protected function clearEmployerEntries($employer_folder) {
+
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
+
+        $sql = "SELECT pid_be_user 
+                FROM tx_realtymanager_domain_model_employer 
+                WHERE import_folder = '".$employer_folder."'";
+        
+        $employer_pid = $connection->executeQuery($sql)->fetch();
+        $employer_pid = $employer_pid['pid_be_user'];
+
+        $clearFolderEmployerEntries = $this->deleteFilesFolder($employer_folder, 'export');
+
+        if($clearFolderEmployerEntries == true) {
+            $this->addToLogEntry(
+                "\n Clear file folder realty/".$employer_folder. " \n"
+            );
+        }
+
+        if($clearFolderEmployerEntries == true) {
+            $clearTableEmployerEntries = $this->deleteTableEntries($employer_pid, $employer_folder);
+        }
+    }
+
+    /**
+     * clear folder
+     */
+    protected function deleteFilesFolder($employer_folder, $type)
+    {
+        $base_path = realpath(__DIR__ . '/../../../../../');
+        if($type == 'export') {
+            $realty_folder = $base_path.'/fileadmin'.$this->settings->getResourceFolderExporter().'/'.$employer_folder;
+        }
+        if($type == 'import') {
+            $realty_folder = $base_path.'/fileadmin'.$this->settings->getResourceFolderImporter().'/'.$employer_folder;
+        }
+
+        if (is_dir($realty_folder)) {
+            $files = glob($realty_folder.'/*');
+
+            foreach($files as $file) {
+                if(is_file($file))
+                    unlink($file);
+            }
+            return true;
+        }
+    }
+
+    /**
+     * clear TablesEntries from Employer
+     */
+    protected function deleteTableEntries($employer_pid, $employer_folder)
+    {
+        $clearImageTables = $this->clearImageTables($employer_folder, 'export');
+
+        if ($clearImageTables == true) {
+            $delete_all_entries = $this->objectimmoRepository->delAllObjects($employer_pid);
+        }
     }
 
     /**
@@ -584,15 +649,23 @@ class OpenImmoImport
         return rmdir($dir);
     }
 
-    protected function clearImageTables($dir)
+    protected function clearImageTables($dir, $type)
     {
-        $identifier_phrase = 'import/'.$dir;
+        if($type == 'export') {
+            $identifier_phrase = 'realty/'.$dir;
+        } else {
+            $identifier_phrase = 'import/'.$dir;
+        }
                 
         $delattachements = $this->objectimmoRepository->clearSysFiles($identifier_phrase);
 
-        $this->addToLogEntry(
-            "\n Clear image table \n"
-        );
+        if(clearSysFiles == true) {
+            $this->addToLogEntry(
+                "\n Clear image table: ".$identifier_phrase. " \n"
+            );
+            return true;
+        }
+        return false;
     }
 
 
