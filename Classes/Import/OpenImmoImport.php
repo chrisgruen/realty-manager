@@ -270,7 +270,7 @@ class OpenImmoImport
                 if (count(glob($extractionDirectory.'/*')) === 0) {
                     $zip->extractTo($extractionDirectory);
                     $this->addToLogEntry(
-                        $zipToExtract . "\n". LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extracted_successfully', 'The ZIP archive was extracted successfully'). "\n"
+                        $zipToExtract . "\n". LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_extracted_successfully', 'The ZIP archive was extracted successfully')
                     );
                 }
             }
@@ -528,11 +528,8 @@ class OpenImmoImport
 
         if($clearFolderEmployerEntries == true) {
             $this->addToLogEntry(
-                "\n Clear file folder realty/".$employer_folder. " \n"
+                "Clear file folder realty/".$employer_folder. " \n"
             );
-        }
-
-        if($clearFolderEmployerEntries == true) {
             $clearTableEmployerEntries = $this->deleteTableEntries($employer_pid, $employer_folder);
         }
     }
@@ -570,6 +567,9 @@ class OpenImmoImport
 
         if ($clearImageTables == true) {
             $delete_all_entries = $this->objectimmoRepository->delAllObjects($employer_pid);
+            $this->addToLogEntry(
+                "Clear all entries for employer: ".$employer_folder. " : pid: ".$employer_pid. "\n"
+            );
         }
     }
 
@@ -593,7 +593,7 @@ class OpenImmoImport
 
                 self::delTree($subdirectory);
                 $this->addToLogEntry(
-                    "\n DELETE Import folder: ".$employer_folder."/".$subdirectory
+                    "DELETE Import folder: ".$employer_folder."/".$subdirectory
                 );
             }
             $this->addToLogEntry(
@@ -659,13 +659,12 @@ class OpenImmoImport
                 
         $delattachements = $this->objectimmoRepository->clearSysFiles($identifier_phrase);
 
-        if(clearSysFiles == true) {
+        if($delattachements == true) {
             $this->addToLogEntry(
                 "\n Clear image table: ".$identifier_phrase. " \n"
-            );
-            return true;
+            );           
         }
-        return false;
+        return true;
     }
 
 
@@ -695,7 +694,7 @@ class OpenImmoImport
      */
     private function addToLogEntry($message)
     {
-        print_r($message); // for cronjob show messages
+        //print_r($message); // for cronjob show messages
         $this->temporaryLogEntry .= $message . "\n";
     }
     
