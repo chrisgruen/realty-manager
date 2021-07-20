@@ -163,8 +163,7 @@ class OpenImmoImport
 
         $zipsToExtract = $this->getPathsOfZipsToExtract($import_folder);
 
-        //$this->storeLogsAndClearTemporaryLog();
-
+        $emailData = [];
         if (empty($zipsToExtract)) {
             $this->addToErrorLog(
                 LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_no_zips', 'No ZIPs to extract. The configured import folder does not contain any ZIP archives. Please check the path configured in the extension manager and the contents of the folder.')
@@ -175,16 +174,15 @@ class OpenImmoImport
                 $this->extractZip($currentZip);
                 $xml_file_data = $this->loadXmlFile($currentZip);
                 $recordData = $this->processRealtyRecordInsertion($employer_folder,$currentZip);
-                //$emailData = \array_merge($emailData, $recordData);
+                $emailData = \array_merge($emailData, $recordData);
             }
-            /*
-            print_r($emailData);
-            exit();
-            */
         }
 
         $delImportFolder = $this->deleteImportFolder($employer_folder);
         $clearImageTables = $this->clearImageTables($employer_folder, 'import');
+        
+        //$this->sendEmails($this->prepareEmails($emailData));
+        //$this->prepareEmails($emailData);
         //$clearZipFile = $this->deleteZipFile($employer_folder);
         //$this->sendEmails($this->prepareEmails($emailData));
 
@@ -279,6 +277,7 @@ class OpenImmoImport
                     );
                 }
             }
+            $this->storeLogsAndClearTemporaryLog();
             $zip->close();
         } else {
             $this->addToErrorLog(
@@ -298,7 +297,6 @@ class OpenImmoImport
         $emailData = [];
         $offererId = '';
         $transferMode = null;
-
 
         $xml = $this->getImportedXml();
 
@@ -342,15 +340,14 @@ class OpenImmoImport
                 if ($dataset_to_mysql == true) {
                     $this->importAttachments($ownerId, $record, $pathOfCurrentZipFile, $employer_folder);
                 }
-                //$this->storeLogsAndClearTemporaryLog();
+                $emailData[] = $this->createEmailRawDataArray($record['contact_email'], $record['object_number']);
             }
-
-            /* last dev point */
-            return $this->logEntry;
+                 
+            $this->storeLogsAndClearTemporaryLog();
+            
+            /* data for email-info */
+            return $emailData;
         }
-
-        return true;
-        //return $emailData;
     }
 
     protected function getImportedXml()
@@ -515,6 +512,7 @@ class OpenImmoImport
                 return '';
             }
         }
+        $this->storeLogsAndClearTemporaryLog();
         return $folderForZipExtraction;
     }
 
@@ -537,6 +535,7 @@ class OpenImmoImport
             );
             $clearTableEmployerEntries = $this->deleteTableEntries($employer_pid, $employer_folder);
         }
+        $this->storeLogsAndClearTemporaryLog();
     }
 
     /**
@@ -576,6 +575,7 @@ class OpenImmoImport
                 "Clear all entries for employer: ".$employer_folder. " : pid: ".$employer_pid. "\n"
             );
         }
+        $this->storeLogsAndClearTemporaryLog();
     }
 
     /**
@@ -732,5 +732,53 @@ class OpenImmoImport
         
         $this->logEntry .= $this->temporaryLogEntry;
         $this->temporaryLogEntry = '';
+    }
+    
+    /**
+     * prepare Email.
+     * with 'contact_email', 'object_number' , log-entries
+     */
+    protected function prepareEmails(array $emailData)
+    {
+        $result = [];
+        $emailDataToPrepare = $emailData;
+        
+        $log = 'logEntry';
+        foreach ($emailDataToPrepare as $record) {
+            if ((string)($record['recipient'] === '')) {
+                $record['recipient'] = $this->getDefaultEmailAddress();
+            }
+            
+            if ((string)$record['objectNumber'] === '') {
+                $record['objectNumber'] = '------';
+            }
+            
+            $result[$record['recipient']][] = [
+                $record['objectNumber'] => $record[$log],
+            ];
+        }
+        
+        echo "<pre>";
+        print_r($result);
+        echo "</pre>";
+        exit();
+        $this->purgeRecordsWithoutLogMessages($result);
+        $this->purgeRecipientsForEmptyMessages($result);
+        
+        return $result;
+    }
+    
+    /**
+     * prepare Email.
+     * with 'contact_email', 'object_number' , log-entries
+     */
+    private function createEmailRawDataArray($email, $objectNumber)
+    {
+        return [
+            'recipient' => $email,
+            'objectNumber' => $objectNumber,
+            'logEntry' => $this->temporaryLogEntry,
+            'errorLog' => $this->temporaryErrorLog,
+        ];
     }
 }
