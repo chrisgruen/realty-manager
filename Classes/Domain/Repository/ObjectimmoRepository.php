@@ -241,14 +241,13 @@ class ObjectimmoRepository extends Repository
 
         if ($pid_be_employer > 0) {
             
-            $queryCheckEntry = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_objectimmo');
-            $checkEntry = $queryCheckEntry
-                            ->select('object_number')
-                            ->from('tx_realtymanager_domain_model_objectimmo')
-                            ->where($queryCheckEntry->expr()->eq('object_number', $queryCheckEntry->createNamedParameter($object_number)))
-                            ->execute()
-                            ->fetchColumn(0);
+            /* check file-relation */
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_objectimmo');
+            $sql_checkEntry = "SELECT uid FROM tx_realtymanager_domain_model_objectimmo
+                                WHERE object_number = '".$object_number."'
+                                AND pid = '".$pid_be_employer."'";
             
+            $checkEntry = $connection->executeQuery($sql_checkEntry)->fetch();
             
             if ($checkEntry == Null) {
             
@@ -263,8 +262,7 @@ class ObjectimmoRepository extends Repository
                 $dataToInsert['district'] = $this->getRealitionUid('tx_realtymanager_domain_model_districts', $obj_insert['district']);
                 $dataToInsert['pets'] = $this->getRealitionUid('tx_realtymanager_domain_model_pets', $obj_insert['pets']);
                 $dataToInsert['garage_type'] = $this->getRealitionUid('tx_realtymanager_domain_model_car_places', $obj_insert['garage_type']);
-                
-                
+                                
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realtymanager_domain_model_objectimmo');
                 $affectedRows = $queryBuilder
                                 ->insert('tx_realtymanager_domain_model_objectimmo')
