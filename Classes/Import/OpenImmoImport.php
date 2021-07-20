@@ -175,7 +175,12 @@ class OpenImmoImport
                 $this->extractZip($currentZip);
                 $xml_file_data = $this->loadXmlFile($currentZip);
                 $recordData = $this->processRealtyRecordInsertion($employer_folder,$currentZip);
+                //$emailData = \array_merge($emailData, $recordData);
             }
+            /*
+            print_r($emailData);
+            exit();
+            */
         }
 
         $delImportFolder = $this->deleteImportFolder($employer_folder);
@@ -563,7 +568,7 @@ class OpenImmoImport
      */
     protected function deleteTableEntries($employer_pid, $employer_folder)
     {
-        $clearImageTables = $this->clearImageTables($employer_folder, 'export');
+        $clearImageTables = $this->clearImageTables($employer_folder, 'export', $employer_pid);
 
         if ($clearImageTables == true) {
             $delete_all_entries = $this->objectimmoRepository->delAllObjects($employer_pid);
@@ -649,10 +654,11 @@ class OpenImmoImport
         return rmdir($dir);
     }
 
-    protected function clearImageTables($dir, $type)
+    protected function clearImageTables($dir, $type, $employer_pid = 0)
     {
         if($type == 'export') {
             $identifier_phrase = 'realty/'.$dir;
+            $this->objectimmoRepository->clearSysFileReference($employer_pid);
         } else {
             $identifier_phrase = 'import/'.$dir;
         }

@@ -420,6 +420,22 @@ class ObjectimmoRepository extends Repository
         }
         return;
     }
+    
+    /**
+     * clear sys_file_reference
+     *
+     */
+    public function clearSysFileReference($employer_pid) {
+        
+        if($employer_pid > 0) {
+            
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file_reference');
+                       
+            $sql_del = "DELETE FROM sys_file_reference WHERE pid = '".$employer_pid."' ";
+            $del_reference = $connection->executeQuery($sql_del);
+        }
+        return;
+    }
 
     /**
      * get PriceRange
