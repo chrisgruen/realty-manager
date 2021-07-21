@@ -38,20 +38,36 @@ class ConfigurationImport
 
     /** @var string */
     protected $resourceFolderExporter = '/realty';
+
+    /** @var int */
+    protected $logEmailSendContacts = 0;
+
+    /** @var int */
+    protected $logEmailSendTechnEmail = 1;
     
     
-    public function getStorageUidImporter(): int
+    public function getStorageUidImporter()
     {
-        return (int)$this->storageUidImporter;
+        return $this->storageUidImporter;
     }
     
-    public function getResourceFolderImporter(): string
+    public function getResourceFolderImporter()
     {
         return $this->resourceFolderImporter;
     }
 
-    public function getResourceFolderExporter(): string
+    public function getResourceFolderExporter()
     {
-        return $this->resourceFolderExporter ;
+        return $this->resourceFolderExporter;
+    }
+
+    public function getLogEmailSendContacts()
+    {
+        return $this->logEmailSendContacts;
+    }
+
+    public function getLogEmailSendTechnEmail()
+    {
+        return $this->logEmailSendTechnEmail;
     }
 }

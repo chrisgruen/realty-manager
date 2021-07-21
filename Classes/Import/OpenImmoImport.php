@@ -13,6 +13,9 @@ use ChrisGruen\RealtyManager\Import\XmlConverter;
 use ChrisGruen\RealtyManager\Domain\Model\Objectimmo;
 use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use Symfony\Component\Mime\Address;
+use TYPO3\CMS\Core\Mail\FluidEmail;
+use TYPO3\CMS\Core\Mail\Mailer;
 
 
 class OpenImmoImport
@@ -26,6 +29,16 @@ class OpenImmoImport
      * @var string stores the complete log entry
      */
     private $logEntry = '';
+
+    /**
+     * @var string $transferMode
+     */
+    private $transferMode = '';
+
+    /**
+     * @var string $techn_email to send Email after import
+     */
+    private $techn_email = '';
 
     /**
      * @var string stores the complete error log
@@ -51,30 +64,13 @@ class OpenImmoImport
      */
     private $importedXml = null;
 
-    /**
-     * @var \Tx_Oelib_ConfigurationProxy to access the EM configuration
-     */
-    private $globalConfiguration = null;
 
     /**
      * @var \ConfigurationImport for settings
      */
     private $settings = null;
 
-    /**
-     * @var Objectimmo | null
-     */
-    private $realtyObject = null;
 
-    /**
-     * @var \tx_realty_translator
-     */
-    private static $translator = null;
-
-    /**
-     * @var bool whether the current zip file should be deleted
-     */
-    private $deleteCurrentZipFile = true;
 
 
     private $filesToDelete = [];
@@ -164,6 +160,7 @@ class OpenImmoImport
         $zipsToExtract = $this->getPathsOfZipsToExtract($import_folder);
 
         $emailData = [];
+
         if (empty($zipsToExtract)) {
             $this->addToErrorLog(
                 LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_no_zips', 'No ZIPs to extract. The configured import folder does not contain any ZIP archives. Please check the path configured in the extension manager and the contents of the folder.')
@@ -180,11 +177,11 @@ class OpenImmoImport
 
         $delImportFolder = $this->deleteImportFolder($employer_folder);
         $clearImageTables = $this->clearImageTables($employer_folder, 'import');
-        
-        //$this->sendEmails($this->prepareEmails($emailData));
+
+        $this->sendEmails($this->prepareEmails($emailData));
+        //$this->sendEmails();
         //$this->prepareEmails($emailData);
         //$clearZipFile = $this->deleteZipFile($employer_folder);
-        //$this->sendEmails($this->prepareEmails($emailData));
 
         $this->storeLogsAndClearTemporaryLog();
 
@@ -296,7 +293,6 @@ class OpenImmoImport
     {
         $emailData = [];
         $offererId = '';
-        $transferMode = null;
 
         $xml = $this->getImportedXml();
 
@@ -315,7 +311,8 @@ class OpenImmoImport
 
             $transferNode = $xPath->query('//openimmo/uebertragung')->item(0);
             if ($transferNode instanceof \DOMNode) {
-                $transferMode = $transferNode->getAttribute('umfang');
+                $this->transferMode = $transferNode->getAttribute('umfang');
+                $this->techn_email = $transferNode->getAttribute('techn_email');
             }
         }
 
@@ -733,7 +730,8 @@ class OpenImmoImport
         $this->logEntry .= $this->temporaryLogEntry;
         $this->temporaryLogEntry = '';
     }
-    
+
+/*############## EMAIL functions ################################################################ */
     /**
      * prepare Email.
      * with 'contact_email', 'object_number' , log-entries
@@ -742,9 +740,12 @@ class OpenImmoImport
     {
         $result = [];
         $emailDataToPrepare = $emailData;
-        
+
         $log = 'logEntry';
         foreach ($emailDataToPrepare as $record) {
+
+            $keyLogEntry = "Objekt mit Objektnummer: ". $record['objectNumber'] . " wurde erfolgreich importiert";
+
             if ((string)($record['recipient'] === '')) {
                 $record['recipient'] = $this->getDefaultEmailAddress();
             }
@@ -752,16 +753,12 @@ class OpenImmoImport
             if ((string)$record['objectNumber'] === '') {
                 $record['objectNumber'] = '------';
             }
-            
+
             $result[$record['recipient']][] = [
-                $record['objectNumber'] => $record[$log],
+                $record['objectNumber'] => $keyLogEntry,
             ];
         }
-        
-        echo "<pre>";
-        print_r($result);
-        echo "</pre>";
-        exit();
+
         $this->purgeRecordsWithoutLogMessages($result);
         $this->purgeRecipientsForEmptyMessages($result);
         
@@ -780,5 +777,80 @@ class OpenImmoImport
             'logEntry' => $this->temporaryLogEntry,
             'errorLog' => $this->temporaryErrorLog,
         ];
+    }
+
+    private function sendEmails(array $addressesAndMessages)
+    {
+        $email = GeneralUtility::makeInstance(FluidEmail::class);
+        // send protocol to techn_email: $this->techn_email
+        $to_email = 'cg@lubey.de'; // test to cg@lubey.de;
+        $email_content = "<h3>Import zu Athome war erfolgreich!</h3>";
+
+        foreach ($addressesAndMessages as $address => $content) {
+            $email_content .= "<p>Kontakt Email: ".$address."<p/>";
+            foreach($content as $key => $objects) {
+              foreach($objects as $objKey => $obj_message) {
+                  $email_content .= $obj_message."<br />";
+              }
+            }
+
+            // mail send to all contact_emails
+            if ($this->settings->getLogEmailSendContacts() == 1) {
+                /*
+                $email
+                    //->to($address) //$address
+                    ->to('cg@lubey.de') //$address
+                    ->from(new Address('admin@athome.de', 'Import athome'))
+                    ->subject('Import objects website: athome')
+                    ->format('both') // send HTML and plaintext mail
+                    ->setTemplate('ImportObjects')
+                    ->assign('bodyContent', $email_content);
+
+                GeneralUtility::makeInstance(Mailer::class)->send($email);
+                */
+                $this->addToLogEntry(
+                    LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_log_sent_to', 'The log was sent to') . ": " . $address . "\n"
+                );
+            }
+        }
+
+        // mail send only to: techn_email
+        if ($this->settings->getLogEmailSendTechnEmail() == 1) {
+            $email
+                ->to($to_email)
+                ->from(new Address('admin@athome.de', 'Import athome'))
+                ->subject('Import objects to website: athome')
+                ->format('both') // send HTML and plaintext mail
+                ->setTemplate('ImportObjects')
+                ->assign('bodyContent', $email_content);
+
+            GeneralUtility::makeInstance(Mailer::class)->send($email);
+
+            if (!empty($addressesAndMessages)) {
+                $this->addToLogEntry(
+                    LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_log_sent_to', 'The log was sent to') . ": " . $to_email . "\n"
+                );
+            }
+        }
+    }
+
+    private function purgeRecordsWithoutLogMessages(array &$emailData)
+    {
+        foreach ($emailData as $recipient => $data) {
+            foreach ($data as $key => $emailContent) {
+                if (\implode('', $emailContent) === '') {
+                    unset($emailData[$recipient][$key]);
+                }
+            }
+        }
+    }
+
+    private function purgeRecipientsForEmptyMessages(array &$emailData)
+    {
+        foreach ($emailData as $recipient => $data) {
+            if (empty($data)) {
+                unset($emailData[$recipient]);
+            }
+        }
     }
 }
