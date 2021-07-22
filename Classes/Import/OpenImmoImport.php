@@ -24,6 +24,11 @@ class OpenImmoImport
      * @var string
      */
     const FULL_TRANSFER_MODE = 'VOLL';
+    
+    /**
+     * @var string
+     */
+    private $baseUrl = '';
 
     /**
      * @var string stores the complete log entry
@@ -97,8 +102,9 @@ class OpenImmoImport
      * @param bool $isTestMode
      *        whether the class ist tested and therefore only dummy records should be inserted into the database
      */
-    public function __construct($isTestMode = false)
+    public function __construct($baseUrl, $isTestMode = false)
     {
+        $this->baseUrl = $baseUrl;
         $this->isTestMode = $isTestMode;
         $this->settings = GeneralUtility::makeInstance(ConfigurationImport::class);
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -179,8 +185,6 @@ class OpenImmoImport
         $clearImageTables = $this->clearImageTables($employer_folder, 'import');
 
         $this->sendEmails($this->prepareEmails($emailData));
-        //$this->sendEmails();
-        //$this->prepareEmails($emailData);
         //$clearZipFile = $this->deleteZipFile($employer_folder);
 
         $this->storeLogsAndClearTemporaryLog();
@@ -784,7 +788,8 @@ class OpenImmoImport
         $email = GeneralUtility::makeInstance(FluidEmail::class);
         // send protocol to techn_email: $this->techn_email
         $to_email = 'cg@lubey.de'; // test to cg@lubey.de;
-        $email_content = "<h3>Import zu Athome war erfolgreich!</h3>";
+        $email_header = "Import zu $this->baseUrl war erfolgreich!";
+        $email_content = "";
 
         foreach ($addressesAndMessages as $address => $content) {
             $email_content .= "<p>Kontakt Email: ".$address."<p/>";
@@ -804,7 +809,9 @@ class OpenImmoImport
                     ->subject('Import objects website: athome')
                     ->format('both') // send HTML and plaintext mail
                     ->setTemplate('ImportObjects')
-                    ->assign('bodyContent', $email_content);
+                    ->assign('baseUrl', $this->baseUrl)
+                    ->assign('bodyHeader', $email_header)
+                    ->assign('bodyContent', $email_content);;
 
                 GeneralUtility::makeInstance(Mailer::class)->send($email);
                 */
@@ -819,9 +826,11 @@ class OpenImmoImport
             $email
                 ->to($to_email)
                 ->from(new Address('admin@athome.de', 'Import athome'))
-                ->subject('Import objects to website: athome')
+                ->subject('Support message from website: '.$this->baseUrl)
                 ->format('both') // send HTML and plaintext mail
-                ->setTemplate('ImportObjects')
+                ->setTemplate('ImportObjects')                
+                ->assign('baseUrl', $this->baseUrl)
+                ->assign('bodyHeader', $email_header)
                 ->assign('bodyContent', $email_content);
 
             GeneralUtility::makeInstance(Mailer::class)->send($email);

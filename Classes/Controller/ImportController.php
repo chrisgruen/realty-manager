@@ -86,7 +86,11 @@ class ImportController extends ActionController
             $this->view->assign('error', $this->checkFolderEmployer($employer_folder));
         } else {
             
-            $this->importService = new OpenImmoImport();
+            $url= $this->request->getBaseUri();
+            $parseUrl = parse_url($url);
+            $baseUrl = $parseUrl['scheme'].'://'.$parseUrl['host'];
+            
+            $this->importService = new OpenImmoImport($baseUrl);
             
             try {
                 $importResults = $this->importService->importFromZip($employer_folder);
