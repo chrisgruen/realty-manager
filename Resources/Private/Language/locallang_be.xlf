@@ -36,6 +36,9 @@
 			<trans-unit id="import.error.configuration.storageUidImporter" xml:space="preserve">
 				<source>Please define the setting "storageUidImporter" in the configuration of the extension manager! The given id is the used file storage.</source>
 			</trans-unit>
+			<trans-unit id="config.import.resourceFolderImporter" xml:space="preserve">
+				<source>In which folder should the importer save files "fileadadmin/{resourceFolderImporter}" (has to exist)</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>

@@ -18,11 +18,12 @@ class ConfigurationImport
         if (empty($configuration)) {
             try {
                 $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-                $configuration = $extensionConfiguration->get('realty');
+                $configuration = $extensionConfiguration->get('realty_manager');
             } catch (\Exception $exception) {
                 // do nothing
             }
         }
+        
         foreach ($configuration as $key => $value) {
             if (property_exists(__CLASS__, $key)) {
                 $this->$key = $value;

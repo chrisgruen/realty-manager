@@ -13,6 +13,7 @@ use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use UnexpectedValueException;
 use ChrisGruen\RealtyManager\Configuration\ConfigurationImport;
 use ChrisGruen\RealtyManager\Import\OpenImmoImport;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
 class ImportController extends ActionController
 {
@@ -156,8 +157,10 @@ class ImportController extends ActionController
     {
         $error = '';
         $settings = GeneralUtility::makeInstance(ConfigurationImport::class);
+                
         $base_import_folder = $settings->getResourceFolderImporter();
         $base_export_folder = $settings->getResourceFolderExporter();
+        
         $error = '';
         $base_path = realpath(__DIR__ . '/../../../../../');
         $path_import = $base_path.'/fileadmin'.$base_import_folder.'/'.$folder;
