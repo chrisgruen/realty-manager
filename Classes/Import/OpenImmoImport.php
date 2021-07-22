@@ -805,7 +805,7 @@ class OpenImmoImport
                 $email
                     //->to($address) //$address
                     ->to('cg@lubey.de') //$address
-                    ->from(new Address('admin@athome.de', 'Import athome'))
+                    ->from(new Address('cg@romonta-schach.de', 'Import athome'))
                     ->subject('Import objects website: athome')
                     ->format('both') // send HTML and plaintext mail
                     ->setTemplate('ImportObjects')
@@ -825,7 +825,7 @@ class OpenImmoImport
         if ($this->settings->getLogEmailSendTechnEmail() == 1) {
             $email
                 ->to($to_email)
-                ->from(new Address('admin@athome.de', 'Import athome'))
+                ->from(new Address('cg@romonta-schach.de', 'Import athome'))
                 ->subject('Support message from website: '.$this->baseUrl)
                 ->format('both') // send HTML and plaintext mail
                 ->setTemplate('ImportObjects')                
