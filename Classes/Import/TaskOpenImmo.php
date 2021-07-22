@@ -19,8 +19,16 @@ class TaskOpenImmo extends AbstractTask {
 
     public function execute() {
 
-        set_time_limit(300);
-        $this->importService = new OpenImmoImport();
+        set_time_limit(1000);
+        
+        $url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "off") ? "https" : "http");
+        $url .= "://".$_SERVER['HTTP_HOST'];
+        $url .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
+        
+        $parseUrl = parse_url($url);        
+        $baseUrl = $parseUrl['scheme'].'://'.$parseUrl['host'];
+        
+        $this->importService = new OpenImmoImport($baseUrl);
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_employer');
         $sql = "SELECT import_folder from tx_realtymanager_domain_model_employer";
