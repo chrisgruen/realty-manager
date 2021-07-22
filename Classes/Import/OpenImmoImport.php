@@ -786,8 +786,16 @@ class OpenImmoImport
     private function sendEmails(array $addressesAndMessages)
     {
         $email = GeneralUtility::makeInstance(FluidEmail::class);
+        
         // send protocol to techn_email: $this->techn_email
-        $to_email = 'cg@lubey.de'; // test to cg@lubey.de;
+        $to_email = $this->settings->getToTestEmaill(); // test to cg@lubey.de;
+        if ($this->settings->getToTestEmaill() == '') {
+            $to_email = $this->techn_email;
+        } else {
+            $to_email = $this->settings->getToTestEmaill();
+        }
+        $from_email = $this->settings->getFromEmail(); // email must exist (Spam)
+        
         $email_header = "Import zu $this->baseUrl war erfolgreich!";
         $email_content = "";
 
@@ -804,8 +812,8 @@ class OpenImmoImport
                 /*
                 $email
                     //->to($address) //$address
-                    ->to('cg@lubey.de') //$address
-                    ->from(new Address('cg@romonta-schach.de', 'Import athome'))
+                    ->to($to_email) //$address
+                    ->from(new Address($from_email, 'Support Import OpenImmo'))
                     ->subject('Import objects website: athome')
                     ->format('both') // send HTML and plaintext mail
                     ->setTemplate('ImportObjects')
@@ -825,7 +833,7 @@ class OpenImmoImport
         if ($this->settings->getLogEmailSendTechnEmail() == 1) {
             $email
                 ->to($to_email)
-                ->from(new Address('cg@romonta-schach.de', 'Import athome'))
+                ->from(new Address($from_email, 'Support Import OpenImmo'))
                 ->subject('Support message from website: '.$this->baseUrl)
                 ->format('both') // send HTML and plaintext mail
                 ->setTemplate('ImportObjects')                

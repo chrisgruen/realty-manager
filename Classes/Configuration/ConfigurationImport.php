@@ -45,6 +45,12 @@ class ConfigurationImport
     /** @var int */
     protected $logEmailSendTechnEmail = 1;
     
+    /** @var string */
+    protected $fromEmail = 'cg@romonta-schach.de';
+    
+    /** @var string */
+    protected $toTestEmail = 'cg@lubey.de'; // if empty takes the "techn_email" from XML-Import-File
+    
     
     public function getStorageUidImporter()
     {
@@ -69,5 +75,15 @@ class ConfigurationImport
     public function getLogEmailSendTechnEmail()
     {
         return $this->logEmailSendTechnEmail;
+    }
+    
+    public function getFromEmail()
+    {
+        return $this->fromEmail;
+    }
+    
+    public function getToTestEmaill()
+    {
+        return $this->toTestEmail;
     }
 }
