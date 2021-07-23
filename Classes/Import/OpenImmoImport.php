@@ -795,36 +795,43 @@ class OpenImmoImport
         }
         $from_email = $this->settings->getFromEmail(); // email must exist (Spam)
         
-        $email_header = "Import zu $this->baseUrl war erfolgreich!";
         $email_content = "";
+        if ($this->temporaryErrorLog == '') {
+            $email_header = "Import zu $this->baseUrl war erfolgreich!";
+        } else {
+            $email_header = "Import zu $this->baseUrl ist fehlgeschlagen!";
+            $email_content = $this->temporaryErrorLog;
+        }
 
-        foreach ($addressesAndMessages as $address => $content) {
-            $email_content .= "<p>Kontakt Email: ".$address."<p/>";
-            foreach($content as $key => $objects) {
-              foreach($objects as $objKey => $obj_message) {
-                  $email_content .= $obj_message."<br />";
-              }
-            }
-
-            // mail send to all contact_emails
-            if ($this->settings->getLogEmailSendContacts() == 1) {
-                /*
-                $email
-                    //->to($address) //$address
-                    ->to($to_email) //$address
-                    ->from(new Address($from_email, 'Support Import OpenImmo'))
-                    ->subject('Import objects website: athome')
-                    ->format('both') // send HTML and plaintext mail
-                    ->setTemplate('ImportObjects')
-                    ->assign('baseUrl', $this->baseUrl)
-                    ->assign('bodyHeader', $email_header)
-                    ->assign('bodyContent', $email_content);;
-
-                GeneralUtility::makeInstance(Mailer::class)->send($email);
-                */
-                $this->addToLogEntry(
-                    LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_log_sent_to', 'The log was sent to') . ": " . $address . "\n"
-                );
+        if (count($addressesAndMessages) > 0) {
+            foreach ($addressesAndMessages as $address => $content) {
+                $email_content .= "<p>Kontakt Email: ".$address."<p/>";
+                foreach($content as $key => $objects) {
+                    foreach($objects as $objKey => $obj_message) {
+                        $email_content .= $obj_message."<br />";
+                    }
+                }
+                
+                // mail send to all contact_emails
+                if ($this->settings->getLogEmailSendContacts() == 1) {
+                    /*
+                     $email
+                     //->to($address) //$address
+                     ->to($to_email) //$address
+                     ->from(new Address($from_email, 'Support Import OpenImmo'))
+                     ->subject('Import objects website: athome')
+                     ->format('both') // send HTML and plaintext mail
+                     ->setTemplate('ImportObjects')
+                     ->assign('baseUrl', $this->baseUrl)
+                     ->assign('bodyHeader', $email_header)
+                     ->assign('bodyContent', $email_content);;
+                     
+                     GeneralUtility::makeInstance(Mailer::class)->send($email);
+                     */
+                    $this->addToLogEntry(
+                        LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_log_sent_to', 'The log was sent to') . ": " . $address . "\n"
+                        );
+                }
             }
         }
 

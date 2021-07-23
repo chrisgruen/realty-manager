@@ -173,13 +173,13 @@ class ImportController extends ActionController
             if ($folder == '') {
                 $folder = "NOT_SET";
                 $message = 'Ordner für Import/Export wurde nicht angegeben!';
-                throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
+                throw new FolderDoesNotExistException();
             } else if (!is_dir($path_import)) {
                 $message = 'Import-Ordner für Zip-Import: '.$base_import_folder. ' existiert nicht!';
-                throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
+                throw new FolderDoesNotExistException();
             } else if (!is_dir($path_export)) {
                 $message = 'Export-Ordner für Bilder, PDFs '.$path_export.' existiert nicht!';
-                throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
+                throw new FolderDoesNotExistException();
             } else {
 
             }

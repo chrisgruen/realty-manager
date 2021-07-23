@@ -46,6 +46,30 @@
 				<source>Please define the setting "storageUidImporter" in the configuration of the extension manager! The given id is the used file storage.</source>
 				<target>storageUidImporter wurde nicht angegeben.</target>
 			</trans-unit>
+			<trans-unit id="config.import.resourceFolderImporter" xml:space="preserve">
+				<source>Folder name for import "fileadadmin/{resourceFolderImporter}" (has to exist)</source>
+				<target>Ordner-Name für den Import "fileadadmin/{resourceFolderImporter}" (muss existieren)</target>
+			</trans-unit>
+			<trans-unit id="config.import.resourceFolderExporter" xml:space="preserve">
+				<source>Folder name for export "fileadadmin/{resourceFolderExporter}" (has to exist)</source>
+				<target>Ordner-Name für den Export "fileadadmin/{resourceFolderImporter}" (muss existieren)</target>
+			</trans-unit>
+			<trans-unit id="config.import.fromEmail" xml:space="preserve">
+				<source>Email used to send a message.</source>
+				<target>Email die zum versenden einer Nachricht verwendet wird.</target>
+			</trans-unit>
+			<trans-unit id="config.import.toTestEmail" xml:space="preserve">
+				<source>Email used to send a test mail. If empty use Email for technical support read from xml-file!</source>
+				<target>Email die zum versenden einer Test-Nachricht verwendet wird. Wenn leer wird Email für "technischen Support" aus XML-Datei verwendet!</target>
+			</trans-unit>
+			<trans-unit id="config.import.logEmailSendContacts" xml:space="preserve">
+				<source>Email send to all contacts from XML-file. Read from contact address per object</source>
+				<target>An alle Kontakte versenden, gelesen aus XML-Datei Kontaktdaten per Object </target>
+			</trans-unit>
+			<trans-unit id="config.import.logEmailSendTechnEmail" xml:space="preserve">
+				<source>Email send to technical support. If "import.toTestEmail" empty use this Email</source>
+				<target>Email an technischen Support senden. Wird benutzt wenn "import.toTestEmail" nicht gesetzt ist</target>
+			</trans-unit>
         </body>
     </file>
 </xliff>
