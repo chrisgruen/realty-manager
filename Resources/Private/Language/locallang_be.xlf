@@ -28,7 +28,7 @@
 				<source>Detail</source>
 			</trans-unit>
 			<trans-unit id="import.error.configuration.title" xml:space="preserve">
-				<source>The configuration for the import is incomplete!</source>
+				<source>The configuration for the import is incomplete! Check the folder configuration.</source>
 			</trans-unit>
 			<trans-unit id="import.error.configuration.resourceFolderImporter.notExist" xml:space="preserve">
 				<source>The directory defined in the setting "resourceFolderImporter" does not exist!</source>

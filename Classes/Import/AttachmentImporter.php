@@ -6,6 +6,7 @@ use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ChrisGruen\RealtyManager\Domain\Model\Objectimmo;
 use ChrisGruen\RealtyManager\Domain\Repository\ObjectimmoRepository;
+use ChrisGruen\RealtyManager\Configuration\ConfigurationImport;
 
 class AttachmentImporter
 {
@@ -57,6 +58,7 @@ class AttachmentImporter
         $this->ownerId = $ownerId;
         $this->record = $record;
         $this->objectimmoRepository = $objectimmoRepository;
+        $this->settings = GeneralUtility::makeInstance(ConfigurationImport::class);
     }
     
 
@@ -97,9 +99,8 @@ class AttachmentImporter
     {
         //$import_attachement = $fullPath;
         $import_attachement = $fileExtractionPath;
-        $realty_store_folder = 'realty/'.$employer_folder;
-        
-        
+        $realty_store_folder = $this->settings->getResourceFolderExporter().'/'.$employer_folder;
+                
         $resourceFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\ResourceFactory::class);
         $storage = $resourceFactory->getDefaultStorage();       
         $pathExists = $storage->hasFolder($realty_store_folder);
@@ -116,18 +117,15 @@ class AttachmentImporter
             if (file_exists($file_exist)) {
                 unlink($file_exist);
                 $copiedFile = $file->copyTo($folder);
-                //echo $import_attachement ." -> File already copied <br />";
             } else {
                 $copiedFile = $file->copyTo($folder);
-                //echo $import_attachement . " :: " .$title. " -> Files copied <br />";
             }
             
             //get uid from table sys_file
-            $file_path = '/'.$realty_store_folder.'/'.$file_name;
+            $file_path = $realty_store_folder.'/'.$file_name;
             $get_file_uid = $this->objectimmoRepository->getFileUid($file_path); 
             $set_file_object_relation = $this->objectimmoRepository->setFileObjectRelation($this->uidObject, $this->pidObject, $get_file_uid, $title);
             
-            //echo $file_path." :: ".$get_file_uid." :: ".$this->uidObject."</br >";
             if($set_file_object_relation) {
                 //echo "File relation created in table: sys_file_reference<br />";
             }

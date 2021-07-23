@@ -133,8 +133,10 @@ class ImportController extends ActionController
             if (empty($path)) {
                 throw new UnexpectedValueException('import.error.configuration.resourceFolderImporter');
             }
+            
             $storage = $this->getResourceFactory()->getStorageObject($storageId);
             $pathExists = $storage->hasFolder($path);
+            
             if (!$pathExists) {
                 throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
             }
@@ -170,19 +172,19 @@ class ImportController extends ActionController
         try {
             if ($folder == '') {
                 $folder = "NOT_SET";
-                $message = 'Ordner für Import/Export: ';
+                $message = 'Ordner für Import/Export wurde nicht angegeben!';
                 throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
             } else if (!is_dir($path_import)) {
-                $message = 'Import-Ordner für Zip-Import: ';
+                $message = 'Import-Ordner für Zip-Import: '.$base_import_folder. ' existiert nicht!';
                 throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
             } else if (!is_dir($path_export)) {
-                $message = 'Export-Ordner für Bilder, PDFs: ';
+                $message = 'Export-Ordner für Bilder, PDFs '.$path_export.' existiert nicht!';
                 throw new FolderDoesNotExistException('Folder does not exist', 1474827988);
             } else {
 
             }
         } catch (FolderDoesNotExistException $e) {
-            $error = $message.$base_import_folder.'/'.$folder. ' existiert nicht!';
+            $error = $message;
         }
         return $error;
     }

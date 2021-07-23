@@ -35,7 +35,7 @@
 				<target>Detailansicht</target>
 			</trans-unit>
 			<trans-unit id="import.error.configuration.title" xml:space="preserve">
-				<source>The configuration for the import is incomplete!</source>
+				<source>The configuration for the import is incomplete! Check the folder configuration.</source>
 				<target>Import kann nicht ausgeführt werden. Bitte Configurations-Datei für Import überprüfen!</target>
 			</trans-unit>
 			<trans-unit id="import.error.configuration.resourceFolderImporter.notExist" xml:space="preserve">

@@ -94,7 +94,6 @@ class OpenImmoImport
     
     
     private $objectimmoRepository;
-    //private $documentBaseRoot = __DIR__;
 
     /**
      * Constructor.
