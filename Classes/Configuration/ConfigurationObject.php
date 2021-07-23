@@ -18,7 +18,7 @@ class ConfigurationObject
         if (empty($configuration)) {
             try {
                 $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-                $configuration = $extensionConfiguration->get('realty');
+                $configuration = $extensionConfiguration->get('realty_manager');
             } catch (\Exception $exception) {
                 // do nothing
             }

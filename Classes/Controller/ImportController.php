@@ -169,6 +169,7 @@ class ImportController extends ActionController
         $path_export = $base_path.'/fileadmin'.$base_export_folder.'/'.$folder;
 
         /* Check Folder for Import Export */
+       
         try {
             if ($folder == '') {
                 $folder = "NOT_SET";

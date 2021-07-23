@@ -15,3 +15,6 @@ logEmailSendContacts = 0
 
 # cat=import; type=boolean; label=LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:config.import.logEmailSendTechnEmail
 logEmailSendTechnEmail = 1
+
+# cat=view; type=int; label=LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:config.view.paginateItemsPerPage
+paginateItemsPerPage = 6
