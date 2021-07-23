@@ -1541,34 +1541,5 @@ $tca = [
     ],
 ];
 
-if (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 8006000) {
-    $tca['columns']['starttime']['config']['renderType'] = 'inputDateTime';
-    $tca['columns']['endtime']['config']['renderType'] = 'inputDateTime';
-    $tca['columns']['advertised_date']['config']['renderType'] = 'inputDateTime';
-    $tca['columns']['energy_certificate_issue_date']['config']['renderType'] = 'inputDateTime';
-    $tca['columns']['details_page']['config']['renderType'] = 'inputLink';
-} else {
-    $tca['ctrl']['requestUpdate'] = 'city,has_coordinates,contact_data_source';
-    $tca['columns']['teaser']['defaultExtras'] = 'richtext[]';
-    $tca['columns']['description']['defaultExtras'] = 'richtext[]';
-    $tca['columns']['equipment']['defaultExtras'] = 'richtext[]';
-    $tca['columns']['layout']['defaultExtras'] = 'richtext[]';
-    $tca['columns']['location']['defaultExtras'] = 'richtext[]';
-    $tca['columns']['misc']['defaultExtras'] = 'richtext[]';
-    $tca['columns']['details_page']['config']['wizards'] = [
-        'link' => [
-            'type' => 'popup',
-            'title' => 'Link',
-            'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_link.gif',
-            'module' => [
-                'name' => 'wizard_link',
-                'urlParameters' => [
-                    'mode' => 'wizard',
-                ],
-            ],
-            'JSopenParams' => 'height=300,width=500,status=0,menubar=0,scrollbars=1',
-        ],
-    ];
-}
 
 return $tca;

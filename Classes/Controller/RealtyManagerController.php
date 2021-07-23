@@ -135,7 +135,6 @@ class RealtyManagerController extends ActionController
         }
         
         $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $form_data);
-        $GLOBALS["TSFE"]->fe_user->storeSessionData();
         
         $count_objects = count($objects);
 

@@ -1,0 +1,9 @@
+Routing for this extension (make better URL)
+
+routeEnhancers:
+  RealtyManager:
+    type: Extbase
+    extension: RealtyManager
+    plugin: Immobilienmanager
+    routes:
+      - { routePath: '/{id}', _controller: 'RealtyManager::detail', _arguments: {'id': 'objUid'} }
