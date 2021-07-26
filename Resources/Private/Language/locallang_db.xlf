@@ -625,6 +625,9 @@
             <trans-unit id="fe_users.tx_realty_openimmo_anid" xml:space="preserve">
                 <source>OpenImmo offerer ID</source>
             </trans-unit>
+            <trans-unit id="fe_users.import_folder" xml:space="preserve">
+                <source>Folder name for Import/Export :: fileadmin/{resourceFolderImporter}/ | fileadmin/{resourceFolderExporter}/</source>
+            </trans-unit>
             <trans-unit id="fe_users.tx_realty_maximum_objects" xml:space="preserve">
                 <source>Maximum number of objects</source>
             </trans-unit>

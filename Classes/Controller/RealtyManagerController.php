@@ -60,7 +60,7 @@ class RealtyManagerController extends ActionController
     public function formAction()
     {  
         $search = $GLOBALS['TSFE']->fe_user->getKey('ses','search');
-        
+
         /* get opt-select housetypes */
         $dataHouseTypes = $this->objectimmoRepository->getHouseTypes();
         $housetypes = $this->selectHousetypes($dataHouseTypes);
@@ -94,17 +94,17 @@ class RealtyManagerController extends ActionController
         $area_key_last = array_key_last($areas);
         $area_last = $areas[$area_key_last];
         $area_last = $area_last->key;
-        
+
         if(count($search) > 0) {
-            if($search['living_area_to'] != 'egal') {
+            if(isset($search['living_area_to']) && $search['living_area_to'] != 'egal') {
                 $area_last = $search['living_area_to'];
             }
-            
-            if($search['rent_to'] != 'egal') {
+
+            if(isset($search['rent_to']) && $search['rent_to'] != 'egal') {
                 $price_last = $search['rent_to'];
             }
         }
-            
+
         $this->view->assign('housetypes', $housetypes);
         $this->view->assign('apartmenttypes', $apartmenttypes);
         $this->view->assign('employers', $employers);

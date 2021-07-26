@@ -4,6 +4,9 @@ resourceFolderImporter = /import
 # cat=import; type=string; label=LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:config.import.resourceFolderExporter
 resourceFolderExporter = /realty
 
+# cat=import; type=boolean; label=LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:config.import.deleteZipsAfterImport
+deleteZipsAfterImport = 0
+
 # cat=import; type=string; label=LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:config.import.fromEmail
 fromEmail = cg@romonta-schach.de
 

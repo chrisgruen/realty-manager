@@ -44,6 +44,9 @@ class ConfigurationImport
     protected $logEmailSendContacts = 0;
 
     /** @var int */
+    protected $deleteZipsAfterImport = 0;
+
+    /** @var int */
     protected $logEmailSendTechnEmail = 1;
     
     /** @var string */
@@ -68,14 +71,19 @@ class ConfigurationImport
         return $this->resourceFolderExporter;
     }
 
+    public function getLogEmailSendTechnEmail()
+    {
+        return $this->logEmailSendTechnEmail;
+    }
+
     public function getLogEmailSendContacts()
     {
         return $this->logEmailSendContacts;
     }
 
-    public function getLogEmailSendTechnEmail()
+    public function getDeleteZipsAfterImport()
     {
-        return $this->logEmailSendTechnEmail;
+        return $this->deleteZipsAfterImport;
     }
     
     public function getFromEmail()
@@ -83,7 +91,7 @@ class ConfigurationImport
         return $this->fromEmail;
     }
     
-    public function getToTestEmaill()
+    public function getToTestEmail()
     {
         return $this->toTestEmail;
     }

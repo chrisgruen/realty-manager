@@ -857,8 +857,8 @@
                 <target>OpenImmo-Anbieter-ID</target>
             </trans-unit>
             <trans-unit id="fe_users.import_folder" xml:space="preserve" approved="yes">
-                <source>Import Folder</source>
-                <target>Ordner-Name für Import/Export :: filadmin/import/ | filadmin/realty/</target>
+                <source>Folder name for Import/Export :: fileadmin/{resourceFolderImporter}/ | fileadmin/{resourceFolderExporter}/</source>
+                <target>Ordner-Name für Import/Export :: fileadmin/{resourceFolderImporter}/ | fileadmin/{resourceFolderExporter}/</target>
             </trans-unit>
             <trans-unit id="fe_users.tx_realty_maximum_objects" xml:space="preserve" approved="yes">
                 <source>Maximum number of objects</source>

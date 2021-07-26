@@ -184,7 +184,10 @@ class OpenImmoImport
         $clearImageTables = $this->clearImageTables($employer_folder, 'import');
 
         $this->sendEmails($this->prepareEmails($emailData));
-        //$clearZipFile = $this->deleteZipFile($employer_folder);
+
+        if ($this->settings->getDeleteZipsAfterImport() == 1) {
+            $clearZipFile = $this->deleteZipFile($employer_folder);
+        }
 
         $this->storeLogsAndClearTemporaryLog();
 
@@ -625,11 +628,11 @@ class OpenImmoImport
                     unlink($file);
                 }
             }
-            $this->addToErrorLog(
+            $this->addToLogEntry(
                 "\n Remove Files from employer folder \n"
             );
         } else {
-            $this->addToErrorLog(
+            $this->addToLogEntry(
                 "\n No (zip)-files detected \n"
             );
         }
@@ -787,11 +790,11 @@ class OpenImmoImport
         $email = GeneralUtility::makeInstance(FluidEmail::class);
         
         // send protocol to techn_email: $this->techn_email
-        $to_email = $this->settings->getToTestEmaill(); // test to cg@lubey.de;
-        if ($this->settings->getToTestEmaill() == '') {
+        $to_email = $this->settings->getToTestEmail(); // test to cg@lubey.de;
+        if ($this->settings->getToTestEmail() == '') {
             $to_email = $this->techn_email;
         } else {
-            $to_email = $this->settings->getToTestEmaill();
+            $to_email = $this->settings->getToTestEmail();
         }
         $from_email = $this->settings->getFromEmail(); // email must exist (Spam)
         
