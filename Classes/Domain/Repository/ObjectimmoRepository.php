@@ -322,7 +322,9 @@ class ObjectimmoRepository extends Repository
      *
      */
     public function getRealitionUid($table, $field_val) {
+		
         $queryGetUId = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+		
         if($table == 'tx_realtymanager_domain_model_cities') {
             $uid = $queryGetUId->select('uid')
                 ->from($table)
