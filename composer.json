@@ -4,7 +4,7 @@
 	"description" : "TYPO3 extension for v10 LTS (version before created by Olicer Klee) that provides a plugin that displays realty objects (properties, real estate), including an image gallery for each object.",
 	"homepage" : "https://github.com/chrisgruen/realty-manager",
 	"license" : "GPL-2.0-or-later",
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
     "prefer-stable": true,
     "authors": [
         {
