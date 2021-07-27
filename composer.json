@@ -34,9 +34,6 @@
         "bin-dir": ".build/bin"
     },
     "extra": {
-		"branch-alias": {
-			"dev-master": "10.x-dev"
-		},
 		"typo3/cms": {
 			"extension-key": "realty_manager",
 			"cms-package-dir": "{$vendor-dir}/typo3/cms",
