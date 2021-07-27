@@ -87,6 +87,14 @@ $tca = [
                 ],
             ],
         ],
+        'description' => [
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.description',
+            'config' => [
+                'type' => 'text',
+                'rows' => 5,
+                'cols' => 48
+            ]
+        ],
         'save_folder' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_cities.save_folder',
@@ -102,8 +110,12 @@ $tca = [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => 'sys_language_uid; LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel, l10n_parent, l10n_diffsource,
-                title, districts, save_folder'
+        '0' => ['showitem' => '
+                    --div--;LLL:EXT:realty_manager/Resources/Private/Language/locallang_db.xlf:tx_realty_cities.basic,
+                        title, districts,
+                    --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
+                        description, TSconfig,
+                    '
                ],
     ],
 ];

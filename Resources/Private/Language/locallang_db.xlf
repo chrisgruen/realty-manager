@@ -613,6 +613,9 @@
             <trans-unit id="tx_realty_cities.save_folder" xml:space="preserve">
                 <source>Folder for objects in this city (only for FE-created records)</source>
             </trans-unit>
+            <trans-unit id="tx_realty_cities.basic" xml:space="preserve">
+                <source>Basic</source>
+            </trans-unit>
             <trans-unit id="tx_realty_districts" xml:space="preserve">
                 <source>District</source>
             </trans-unit>

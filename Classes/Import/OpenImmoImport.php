@@ -171,13 +171,20 @@ class OpenImmoImport
                 LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_no_zips', 'No ZIPs to extract. The configured import folder does not contain any ZIP archives. Please check the path configured in the extension manager and the contents of the folder.')
             );
         } else {
-            $clear_employer_entries = $this->clearEmployerEntries($employer_folder);
             foreach ($zipsToExtract as $currentZip) {
                 $this->extractZip($currentZip);
                 $xml_file_data = $this->loadXmlFile($currentZip);
                 $recordData = $this->processRealtyRecordInsertion($employer_folder,$currentZip);
-                $emailData = \array_merge($emailData, $recordData);
+                if($recordData != false) {
+                    $emailData = \array_merge($emailData, $recordData);
+                }
             }
+        }
+
+        if($recordData == false) {
+            $this->sendEmails($this->prepareEmails($emailData));
+            $this->storeLogsAndClearTemporaryLog();
+            return $this->logEntry;
         }
 
         $delImportFolder = $this->deleteImportFolder($employer_folder);
@@ -327,8 +334,9 @@ class OpenImmoImport
                 LocalizationUtility::translate('LLL:EXT:realty_manager/Resources/Private/Language/locallang_import.xlf:message_openimmo_anid_not_matches_allowed_fe_user', 'The record was not imported because the option to restrict import on registered users is activated and this records OpenImmo ANID did not match any OpenImmo ANID of a FE user who is in the allowed user groups. The records OpenImmo ANID was:') . '"'.
                 $ownerId. '".' . "\n"
             );
-            return;
+            return false;
         }
+        $clear_employer_entries = $this->clearEmployerEntries($employer_folder);
 
         $recordsToInsert = $this->convertDomDocumentToArray($xml);
 
@@ -534,7 +542,7 @@ class OpenImmoImport
 
         if($clearFolderEmployerEntries == true) {
             $this->addToLogEntry(
-                "Clear file folder realty/".$employer_folder. " \n"
+                "Clear file folder: ".$this->settings->getResourceFolderExporter()."/".$employer_folder. " \n"
             );
             $clearTableEmployerEntries = $this->deleteTableEntries($employer_pid, $employer_folder);
         }
@@ -660,10 +668,10 @@ class OpenImmoImport
     protected function clearImageTables($dir, $type, $employer_pid = 0)
     {
         if($type == 'export') {
-            $identifier_phrase = 'realty/'.$dir;
+            $identifier_phrase = substr($this->settings->getResourceFolderImporter(),1).'/'.$dir;
             $this->objectimmoRepository->clearSysFileReference($employer_pid);
         } else {
-            $identifier_phrase = 'import/'.$dir;
+            $identifier_phrase = substr($this->settings->getResourceFolderImporter(),1).'/'.$dir;
         }
                 
         $delattachements = $this->objectimmoRepository->clearSysFiles($identifier_phrase);

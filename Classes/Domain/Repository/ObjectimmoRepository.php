@@ -37,13 +37,12 @@ class ObjectimmoRepository extends Repository
         $rent_to = isset($form_data['rent_to']) && is_numeric($form_data['rent_to']) ? $form_data['rent_to'] : 99999;
         $living_area_from = isset($form_data['living_area_from']) && is_numeric($form_data['living_area_from']) ? $form_data['living_area_from'] : 0;
         $living_area_to = isset($form_data['living_area_to']) && is_numeric($form_data['living_area_to']) ? $form_data['living_area_to'] : 99999;
-        
-         
+
         $add_where = '';
         if($house_type > 0) {$add_where .= ' AND house_type = '.$house_type.'';}
         if($apartment_type > 0) {$add_where .= ' AND apartment_type = '.$apartment_type.'';}
         if($employer_page > 0) {$add_where .= ' AND obj.pid = '.$employer_page.'';}
-        if ($city > 0) {$add_where .= ' AND city = '.$city.'';} 
+        if ($city > 0) {$add_where .= ' AND city = '.$city.'';}
         if ($district > 0) { $add_where .= ' AND district = '.$district.'';} 
         if ($furnished > 0) { $add_where .= ' AND furnished = 1';}
         if ($fitted_kitchen > 0) { $add_where .= ' AND fitted_kitchen = 1';}
@@ -62,7 +61,7 @@ class ObjectimmoRepository extends Repository
             $add_where .= ' AND living_area > '.$living_area_from.'';
         }
                 
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_chessmanager_domain_model_result');
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_objectimmo');
         $sql = "SELECT *, obj.uid as uid, obj.title as title FROM tx_realtymanager_domain_model_objectimmo obj
                 LEFT JOIN pages p on obj.pid = p.uid
                 WHERE obj.hidden = 0 AND obj.deleted = 0 AND p.hidden = 0 AND p.deleted = 0
@@ -323,14 +322,21 @@ class ObjectimmoRepository extends Repository
      *
      */
     public function getRealitionUid($table, $field_val) {
-
         $queryGetUId = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
-        $uid = $queryGetUId->select('uid')
-                            ->from($table)
-                            ->where($queryGetUId->expr()->eq('title', $queryGetUId->createNamedParameter($field_val)))
-                            ->execute()
-                            ->fetchColumn(0);
-        
+        if($table == 'tx_realtymanager_domain_model_cities') {
+            $uid = $queryGetUId->select('uid')
+                ->from($table)
+                ->where($queryGetUId->expr()->like('title', $queryGetUId->createNamedParameter($field_val.'%')))
+                ->execute()
+                ->fetchColumn(0);
+        } else {
+            $uid = $queryGetUId->select('uid')
+                ->from($table)
+                ->where($queryGetUId->expr()->eq('title', $queryGetUId->createNamedParameter($field_val)))
+                ->execute()
+                ->fetchColumn(0);
+        }
+
         return $uid;
     }
     

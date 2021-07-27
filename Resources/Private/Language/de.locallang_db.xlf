@@ -840,6 +840,10 @@
                 <source>Folder for objects in this city (only for FE-created records)</source>
                 <target>Ordner für Objekte in diesem Ort (nur für den FE-Editor)</target>
             </trans-unit>
+            <trans-unit id="tx_realty_cities.basic" xml:space="preserve" approved="yes">
+                <source>Basic</source>
+                <target>Grundlegendes</target>
+            </trans-unit>
             <trans-unit id="tx_realty_districts" xml:space="preserve" approved="yes">
                 <source>District</source>
                 <target>Ortsteil</target>
