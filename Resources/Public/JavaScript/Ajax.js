@@ -22,15 +22,16 @@ $(document).ready(function () {
 		   });
 	});
 	
-	$('#searchform').submit(function (event) {
+	$('#searchform').on('submit', function(event) {
 		event.preventDefault();
 		scrollToTop();
 		$('.ajax-loading').show();
 		$('#ajaxSearchResult').hide();
 
 		var url= "/suche?tx_realtymanager_immobilienmanager%5Baction%5D=ajaxsearch&tx_realtymanager_immobilienmanager%5Bcontroller%5D=RealtyManager&type=999999";
-		var formData = $('#searchform').serialize();
 		var resultContainer = $('#ajaxSearchResult');
+		var select_district = $('#districts option:selected').val()
+		var formData = $('#searchform').serialize();
 
 		$.ajax({
 			type: "POST",
@@ -49,6 +50,17 @@ $(document).ready(function () {
 			}
 	   });
 	});
+	
+	function getFormData($form){
+	    var unindexed_array = $form.serializeArray();
+	    var indexed_array = {};
+
+	    $.map(unindexed_array, function(n, i){
+	        indexed_array[n['name']] = n['value'];
+	    });
+
+	    return indexed_array;
+	}
 
 	$('#ajaxSearchResult').on('click', '.ajax-widget-paginator a', function (e) {
 		e.preventDefault();

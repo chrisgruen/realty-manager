@@ -104,6 +104,9 @@ class RealtyManagerController extends ActionController
                 $price_last = $search['rent_to'];
             }
         }
+        
+        $settings = GeneralUtility::makeInstance(ConfigurationObject::class);
+        $showSelectDistricts = $settings->getShowSelectDistricts();
 
         $this->view->assign('housetypes', $housetypes);
         $this->view->assign('apartmenttypes', $apartmenttypes);
@@ -115,6 +118,7 @@ class RealtyManagerController extends ActionController
         $this->view->assign('price_last', $price_last);    
         $this->view->assign('area_last', $area_last); 
         $this->view->assign('search', $search);
+        $this->view->assign('showDistricts', $showSelectDistricts);
     } 
  
     /**
@@ -166,8 +170,12 @@ class RealtyManagerController extends ActionController
     public function ajaxsearchAction()
     {
         $form_data = $this->request->getArguments();
-        $count_objects = 0;
         
+        /* problem ajax-district select, we need _POST */
+        if(isset($_POST['district'])) {
+            $form_data['district'] = $_POST['district'];
+        }
+
         if($form_data) {
             $objects = $this->objectimmoRepository->getAllObjectsBySearch($form_data);
             $count_objects = count($objects);
@@ -194,7 +202,7 @@ class RealtyManagerController extends ActionController
         $cityId = isset($_GET['cityId']) ? $_GET['cityId'] : 0;
         $dataDistricts = $this->objectimmoRepository->getDistricts($cityId);
         $districts = $this->selectDistricts($dataDistricts);
-        
+
         $this->view->setTemplatePathAndFilename('typo3conf/ext/' .$this->request->getControllerExtensionKey() .'/Resources/Private/Templates/Ajaxselectdistrict.html');
         $ajaxcontent = $this->view->assign('districts', $districts);
     }

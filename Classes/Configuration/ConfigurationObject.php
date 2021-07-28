@@ -32,6 +32,9 @@ class ConfigurationObject
 
     /** @var int */
     protected $paginateItemsPerPage = 6;
+    
+    /** @var int */
+    protected $showSelectDistricts = false;
 
     /** @var boolean */
     protected $ajaxPaging = false;
@@ -39,6 +42,11 @@ class ConfigurationObject
     public function getPaginateItemsPerPage()
     {
         return (int)$this->paginateItemsPerPage;
+    }
+    
+    public function getShowSelectDistricts()
+    {
+        return $this->showSelectDistricts;
     }
 
     public function getAjaxPaging()

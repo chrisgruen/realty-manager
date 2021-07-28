@@ -57,6 +57,9 @@
 			<trans-unit id="config.import.logEmailSendTechnEmail" xml:space="preserve">
 				<source>Email send to technical support. If "import.toTestEmail" empty use this Email</source>
 			</trans-unit>
+			<trans-unit id="config.view.showSelectDistricts" xml:space="preserve">
+				<source>Show select disticts</source>
+			</trans-unit>
 			<trans-unit id="config.view.paginateItemsPerPage" xml:space="preserve">
 				<source>Paginate items per page</source>
 			</trans-unit>
