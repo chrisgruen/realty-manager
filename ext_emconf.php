@@ -4,7 +4,7 @@
  */
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Realty Manager',
-    'description' => 'TYPO3 extension from v10 LTS (version before created by Olicer Klee) that provides a plugin that displays realty objects (properties, real estate), including an image gallery for each object.',
+    'description' => 'TYPO3 extension from v10 LTS that provides a plugin that displays realty objects (properties, real estate), including an image gallery for each object.',
     'category' => 'templates',
     'constraints' => [
         'depends' => [
