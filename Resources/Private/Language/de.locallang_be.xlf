@@ -71,12 +71,16 @@
 				<target>Email an technischen Support senden. Wird benutzt wenn "import.toTestEmail" nicht gesetzt ist</target>
 			</trans-unit>
 			<trans-unit id="config.view.showSelectDistricts" xml:space="preserve" approved="yes">
-				<source>Show select disticts</source>
+				<source>Show select districts</source>
 				<target>Auswahl für Stadtbezirke anzeigen</target>
 			</trans-unit>
 			<trans-unit id="config.view.paginateItemsPerPage" xml:space="preserve" approved="yes">
 				<source>Paginate items per page</source>
 				<target>Anzahl Objekte pro Seite</target>
+			</trans-unit>
+			<trans-unit id="config.view.ajaxPaging" xml:space="preserve" approved="yes">
+				<source>Enable ajax paging</source>
+				<target>Seitenzähler mit Ajax</target>
 			</trans-unit>
         </body>
     </file>

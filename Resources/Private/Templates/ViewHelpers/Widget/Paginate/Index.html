@@ -8,8 +8,9 @@
     <f:render section="paginator" arguments="{pagination: pagination, configuration: configuration}" />
 </f:if>
 
+
 <f:section name="paginator">
-    <ul class="f3-widget-paginator">
+    <ul id="ajax-paging" class="f3-widget-paginator">
         <f:if condition="{pagination.previousPage}">
             <li class="previous">
                 <f:if condition="{pagination.previousPage} > 1">

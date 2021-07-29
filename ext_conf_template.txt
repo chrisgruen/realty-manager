@@ -24,3 +24,6 @@ showSelectDistricts = false
 
 # cat=view; type=int; label=LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:config.view.paginateItemsPerPage
 paginateItemsPerPage = 6
+
+# cat=view; type=boolean; label=LLL:EXT:realty_manager/Resources/Private/Language/locallang_be.xlf:config.view.ajaxPaging
+ajaxPaging = false

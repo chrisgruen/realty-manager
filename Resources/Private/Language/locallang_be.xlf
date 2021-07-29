@@ -58,10 +58,13 @@
 				<source>Email send to technical support. If "import.toTestEmail" empty use this Email</source>
 			</trans-unit>
 			<trans-unit id="config.view.showSelectDistricts" xml:space="preserve">
-				<source>Show select disticts</source>
+				<source>Show select districts</source>
 			</trans-unit>
 			<trans-unit id="config.view.paginateItemsPerPage" xml:space="preserve">
 				<source>Paginate items per page</source>
+			</trans-unit>
+			<trans-unit id="config.view.ajaxPaging" xml:space="preserve">
+				<source>Enable ajax paging</source>
 			</trans-unit>
         </body>
     </file>

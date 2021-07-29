@@ -20,7 +20,11 @@ page {
     }
 }
 
-widget.ChrisGruen\RealtyManager\ViewHelpers\Widget\PaginateViewHelper.templateRootPath = EXT:realty_manager/Resources/Private/Templates/
+
+# template for Pagination
+plugin.tx_realtymanager.view.widget.TYPO3\CMS\Fluid\ViewHelpers\Widget\PaginateViewHelper.templateRootPath = EXT:realty_manager/Resources/Private/Templates/
+# all plugins
+#config.tx_extbase.view.widget.TYPO3\CMS\Fluid\ViewHelpers\Widget\PaginateViewHelper.templateRootPath = EXT:realty_manager/Resources/Private/Templates/
 
 settings {
 	typeNum = 999999

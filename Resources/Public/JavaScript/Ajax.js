@@ -50,58 +50,8 @@ $(document).ready(function () {
 			}
 	   });
 	});
-
-	$('#ajaxSearchResult').on('click', '.ajax-widget-paginator a', function (e) {
-		e.preventDefault();
-
-		var ajaxQuery = $(this).attr("href");
-
-		var current_page = 0;
-		var params = ajaxQuery.split(/\?|\&/);
-
-		params.forEach( function(it) {
-			if (it) {
-				var param = it.split("=");
-
-				if (param[0] == 'tx_realtymanager_immobilienmanager%5B%40widget_0%5D%5BcurrentPage%5D') {
-					current_page = param[1];
-				}
-				console.log(current_page);
-			}
-		});
-
-		console.log(current_page);
-
-		if (ajaxQuery  !== undefined && ajaxQuery  !== '') {
-			var container = 'news-container-' + $(this).data('container');
-			$.ajax({
-				url: ajaxQuery,
-				type: 'GET',
-				success: function (result) {
-					console.log(ajaxQuery);
-				}
-			});
-		}
-
-
-		//alert(ajaxQuery);
-
-		/*
-        if (ajaxUrl !== undefined && ajaxUrl !== '') {
-            e.preventDefault();
-            var container = 'news-container-' + $(this).data('container');
-            $.ajax({
-                url: ajaxUrl,
-                type: 'GET',
-                success: function (result) {
-                    var ajaxDom = $(result).find('#' + container);
-                    $('#' + container).replaceWith(ajaxDom);
-                }
-            });
-        }
-        */
-	});
 });
+
 
 $('.test-ajax').on('click', function(){
 
