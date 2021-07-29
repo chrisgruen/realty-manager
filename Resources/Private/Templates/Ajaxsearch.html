@@ -11,11 +11,9 @@
 			<f:then>
 				<f:if condition="{objects -> f:count()} > {itemsPerPage}">
 					<f:then>
-						Ajax-Pagination
 						<f:for each="{objects}" as="object">
 							<f:render partial="List/Item" arguments="{_all}" />
 						</f:for>
-						<f:asset.script identifier="ajax_paging" src="EXT:realty_manager/Resources/Public/JavaScript/AjaxPagination.js" />
 					</f:then>
 					<f:else>
 						<f:for each="{objects}" as="object">
@@ -35,4 +33,5 @@
 		Keine Objekte vorhanden!
 	</f:else>
 </f:if>
+
 

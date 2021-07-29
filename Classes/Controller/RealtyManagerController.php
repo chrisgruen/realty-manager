@@ -7,6 +7,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use ChrisGruen\RealtyManager\Configuration\ConfigurationObject;
+use ChrisGruen\RealtyManager\ViewHelpers\PaginationAjax\PerPage;
 
 class RealtyManagerController extends ActionController
 {
@@ -169,28 +170,65 @@ class RealtyManagerController extends ActionController
      */
     public function ajaxsearchAction()
     {
+        $perPage = new PerPage();
+
         $form_data = $this->request->getArguments();
         
+        //print_r($_POST);
         /* problem ajax-district select, we need _POST */
         if(isset($_POST['district'])) {
             $form_data['district'] = $_POST['district'];
         }
-
-        if($form_data) {
-            $objects = $this->objectimmoRepository->getAllObjectsBySearch($form_data);
-            $count_objects = count($objects);
-        }
-
+        
         $settings = GeneralUtility::makeInstance(ConfigurationObject::class);
         $ajaxPaging = (int)$settings->getAjaxPaging();
-        $itemsPerPage = (int)$settings->getPaginateItemsPerPage();
+        
+        if(!empty($_GET["page"])) {
+            $search_ajax = $GLOBALS['TSFE']->fe_user->getKey('ses', 'ajaxsearch', $form_data);
+        } else {
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'ajaxsearch', $form_data);
+        }
+        
+        if(empty($search_ajax)) {
+            $search_ajax = $form_data;
+        }
+
+        $all_objects = $this->objectimmoRepository->getAllObjectsBySearch($search_ajax);
+        $count_objects = count($all_objects);
+        
+        if($search_ajax ) {
+            if( $ajaxPaging == true) {
+                
+                $page = 1;
+                $limit = $perPage->perpage;
+                $paginationlink = "";
+                
+              
+                if(!empty($_GET["page"])) {
+                    $page = $_GET["page"];
+                }
+                               
+                $start = ($page-1)*$perPage->perpage;
+                if($start < 0) $start = 0;
+                
+                $objects = $this->objectimmoRepository->getAllObjectsBySearch($search_ajax, $start, $limit); 
+                $row_count = count($objects);
+                
+                $perpageresult = $perPage->getAllPageLinks($count_objects, $paginationlink);
+               
+            } else {
+                $objects = $all_objects;
+            }
+        }
 
         $this->view->setTemplatePathAndFilename('typo3conf/ext/' .$this->request->getControllerExtensionKey() .'/Resources/Private/Templates/Ajaxsearch.html');
 
+        echo $perpageresult;
         $this->view->assign('objects', $objects);
         $this->view->assign('count_objects', $count_objects);
         $this->view->assign('ajaxPaging', $ajaxPaging);
         $this->view->assign('itemsPerPage', $itemsPerPage);
+        //$this->view->assign('perpageresult', $perpageresult);
     }
     
     /**

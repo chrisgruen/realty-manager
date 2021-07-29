@@ -20,7 +20,7 @@ class ObjectimmoRepository extends Repository
         return $objects;
     }
     
-    public function getAllObjectsBySearch($form_data)
+    public function getAllObjectsBySearch($form_data, $start=false, $limit=false)
     {   
         $house_type = isset($form_data['house_type']) ? $form_data['house_type'] : 0;
         $apartment_type = isset($form_data['apartment_type']) ? $form_data['apartment_type'] : 0;
@@ -60,13 +60,19 @@ class ObjectimmoRepository extends Repository
         } else {
             $add_where .= ' AND living_area > '.$living_area_from.'';
         }
-                
+        
+        $add_limit = '';
+        if($limit !== false) {
+            $add_limit = ' limit ' . $start . ',' . $limit.''; 
+        }
+        
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_realtymanager_domain_model_objectimmo');
         $sql = "SELECT *, obj.uid as uid, obj.title as title FROM tx_realtymanager_domain_model_objectimmo obj
                 LEFT JOIN pages p on obj.pid = p.uid
                 WHERE obj.hidden = 0 AND obj.deleted = 0 AND p.hidden = 0 AND p.deleted = 0
                 $add_where
-                ORDER BY obj.uid DESC";
+                ORDER BY obj.uid DESC
+                $add_limit";
 
         $objects = $connection->executeQuery($sql)->fetchAll();
         
