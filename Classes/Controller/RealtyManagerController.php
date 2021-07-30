@@ -228,7 +228,7 @@ class RealtyManagerController extends ActionController
         $this->view->assign('count_objects', $count_objects);
         $this->view->assign('ajaxPaging', $ajaxPaging);
         $this->view->assign('itemsPerPage', $itemsPerPage);
-        //$this->view->assign('perpageresult', $perpageresult);
+        $this->view->assign('perpageresult', $perpageresult);
     }
     
     /**
